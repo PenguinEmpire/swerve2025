@@ -28,6 +28,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
+import swervelib.telemetry.SwerveDriveTelemetry;
+import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 
 
@@ -38,6 +40,7 @@ File directory = new File(Filesystem.getDeployDirectory(),"swerve");
 SwerveDrive  swerveDrive;
 @SuppressWarnings("UseSpecificCatch")
   public SwerveSubsystem() {
+    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
       try
     {
       swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.MAX_SPEED,
