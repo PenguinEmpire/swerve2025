@@ -1,0 +1,27 @@
+{
+  "location": {
+    "front": 0.381,
+    "left": 0.381
+  },
+  "absoluteEncoderOffset": 0.3992070,
+  "drive": {
+    "type": "krakenx60",
+    "id": 2,
+    "canbus": "rio"
+  },
+  "angle": {
+    "type": "sparkmax_neo",
+    "id": 7,
+    "canbus": "rio"
+  },
+  "inverted": {
+    "angle": false,
+    "drive": false
+  },
+  "encoder": {
+    "type": "sparkmax_analog5v",
+    "id": null,
+    "canbus": "rio"
+  },
+  "absoluteEncoderInverted": false
+}
