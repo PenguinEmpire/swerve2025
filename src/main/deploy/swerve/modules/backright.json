@@ -1,9 +1,9 @@
 {
   "location": {
-    "front": -0.381,
-    "left": -0.381
+    "front": -15,
+    "left": -15
   },
-  "absoluteEncoderOffset": 0.0102179,
+  "absoluteEncoderOffset": 0.8825768,
   "drive": {
     "type": "krakenx60",
     "id": 4,
@@ -19,7 +19,7 @@
     "drive": false
   },
   "encoder": {
-    "type": "sparkmax_analog5v",
+    "type": "attached",
     "id": null,
     "canbus": "rio"
   },
