@@ -21,6 +21,24 @@ public final class Constants {
     
   }
   
+  public static class Intake {
+    public static final int HORIZONTAL_ROLLER_MOTOR_ID = 20;
+    public static final int LEFT_VERTICAL_ROLLER_MOTOR_ID = 5;
+    public static final int RIGHT_VERTICAL_ROLLER_MOTOR_ID = 1;
+    // public static final int ROTATION_MOTOR_ID = 
+
+    // public static final int BORE_ENCODER_CHANNEL = 3;
+
+    public static final double DEFAULT_ROLLER_POWER = 0.45;
+    public static final int MOTOR_CURRENT_LIMIT = 30;
+
+    // public static final double ROTATION_P = 0.05;
+    // public static final double ROTATION_I = 0.0;
+    // public static final double ROTATION_D = 0.0;
+
+    // public static final double ROTATION_MAX_ANGLE = 90.0;
+    // public static final double ROTATION_TOLERANCE = 2.0;
+}
 public static final double MAX_SPEED = Units.feetToMeters(4.5);
 }
 
