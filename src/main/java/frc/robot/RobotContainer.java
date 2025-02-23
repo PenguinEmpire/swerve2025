@@ -11,10 +11,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 
 
@@ -61,18 +60,18 @@ public class RobotContainer {
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
    * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
+   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link     
    * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}. 
    */
   private void configureBindings() {
-    // Triangle (△) for intake - Runs while button is held
+    // Triangle for intake - Runs while button is held
     m_driverController.triangle()
         .whileTrue(new RunCommand(() -> intakeSubsystem.spinRollers(true), intakeSubsystem))
         .onFalse(new InstantCommand(intakeSubsystem::stopAllRollers, intakeSubsystem));
 
-    // Circle (◯) for outtake - Runs while button is held
+    // Circle  for outtake - Runs while button is held
     m_driverController.circle()
         .whileTrue(new RunCommand(() -> intakeSubsystem.spinRollers(false), intakeSubsystem))
         .onFalse(new InstantCommand(intakeSubsystem::stopAllRollers, intakeSubsystem));
@@ -86,4 +85,4 @@ public class RobotContainer {
     // An example command will be run in autonomous
     return null;
   }
-}
+} 

@@ -40,7 +40,7 @@ File directory = new File(Filesystem.getDeployDirectory(),"swerve");
 SwerveDrive  swerveDrive;
 @SuppressWarnings("UseSpecificCatch")
   public SwerveSubsystem() {
-    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+  SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
       try
     {
       swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.MAX_SPEED,
@@ -88,13 +88,14 @@ public void periodic() {
         if (swerveDrive.getModules()[i].getAbsoluteEncoder() != null) {
             double rawValue = swerveDrive.getModules()[i].getAbsoluteEncoder().getAbsolutePosition();
             
-            // Change the names slightly to force a refresh
+            // Change the names slightly to force a refresh ( might not be needed anymore)
             SmartDashboard.putNumber("Module " + i + " Raw Encoder (ABS)", rawValue);
         } else {
             SmartDashboard.putString("Module " + i + " Encoder Status", "Encoder not found!");
         }
     }
-}
+  }
+  
 
 
   @Override
