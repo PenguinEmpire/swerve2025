@@ -57,7 +57,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
     
     public void stopManualRotate() {
-        intakeRotation.manualMove(0.0);  // Stops rotation when button is released
+        intakeRotation.stopMotor();// Stops rotation when button is released
     }
     
     
