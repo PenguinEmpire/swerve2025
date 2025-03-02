@@ -25,7 +25,7 @@ public final class Constants {
     public static final int HORIZONTAL_ROLLER_MOTOR_ID = 20;
     public static final int LEFT_VERTICAL_ROLLER_MOTOR_ID = 5;
     public static final int RIGHT_VERTICAL_ROLLER_MOTOR_ID = 1;
-    // public static final int ROTATION_MOTOR_ID = 
+     public static final int ROTATION_MOTOR_ID = 0;
     
    
 

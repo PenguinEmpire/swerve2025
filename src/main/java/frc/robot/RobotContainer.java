@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.PositionCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -75,7 +76,27 @@ public class RobotContainer {
     m_driverController.circle()
         .whileTrue(new RunCommand(() -> intakeSubsystem.spinRollers(false), intakeSubsystem))
         .onFalse(new InstantCommand(intakeSubsystem::stopAllRollers, intakeSubsystem));
+    
+      //  POV LEFT → Move Intake **IN**
+    m_driverController.povLeft()
+        .onTrue(new PositionCommand(intakeSubsystem, PositionCommand.Position.INTAKE_IN));
+
+    //  POV RIGHT → Move Intake **OUT**
+    m_driverController.povRight()
+        .onTrue(new PositionCommand(intakeSubsystem, PositionCommand.Position.INTAKE_OUT));
+
+    //  POV UP → Slowly Rotate Intake UP (While Held)
+    m_driverController.povUp()
+      .whileTrue(new RunCommand(() -> intakeSubsystem.manualRotate(false), intakeSubsystem))
+      .onFalse(new InstantCommand(intakeSubsystem::stopManualRotate, intakeSubsystem));
+
+//  POV DOWN → Slowly Rotate Intake DOWN (While Held)
+    m_driverController.povDown()
+    .whileTrue(new RunCommand(() -> intakeSubsystem.manualRotate(true), intakeSubsystem))
+    .onFalse(new InstantCommand(intakeSubsystem::stopManualRotate, intakeSubsystem));
 }
+
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
