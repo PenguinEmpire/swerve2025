@@ -35,16 +35,16 @@ public class Jointmodule {
 
     public Jointmodule(String name, int motorID) {
         this.name = name + ": ";
-        motor = new SparkMax(motorID, MotorType.kBrushless);
+        motor = new SparkMax(8 , MotorType.kBrushless);
 
         //  Initialize and store the initial configuration
         storedConfig = new SparkMaxConfig();
         storedConfig
             .inverted(true)
-            .idleMode(IdleMode.kBrake)
+            .idleMode(IdleMode.kCoast)
             .closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                .pid(1.0, 0.0, 0.0)
+                .pid(.1, 0.0, 0.0)
                 .positionWrappingEnabled(true)
                 .positionWrappingMinInput(0)
                 .positionWrappingMaxInput(2 * Math.PI)
