@@ -22,7 +22,7 @@ public class Jointmodule {
     
     private double targetPosition;
     
-    private double armP = 1.0;
+    private double armP = 0.6;
     private double armI = 0.0;
     private double armD = 0.0;
     private double armFF = 0.0;
@@ -40,7 +40,7 @@ public class Jointmodule {
         //  Initialize and store the initial configuration
         storedConfig = new SparkMaxConfig();
         storedConfig
-            .inverted(false)
+            .inverted(true)
             .idleMode(IdleMode.kCoast)
             .closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
