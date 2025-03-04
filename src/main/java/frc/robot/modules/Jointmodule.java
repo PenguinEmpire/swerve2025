@@ -27,8 +27,8 @@ public class Jointmodule {
     private double armD = 0.0;
     private double armFF = 0.0;
 
-    private double staticGain = 0.1;
-    private double gravityGain = 0.4;
+    private double staticGain = 0.0;
+    private double gravityGain = 0.0;
     private double velocityGain = 0.0;
 
     private SparkMaxConfig storedConfig;  //  Store initial configuration
@@ -43,8 +43,8 @@ public class Jointmodule {
             .inverted(true)
             .idleMode(IdleMode.kCoast)
             .closedLoop
-                .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                .pid(.1, 0.0, 0.0)
+                .feedbackSensor(FeedbackSensor.kAbsoluteEncoder) // see if this works, it was in absolute before
+                .pid(0.1, 0.0, 0.0)
                 .positionWrappingEnabled(true)
                 .positionWrappingMinInput(0)
                 .positionWrappingMaxInput(2 * Math.PI)
