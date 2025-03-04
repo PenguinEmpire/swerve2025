@@ -7,7 +7,7 @@ public class PositionCommand extends Command {
 
     public enum Position {
         INTAKE_IN(0.0),  // Fold intake inside frame
-        INTAKE_OUT(4.12); // Extend intake out for pickup ( find this value from testing)
+        INTAKE_OUT(3.91); // Extend intake out for pickup ( find this value from testing)
 
         private final double encoderPosition;
 

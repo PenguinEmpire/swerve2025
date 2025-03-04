@@ -40,7 +40,7 @@ public class Jointmodule {
         //  Initialize and store the initial configuration
         storedConfig = new SparkMaxConfig();
         storedConfig
-            .inverted(true)
+            .inverted(false)
             .idleMode(IdleMode.kCoast)
             .closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
@@ -48,7 +48,7 @@ public class Jointmodule {
                 .positionWrappingEnabled(true)
                 .positionWrappingMinInput(0)
                 .positionWrappingMaxInput(2 * Math.PI)
-                .outputRange(-0.2, 0.2);
+                .outputRange(-0.5, 0.5);
         storedConfig.encoder.positionConversionFactor(2 * Math.PI);
 
         // Apply the initial configuration
