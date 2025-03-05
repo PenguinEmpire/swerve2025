@@ -15,7 +15,7 @@ public class IntakeSubsystem extends SubsystemBase {
     
   
     private double rollerPower = Intake.DEFAULT_ROLLER_POWER;
-    private double rotationPower = .5; // Default slow speed
+    private double rotationPower = Intake.DEFAULT_ROTATION_POWER;
     public IntakeSubsystem() {
         horizontalRollerMotor = new SparkMax(Intake.HORIZONTAL_ROLLER_MOTOR_ID, MotorType.kBrushless);
         leftVerticalRollerMotor = new SparkMax(Intake.LEFT_VERTICAL_ROLLER_MOTOR_ID, MotorType.kBrushless);
@@ -24,6 +24,7 @@ public class IntakeSubsystem extends SubsystemBase {
         
 
         SmartDashboard.putNumber("Roller Power", Intake.DEFAULT_ROLLER_POWER);
+        SmartDashboard.putNumber("Intake Rotation Power", Intake.DEFAULT_ROTATION_POWER);
 
         
    
@@ -50,6 +51,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void manualRotate(boolean down) {
+        rotationPower = SmartDashboard.getNumber("Roller Power", rotationPower);
         double power = down ? -rotationPower : rotationPower;  // Move up/down
         intakeRotation.manualMove(power);
     }

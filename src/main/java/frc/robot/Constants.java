@@ -31,10 +31,24 @@ public final class Constants {
 
  
     public static final double DEFAULT_ROLLER_POWER = 0.45; //tested these values 2/22
+    public static final double DEFAULT_ROTATION_POWER = 0.50;
     public static final int MOTOR_CURRENT_LIMIT = 30;
 
 
 }
+
+public static class Elevator {  
+  public static final int LEFT_ELEVATOR_MOTOR_ID = 10;  // confirm these tmr
+  public static final int RIGHT_ELEVATOR_MOTOR_ID = 11;
+  public static final double DEFAULT_ELEVATOR_SPEED = 0.2;  
+
+}
+
+public static class Shooter {  
+  public static final int SHOOTER_MOTOR_ID = 12;  // Confirm the ID
+  public static final boolean ALT_ENC_LIMIT = true; 
+}
+
 public static final double MAX_SPEED = Units.feetToMeters(4.5); // potentially change to 14.5
 }
 

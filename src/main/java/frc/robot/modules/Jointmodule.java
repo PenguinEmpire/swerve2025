@@ -1,5 +1,6 @@
 package frc.robot.modules;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -45,7 +46,7 @@ public class Jointmodule {
             .closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder) // see if this works, it was in absolute before
                 .pid(0.1, 0.0, 0.0)
-                .positionWrappingEnabled(true)
+                .positionWrappingEnabled(true) // see if this fixes anything
                 .positionWrappingMinInput(0)
                 .positionWrappingMaxInput(2 * Math.PI)
                 .outputRange(-0.5, 0.5);
@@ -74,10 +75,14 @@ public class Jointmodule {
     }
 
     public void setPosition(double position) {
-        this.targetPosition = position;
-        double ffValue = feedforward.calculate(targetPosition, 0);
-        pidController.setReference(targetPosition, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0, ffValue);
-        SmartDashboard.putNumber(name + " Target Position", targetPosition);
+            this.targetPosition = position;
+        
+            //  Last year's code only set the target position, without FF here
+            pidController.setReference(targetPosition, SparkBase.ControlType.kPosition);
+        
+            // Log reference value for debugging
+            SmartDashboard.putNumber(name + " Reference", targetPosition);
+        
     }
 
     public void manualMove(double speed) {
@@ -89,7 +94,10 @@ public class Jointmodule {
     }
 
     public double getPosition() {
-        return motor.getEncoder().getPosition();
+        AbsoluteEncoder absEncoder = motor.getAbsoluteEncoder();
+        return absEncoder.getPosition();
+        
+        //return motor.getEncoder().getPosition();
     }
 
     public boolean hasReachedTarget(double tolerance) {
@@ -112,48 +120,56 @@ public class Jointmodule {
     }
 
     public void periodic() {
-        // Log Encoder Position
-        SmartDashboard.putNumber(name + " Encoder Position", getPosition());
-
-        // Log Target Position for Debugging
+        //  Get the current encoder position
+        double currentPos = getPosition();
+        
+        //  Log Encoder Position
+        SmartDashboard.putNumber(name + " Encoder Position", currentPos);
+        
+        //  Log Target Position for Debugging
         SmartDashboard.putNumber(name + " Target Position", targetPosition);
-
+        
         //  Read new PID values from SmartDashboard
         double newP = SmartDashboard.getNumber(name + " P", armP);
         double newI = SmartDashboard.getNumber(name + " I", armI);
         double newD = SmartDashboard.getNumber(name + " D", armD);
-
-        // Create a new config and apply stored settings
-        SparkMaxConfig newConfig = new SparkMaxConfig();
-        newConfig.apply(storedConfig);
-
-        //  Update PID values if they have changed
+    
+        //  Only update PID if values have changed
         if (newP != armP || newI != armI || newD != armD) {
-            newConfig.closedLoop.pid(newP, newI, newD);
-            
-            // Update stored PID values
+            SparkMaxConfig newConfig = new SparkMaxConfig();  //  Create a new config object
+            newConfig.apply(storedConfig);  //  Apply stored configuration
+            newConfig.closedLoop.pid(newP, newI, newD);  //  Modify only PID values
+    
+            //  Apply only the updated PID settings to the motor
+            motor.configure(newConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    
+            //  Store updated values
             armP = newP;
             armI = newI;
             armD = newD;
-
-            // Apply the updated configuration to the motor
-            motor.configure(newConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         }
-
+        
         //  Live-update Feedforward Gains from SmartDashboard
         double newStatic = SmartDashboard.getNumber(name + " Static Gain", staticGain);
         double newGravity = SmartDashboard.getNumber(name + " Gravity Gain", gravityGain);
         double newVelocity = SmartDashboard.getNumber(name + " Velocity Gain", velocityGain);
-
+    
         if (newStatic != staticGain || newGravity != gravityGain || newVelocity != velocityGain) {
             staticGain = newStatic;
             gravityGain = newGravity;
             velocityGain = newVelocity;
             feedforward = new ArmFeedforward(staticGain, gravityGain, velocityGain);
         }
-
-        // Apply latest reference (PID + FF)
-        double ffValue = feedforward.calculate(targetPosition, 0);
+    
+        //  Calculate Feedforward using current position
+        double ffValue = feedforward.calculate(currentPos, 0);
+    
+        //  Apply latest reference (PID + FF)
         pidController.setReference(targetPosition, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0, ffValue);
+    
+        //  Log Feedforward Value
+        SmartDashboard.putNumber(name + " Feedforward Value", ffValue);
     }
+    
+    
 }

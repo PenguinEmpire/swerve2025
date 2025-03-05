@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.PositionCommand;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -29,6 +30,7 @@ public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final SwerveSubsystem drivebase = new SwerveSubsystem();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+  private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandPS5Controller m_driverController =
       new CommandPS5Controller(OperatorConstants.CONTROLLER_PORT);
@@ -76,6 +78,16 @@ public class RobotContainer {
     m_driverController.circle()
         .whileTrue(new RunCommand(() -> intakeSubsystem.spinRollers(false), intakeSubsystem))
         .onFalse(new InstantCommand(intakeSubsystem::stopAllRollers, intakeSubsystem));
+    
+      //  Square Button → Move Elevator **UP** (While Held)
+      m_driverController.square()
+      .whileTrue(new RunCommand(() -> elevatorSubsystem.moveElevator(true), elevatorSubsystem))
+      .onFalse(new InstantCommand(elevatorSubsystem::stopElevator, elevatorSubsystem));
+
+       //  Cross Button → Move Elevator **DOWN** (While Held)
+       m_driverController.cross()
+       .whileTrue(new RunCommand(() -> elevatorSubsystem.moveElevator(false), elevatorSubsystem))
+       .onFalse(new InstantCommand(elevatorSubsystem::stopElevator, elevatorSubsystem));
     
       //  POV LEFT → Move Intake **IN**
     m_driverController.povLeft()
