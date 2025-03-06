@@ -15,6 +15,7 @@ import frc.robot.commands.PositionCommand;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 
@@ -31,6 +32,7 @@ public class RobotContainer {
   private final SwerveSubsystem drivebase = new SwerveSubsystem();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandPS5Controller m_driverController =
       new CommandPS5Controller(OperatorConstants.CONTROLLER_PORT);

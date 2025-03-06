@@ -38,9 +38,10 @@ public final class Constants {
 }
 
 public static class Elevator {  
-  public static final int LEFT_ELEVATOR_MOTOR_ID = 10;  // confirm these tmr
-  public static final int RIGHT_ELEVATOR_MOTOR_ID = 11;
-  public static final double DEFAULT_ELEVATOR_SPEED = 0.2;  
+  public static final int LEFT_ELEVATOR_MOTOR_ID = 6;  // confirm these tmr
+  public static final int RIGHT_ELEVATOR_MOTOR_ID = 17; // the one with the encoder
+  public static final double DEFAULT_ELEVATOR_SPEED = 0.5;  // 1 is way too fast 
+  public static final double DOWN_ELEVATOR_SPEED = 0.1;
 
 }
 

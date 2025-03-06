@@ -10,12 +10,13 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Elevator;  
-
+// Note : elevator down should barely have any input from motor
 public class ElevatorSubsystem extends SubsystemBase {
     private final SparkMax leftElevatorMotor;
     private final SparkMax rightElevatorMotor;
     
     private double elevatorSpeed;
+    private double elevatorDownSpeed;
 
     public ElevatorSubsystem() {
         leftElevatorMotor = new SparkMax(Elevator.LEFT_ELEVATOR_MOTOR_ID, MotorType.kBrushless);
@@ -36,13 +37,16 @@ public class ElevatorSubsystem extends SubsystemBase {
         rightElevatorMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         elevatorSpeed = Elevator.DEFAULT_ELEVATOR_SPEED;
+        elevatorDownSpeed = Elevator.DOWN_ELEVATOR_SPEED;
         SmartDashboard.putNumber("Elevator Speed", elevatorSpeed);
+        SmartDashboard.putNumber("Elevator Down Speed", elevatorDownSpeed);
     }
 
     // Moves the elevator up or down 
     public void moveElevator(boolean up) {
         elevatorSpeed = SmartDashboard.getNumber("Elevator Speed", Elevator.DEFAULT_ELEVATOR_SPEED);
-        double speed = up ? elevatorSpeed : -elevatorSpeed;
+        elevatorDownSpeed = SmartDashboard.getNumber("Elevator Down Speed", Elevator.DOWN_ELEVATOR_SPEED);
+        double speed = up ? elevatorSpeed : - elevatorDownSpeed;
         leftElevatorMotor.set(speed);
     }
 
