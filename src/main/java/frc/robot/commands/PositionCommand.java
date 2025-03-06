@@ -6,8 +6,8 @@ import frc.robot.subsystems.IntakeSubsystem;
 public class PositionCommand extends Command {
 
     public enum Position {
-        INTAKE_IN(0.0),  // Fold intake inside frame
-        INTAKE_OUT(0.358); // should be 0.372 Extend intake out for pickup ( find this value from testing)
+        INTAKE_IN(0.01),  // Fold intake inside frame
+        INTAKE_OUT(0.383); // should be 0.372 Extend intake out for pickup ( find this value from testing)
 
         private final double encoderPosition;
 

@@ -23,7 +23,7 @@ public class Jointmodule {
     
     private double targetPosition;
     
-    private double armP = 0.01;
+    private double armP = 0.3;
     private double armI = 0.0;
     private double armD = 0.0;
     private double armFF = 0.0;
@@ -70,8 +70,7 @@ public class Jointmodule {
         // Initialize feedforward
         feedforward = new ArmFeedforward(staticGain, gravityGain, velocityGain);
 
-        // Initialize target position
-        SmartDashboard.putNumber(name + " Target Position", 0.0);
+    
     }
 
     public void setPosition(double position) {
