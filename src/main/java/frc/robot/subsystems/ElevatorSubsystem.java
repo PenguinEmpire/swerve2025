@@ -17,6 +17,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     
     private double elevatorSpeed;
     private double elevatorDownSpeed;
+  
 
     public ElevatorSubsystem() {
         leftElevatorMotor = new SparkMax(Elevator.LEFT_ELEVATOR_MOTOR_ID, MotorType.kBrushless);
@@ -37,15 +38,19 @@ public class ElevatorSubsystem extends SubsystemBase {
         rightElevatorMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         elevatorSpeed = Elevator.DEFAULT_ELEVATOR_SPEED;
-        elevatorDownSpeed = Elevator.DOWN_ELEVATOR_SPEED;
+
+        elevatorDownSpeed = Elevator.ELEVATOR_DOWN_SPEED;
+    
         SmartDashboard.putNumber("Elevator Speed", elevatorSpeed);
-        SmartDashboard.putNumber("Elevator Down Speed", elevatorDownSpeed);
+        
+        SmartDashboard.putNumber("Elevator Down Speed",elevatorDownSpeed);
+      
     }
 
     // Moves the elevator up or down 
     public void moveElevator(boolean up) {
         elevatorSpeed = SmartDashboard.getNumber("Elevator Speed", Elevator.DEFAULT_ELEVATOR_SPEED);
-        elevatorDownSpeed = SmartDashboard.getNumber("Elevator Down Speed", Elevator.DOWN_ELEVATOR_SPEED);
+        elevatorDownSpeed = SmartDashboard.getNumber("Elevator Down Speed", Elevator.ELEVATOR_DOWN_SPEED);
         double speed = up ? elevatorSpeed : - elevatorDownSpeed;
         leftElevatorMotor.set(speed);
     }
@@ -59,5 +64,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void periodic() {
         //  Log elevator speed for debugging
         SmartDashboard.putNumber("Current Elevator Speed", elevatorSpeed);
+        SmartDashboard.putNumber("Current Elevator Down Speed",elevatorDownSpeed );
     }
 }

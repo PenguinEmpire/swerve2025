@@ -23,7 +23,7 @@ public class Jointmodule {
     
     private double targetPosition;
     
-    private double armP = 0.6;
+    private double armP = 0.01;
     private double armI = 0.0;
     private double armD = 0.0;
     private double armFF = 0.0;
@@ -45,7 +45,7 @@ public class Jointmodule {
             .idleMode(IdleMode.kCoast)
             .closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder) // see if this works, it was in absolute before
-                .pid(0.1, 0.0, 0.0)
+                .pid(0.01, 0.0, 0.0)
                 .positionWrappingEnabled(true) // see if this fixes anything
                 .positionWrappingMinInput(0)
                 .positionWrappingMaxInput(2 * Math.PI)
