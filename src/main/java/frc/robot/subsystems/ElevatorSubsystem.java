@@ -51,7 +51,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void moveElevator(boolean up) {
         elevatorSpeed = SmartDashboard.getNumber("Elevator Speed", Elevator.DEFAULT_ELEVATOR_SPEED);
         elevatorDownSpeed = SmartDashboard.getNumber("Elevator Down Speed", Elevator.ELEVATOR_DOWN_SPEED);
-        double speed = up ? elevatorSpeed : - elevatorDownSpeed;
+        double speed = up ? elevatorSpeed : - elevatorSpeed;
         leftElevatorMotor.set(speed);
     }
 
