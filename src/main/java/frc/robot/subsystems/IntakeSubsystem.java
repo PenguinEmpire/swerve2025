@@ -40,6 +40,7 @@ public class IntakeSubsystem extends SubsystemBase {
         rightVerticalRollerMotor.set(-power);
     }
 
+
     public void stopAllRollers() {
         horizontalRollerMotor.set(0.0);
         leftVerticalRollerMotor.set(0.0);

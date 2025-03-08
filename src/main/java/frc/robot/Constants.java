@@ -49,6 +49,7 @@ public static class Elevator {
 public static class Shooter {  
   public static final int SHOOTER_MOTOR_ID = 12;  // Confirm the ID
   public static final boolean ALT_ENC_LIMIT = true; 
+   public static final double DEFAULT_SHOOTER_POWER = .5;
 }
 
 public static final double MAX_SPEED = Units.feetToMeters(4.5); // potentially change to 14.5

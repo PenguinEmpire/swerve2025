@@ -32,28 +32,27 @@ public class Jointmodule {
     private double gravityGain = 0.0;
     private double velocityGain = 0.0;
 
-    private SparkMaxConfig storedConfig;  //  Store initial configuration
 
     public Jointmodule(String name, int motorID) {
         this.name = name + ": ";
         motor = new SparkMax(8 , MotorType.kBrushless);
 
-        //  Initialize and store the initial configuration
-        storedConfig = new SparkMaxConfig();
-        storedConfig
+        SparkMaxConfig motorConfig = new SparkMaxConfig();
+        motorConfig
             .inverted(true)
             .idleMode(IdleMode.kCoast)
             .closedLoop
-                .feedbackSensor(FeedbackSensor.kAbsoluteEncoder) // see if this works, it was in absolute before
-                .pid(0.01, 0.0, 0.0)
-                .positionWrappingEnabled(true) // see if this fixes anything
+                .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+                .pid(0.1, 0.0, 0.0)
+                .positionWrappingEnabled(true)
                 .positionWrappingMinInput(0)
                 .positionWrappingMaxInput(2 * Math.PI)
-                .outputRange(-0.5, 0.5);
-        storedConfig.encoder.positionConversionFactor(2 * Math.PI);
-
+                .outputRange(-0.75, 0.75);
+        motorConfig.encoder.positionConversionFactor(2 * Math.PI);
+        
         // Apply the initial configuration
-        motor.configure(storedConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        
 
         pidController = motor.getClosedLoopController();
 
@@ -127,25 +126,10 @@ public class Jointmodule {
         
         //  Log Target Position for Debugging
         SmartDashboard.putNumber(name + " Target Position", targetPosition);
-        
-        //  Read new PID values from SmartDashboard
-        double newP = SmartDashboard.getNumber(name + " P", armP);
-        double newI = SmartDashboard.getNumber(name + " I", armI);
-        double newD = SmartDashboard.getNumber(name + " D", armD);
-    
-        //  Only update PID if values have changed
-        if (newP != armP || newI != armI || newD != armD) {
-            SparkMaxConfig newConfig = new SparkMaxConfig();  //  Create a new config object
-            newConfig.apply(storedConfig);  //  Apply stored configuration
-            newConfig.closedLoop.pid(newP, newI, newD);  //  Modify only PID values
-    
-            //  Apply only the updated PID settings to the motor
-            motor.configure(newConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    
-            //  Store updated values
-            armP = newP;
-            armI = newI;
-            armD = newD;
+
+        if (Math.abs(targetPosition - currentPos) > 0.01) { // Small deadband to prevent jitter
+            double ffValue = feedforward.calculate(currentPos, 0);
+            pidController.setReference(targetPosition, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0, ffValue);
         }
         
         //  Live-update Feedforward Gains from SmartDashboard
@@ -163,8 +147,6 @@ public class Jointmodule {
         //  Calculate Feedforward using current position
         double ffValue = feedforward.calculate(currentPos, 0);
     
-        //  Apply latest reference (PID + FF)
-        pidController.setReference(targetPosition, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0, ffValue);
     
         //  Log Feedforward Value
         SmartDashboard.putNumber(name + " Feedforward Value", ffValue);
