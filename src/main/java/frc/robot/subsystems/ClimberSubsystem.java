@@ -8,29 +8,30 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.Shooter;
+import frc.robot.Constants.Climber;
 
-public class ShooterSubsystem extends SubsystemBase {
-    private final SparkMax shooterMotor;
+public class ClimberSubsystem extends SubsystemBase {
+    private final SparkMax ClimberMotor;
     // private final RelativeEncoder limitSwitchEncoder;  // Treat limit switch as encoder input
 
     // private static final double LIMIT_SWITCH_THRESHOLD = 0.1;  // Adjust based on real values
 
-    private double shooterPower = Shooter.DEFAULT_SHOOTER_POWER; 
+    private double ClimberPower = Climber.DEFAULT_CLIMBER_POWER; 
+   
 
-    public ShooterSubsystem() {
-        shooterMotor = new SparkMax(Shooter.SHOOTER_MOTOR_ID, MotorType.kBrushless);
+    public ClimberSubsystem() {
+        ClimberMotor = new SparkMax(Climber.CLIMBER_MOTOR_ID, MotorType.kBrushless);
 
         // Configure motor settings
         SparkMaxConfig config = new SparkMaxConfig();
         config.inverted(false); // Adjust based on shooter direction
-        shooterMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        ClimberMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // Get encoder from the Alternate Encoder Port (Limit switch input)
         // limitSwitchEncoder = shooterMotor.getAlternateEncoder(); // Adjust CPR if needed
 
         // Initialize SmartDashboard with power settings
-        SmartDashboard.putNumber("Shooter Power", Shooter.DEFAULT_SHOOTER_POWER);
+        SmartDashboard.putNumber("Shooter Power", Climber.DEFAULT_CLIMBER_POWER);
     }
 
     // /** Reads the limit switch state based on encoder behavior */
@@ -43,15 +44,15 @@ public class ShooterSubsystem extends SubsystemBase {
 
     /** Spins the shooter motor in forward or reverse direction */
     public void spinShooter(boolean forward) {
-        shooterPower = SmartDashboard.getNumber("Shooter Power", shooterPower);  // Get shooter power from SmartDashboard
+        ClimberPower = SmartDashboard.getNumber("Shooter Power", ClimberPower);  // Get shooter power from SmartDashboard
 
-        double power = forward ? shooterPower : -shooterPower;  // Adjust direction based on forward/reverse
-        shooterMotor.set(power);  // Set motor power
+        double power = forward ? ClimberPower : -ClimberPower;  // Adjust direction based on forward/reverse
+         ClimberMotor.set(power);  // Set motor power
     }
 
     /** Stops the shooter motor */
     public void stopShooter() {
-        shooterMotor.set(0);  // Stop the shooter motor
+        ClimberMotor.set(0);  // Stop the shooter motor
     }
 
     @Override
@@ -64,6 +65,6 @@ public class ShooterSubsystem extends SubsystemBase {
         // SmartDashboard.putNumber("Limit Switch Encoder Position", limitSwitchEncoder.getPosition()); // Debugging position
 
         // Optionally display the current shooter power for debugging
-        SmartDashboard.putNumber("Shooter Power", shooterMotor.get() * 100);  // Display percentage of power
+        SmartDashboard.putNumber("Shooter Power",ClimberPower);  // Display percentage of power
     }
 }

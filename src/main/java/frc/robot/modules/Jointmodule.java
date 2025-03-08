@@ -1,7 +1,6 @@
 package frc.robot.modules;
 
 import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -43,7 +42,7 @@ public class Jointmodule {
             .idleMode(IdleMode.kCoast)
             .closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                .pid(0.1, 0.0, 0.0)
+                .pid(0.20, 0.0, 0.0)
                 .positionWrappingEnabled(true)
                 .positionWrappingMinInput(0)
                 .positionWrappingMaxInput(2 * Math.PI)
@@ -127,10 +126,10 @@ public class Jointmodule {
         //  Log Target Position for Debugging
         SmartDashboard.putNumber(name + " Target Position", targetPosition);
 
-        if (Math.abs(targetPosition - currentPos) > 0.01) { // Small deadband to prevent jitter
-            double ffValue = feedforward.calculate(currentPos, 0);
-            pidController.setReference(targetPosition, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0, ffValue);
-        }
+        // if (Math.abs(targetPosition - currentPos) > 0.01) { // Small deadband to prevent jitter
+        //     double ffValue = feedforward.calculate(currentPos, 0);
+        //     pidController.setReference(targetPosition, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0, ffValue);
+        // }
         
         //  Live-update Feedforward Gains from SmartDashboard
         double newStatic = SmartDashboard.getNumber(name + " Static Gain", staticGain);
@@ -144,12 +143,13 @@ public class Jointmodule {
             feedforward = new ArmFeedforward(staticGain, gravityGain, velocityGain);
         }
     
-        //  Calculate Feedforward using current position
-        double ffValue = feedforward.calculate(currentPos, 0);
+        // //  Calculate Feedforward using current position
+        // double ffValue = feedforward.calculate(currentPos, 0);
+        // pidController.setReference(targetPosition, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0, ffValue);
     
     
         //  Log Feedforward Value
-        SmartDashboard.putNumber(name + " Feedforward Value", ffValue);
+        //SmartDashboard.putNumber(name + " Feedforward Value", ffValue);
     }
     
     

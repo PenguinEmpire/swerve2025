@@ -40,18 +40,22 @@ public final class Constants {
 public static class Elevator {  
   public static final int LEFT_ELEVATOR_MOTOR_ID = 6;  // confirm these tmr
   public static final int RIGHT_ELEVATOR_MOTOR_ID = 17; // the one with the encoder
-  public static final double DEFAULT_ELEVATOR_SPEED = 1;  // 1 is way too fast 
+  public static final double DEFAULT_ELEVATOR_SPEED = 0.8;  // 1 is way too fast 
   public static final double ELEVATOR_DOWN_SPEED = 0.1;
  
 
 }
 
 public static class Shooter {  
-  public static final int SHOOTER_MOTOR_ID = 12;  // Confirm the ID
+  public static final int SHOOTER_MOTOR_ID = 22;  // Confirm the ID
   public static final boolean ALT_ENC_LIMIT = true; 
-   public static final double DEFAULT_SHOOTER_POWER = .5;
+   public static final double DEFAULT_SHOOTER_POWER = 0.5;
 }
 
+public static class Climber{
+  public static final int CLIMBER_MOTOR_ID = 1;
+  public static final double DEFAULT_CLIMBER_POWER = 0.5;
+}
 public static final double MAX_SPEED = Units.feetToMeters(4.5); // potentially change to 14.5
 }
 
