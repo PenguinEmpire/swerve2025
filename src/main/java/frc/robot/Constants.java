@@ -48,7 +48,7 @@ public static class Elevator {
 
 public static class Shooter {  
   public static final int SHOOTER_MOTOR_ID = 22;  // Confirm the ID
-  public static final boolean ALT_ENC_LIMIT = true; 
+
    public static final double DEFAULT_SHOOTER_POWER = 0.5;
 }
 

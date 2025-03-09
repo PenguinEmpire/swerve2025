@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.PositionCommand;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -33,6 +34,7 @@ public class RobotContainer {
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+  private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
   // private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
  
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -139,6 +141,14 @@ public class RobotContainer {
   m_driverController.R1()
   .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem, PositionCommand.Position.ELEVATOR_LEVEL_3));
 
+// Create Button → Move Climber **UP** (While Held)
+  m_driverController.create()
+  .whileTrue(new RunCommand(() -> climberSubsystem.moveClimber(true), climberSubsystem))
+  .onFalse(new InstantCommand(climberSubsystem::stopClimber, climberSubsystem));
+// Options Button → Move Climber **DOWN** (While Held)
+  m_driverController.options()
+  .whileTrue(new RunCommand(() -> climberSubsystem.moveClimber(false), climberSubsystem))
+  .onFalse(new InstantCommand(climberSubsystem::stopClimber, climberSubsystem));
 
  
 }

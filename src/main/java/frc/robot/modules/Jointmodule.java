@@ -30,6 +30,7 @@ public class Jointmodule {
     private double staticGain = 0.0;
     private double gravityGain = 0.0;
     private double velocityGain = 0.0;
+    
 
 
     public Jointmodule(String name, int motorID) {
