@@ -8,15 +8,18 @@ public class PositionCommand extends Command {
 
     public enum Position {
         // Intake Positions
-        INTAKE_IN(0.04),  // Fold intake inside frame
-        INTAKE_OUT(0.35), // Extend intake out for pickup
+        // position to score l1 ( 0.093)
+        INTAKE_IN(0.031),  // Fold intake inside frame
+        INTAKE_OUT(0.385), // Extend intake out for pickup
 
-        // Elevator Positions
+        // Elevator Positions driving position
+
         ELEVATOR_LOW(0.0),   // figure these values out just keeping it zero for now
         ELEVATOR_LEVEL_1(0.0),  
-        ELEVATOR_LEVEL_2(0.0),  
-        ELEVATOR_LEVEL_3(0.0),  
-        ELEVATOR_MAX(0.0);  
+        ELEVATOR_LEVEL_2(0.0),  // 0.710
+        ELEVATOR_LEVEL_3(0.0),  // 0.11
+        ELEVATOR_MAX(0.0);   // .151
+
 
         private final double encoderPosition;
 
@@ -52,26 +55,26 @@ public class PositionCommand extends Command {
             case INTAKE_OUT:
                 intakeSubsystem.setRotationPosition(Position.INTAKE_OUT.getEncoderPosition());
                 break;
-            case ELEVATOR_LOW:
-                elevatorSubsystem.setPosition(Position.ELEVATOR_LOW.getEncoderPosition());
-                break;
-            case ELEVATOR_LEVEL_1:
-                elevatorSubsystem.setPosition(Position.ELEVATOR_LEVEL_1.getEncoderPosition());
-                break;
-            case ELEVATOR_LEVEL_2:
-                elevatorSubsystem.setPosition(Position.ELEVATOR_LEVEL_2.getEncoderPosition());
-                break;
-            case ELEVATOR_LEVEL_3:
-                elevatorSubsystem.setPosition(Position.ELEVATOR_LEVEL_3.getEncoderPosition());
-                break;
-            case ELEVATOR_MAX:
-                elevatorSubsystem.setPosition(Position.ELEVATOR_MAX.getEncoderPosition());
-                break;
-        }
+            // case ELEVATOR_LOW:
+            //     elevatorSubsystem.setPosition(Position.ELEVATOR_LOW.getEncoderPosition());
+            //     break;
+            // case ELEVATOR_LEVEL_1:
+            //     elevatorSubsystem.setPosition(Position.ELEVATOR_LEVEL_1.getEncoderPosition());
+            //     break;
+            // case ELEVATOR_LEVEL_2:
+            //     elevatorSubsystem.setPosition(Position.ELEVATOR_LEVEL_2.getEncoderPosition());
+            //     break;
+            // case ELEVATOR_LEVEL_3:
+            //     elevatorSubsystem.setPosition(Position.ELEVATOR_LEVEL_3.getEncoderPosition());
+            //     break;
+            // case ELEVATOR_MAX:
+            //     elevatorSubsystem.setPosition(Position.ELEVATOR_MAX.getEncoderPosition());
+            //     break;
+         }
     }
 
     @Override
     public boolean isFinished() {
-        return intakeSubsystem.hasReachedRotationTarget(0.01) || elevatorSubsystem.hasReachedTarget(0.01);
+        return intakeSubsystem.hasReachedRotationTarget(0.01); //|| elevatorSubsystem.hasReachedTarget(0.01);
     }
 }

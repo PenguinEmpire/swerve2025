@@ -1,178 +1,15 @@
-// package frc.robot.subsystems;
 
-// import com.revrobotics.AbsoluteEncoder;
-// import com.revrobotics.spark.ClosedLoopSlot;
-// import com.revrobotics.spark.SparkBase;
-// import com.revrobotics.spark.SparkBase.PersistMode;
-// import com.revrobotics.spark.SparkBase.ResetMode;
-// import com.revrobotics.spark.SparkClosedLoopController;
-// import com.revrobotics.spark.SparkLowLevel.MotorType;
-// import com.revrobotics.spark.SparkMax;
-// import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-// import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-// import com.revrobotics.spark.config.SparkMaxConfig;
-
-// import edu.wpi.first.math.controller.ArmFeedforward;
-// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-// import edu.wpi.first.wpilibj2.command.SubsystemBase;
-// import frc.robot.Constants.Elevator;  
-
-// public class ElevatorSubsystem extends SubsystemBase {
-//     private final SparkMax leftElevatorMotor;
-//     private final SparkMax rightElevatorMotor;
-//     private final AbsoluteEncoder elevatorEncoder;
-//     private final SparkClosedLoopController pidController;
-//     private ArmFeedforward feedforward;
-    
-//     private double targetPosition;
-
-//     private double elevatorP = 0.3;
-//     private double elevatorI = 0.0;
-//     private double elevatorD = 0.0;
-//     private double elevatorFF = 0.0;
-
-//     private double staticGain = 0.0;
-//     private double gravityGain = 0.0;
-//     private double velocityGain = 0.0;
-
-//     private double elevatorSpeed;
-//     private double elevatorDownSpeed;
-
-//     public ElevatorSubsystem() {
-//         leftElevatorMotor = new SparkMax(Elevator.LEFT_ELEVATOR_MOTOR_ID, MotorType.kBrushless);
-//         rightElevatorMotor = new SparkMax(Elevator.RIGHT_ELEVATOR_MOTOR_ID, MotorType.kBrushless);
-
-//         // Initialize Absolute Encoder from the right elevator motor
-//         elevatorEncoder = rightElevatorMotor.getAbsoluteEncoder();
-
-//         // Configure left motor with Absolute Encoder & PID
-//         SparkMaxConfig leftConfig = new SparkMaxConfig();
-//         leftConfig
-//             .inverted(false)  
-//             .idleMode(IdleMode.kBrake)  
-//             .closedLoop
-//                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder) //  Configures encoder correctly
-//                 .pid(0.3, 0, 0)
-//                 .positionWrappingEnabled(false)
-//                 .outputRange(-1.0, 1.0);
-
-//         //leftConfig.encoder.positionConversionFactor(2 * Math.PI);  could use if needed
-        
-//         leftElevatorMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-//         // Make right motor follow left motor **by CAN ID**
-//         SparkMaxConfig rightConfig = new SparkMaxConfig();
-//         rightConfig.follow(Elevator.LEFT_ELEVATOR_MOTOR_ID);  //  Correct way
-//         rightElevatorMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-//         // Get PID controller from the left motor
-//         pidController = leftElevatorMotor.getClosedLoopController();
-
-        
-//         // Initialize feedforward
-//         feedforward = new ArmFeedforward(staticGain, gravityGain, velocityGain);
-
-//         // Initialize SmartDashboard for PID & FF tuning
-//         SmartDashboard.putNumber("Elevator P", elevatorP);
-//         SmartDashboard.putNumber("Elevator I", elevatorI);
-//         SmartDashboard.putNumber("Elevator D", elevatorD);
-//         SmartDashboard.putNumber("Elevator FF", elevatorFF);
-
-//         SmartDashboard.putNumber("Static Gain", staticGain);
-//         SmartDashboard.putNumber("Gravity Gain", gravityGain);
-//         SmartDashboard.putNumber("Velocity Gain", velocityGain);
-
-//         elevatorSpeed = Elevator.DEFAULT_ELEVATOR_SPEED;
-//         elevatorDownSpeed = Elevator.ELEVATOR_DOWN_SPEED;
-
-//         SmartDashboard.putNumber("Elevator Speed", elevatorSpeed);
-//         SmartDashboard.putNumber("Elevator Down Speed", elevatorDownSpeed);
-//     }
-
-//     // Moves the elevator up or down with different speeds (Manual Control)
-//     public void moveElevator(boolean up) {
-//         // Get updated values from SmartDashboard
-//         elevatorSpeed = SmartDashboard.getNumber("Elevator Speed", Elevator.DEFAULT_ELEVATOR_SPEED);
-//         elevatorDownSpeed = SmartDashboard.getNumber("Elevator Down Speed", Elevator.ELEVATOR_DOWN_SPEED);
-        
-//         // Use different speeds for up/down movement
-//         double speed = up ? elevatorSpeed : - elevatorSpeed;
-//         leftElevatorMotor.set(speed);
-//     }
-
-//     // Stops the elevator movement (Manual Control)
-//     public void stopElevator() {
-//         leftElevatorMotor.set(0);
-//     }
-
-//     // Moves the elevator to a set encoder position (PID Control)
-//     public void setPosition(double position) {
-//         this.targetPosition = position;
-
-//         // Apply Feedforward
-//         double ffValue = feedforward.calculate(getElevatorPosition(), 0);
-        
-//         // Apply PID reference with FF
-//         pidController.setReference(targetPosition, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0, ffValue);
-        
-//         // Log target position
-//         SmartDashboard.putNumber("Elevator Target Position", targetPosition);
-//     }
-
-//     // Get the elevator's absolute encoder position
-//     public double getElevatorPosition() {
-//         return elevatorEncoder.getPosition();
-//     }
-
-//     // Check if elevator reached target position
-//     public boolean hasReachedTarget(double tolerance) {
-//         return Math.abs(targetPosition - getElevatorPosition()) <= tolerance;
-//     }
-
-//     @Override
-//     public void periodic() {
-//         // Get the current encoder position
-//         double currentPos = getElevatorPosition();
-        
-//         // Log Encoder Position
-//         SmartDashboard.putNumber("Elevator Position", currentPos);
-        
-//         // Log Target Position for Debugging
-//         SmartDashboard.putNumber("Elevator Target Position", targetPosition);
-
-//         // Apply PID + FF correction every loop (Only when a target is set)
-//         if (Math.abs(targetPosition - currentPos) > 0.01) { // Small deadband to prevent jitter
-//             double ffValue = feedforward.calculate(currentPos, 0);
-//             pidController.setReference(targetPosition, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0, ffValue);
-//         }
-        
-//         // Live-update Feedforward Gains from SmartDashboard
-//         double newStatic = SmartDashboard.getNumber("Static Gain", staticGain);
-//         double newGravity = SmartDashboard.getNumber("Gravity Gain", gravityGain);
-//         double newVelocity = SmartDashboard.getNumber("Velocity Gain", velocityGain);
-
-//         if (newStatic != staticGain || newGravity != gravityGain || newVelocity != velocityGain) {
-//             staticGain = newStatic;
-//             gravityGain = newGravity;
-//             velocityGain = newVelocity;
-//             feedforward = new ArmFeedforward(staticGain, gravityGain, velocityGain);
-//         }
-//     }
-// }
 
 package frc.robot.subsystems;
 
 import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Elevator;  
@@ -181,93 +18,192 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final SparkMax leftElevatorMotor;
     private final SparkMax rightElevatorMotor;
     private final AbsoluteEncoder elevatorEncoder;
-
-    private double targetPosition;
+    
     private double elevatorSpeed;
     private double elevatorDownSpeed;
-    private ArmFeedforward feedforward;
-
   
 
     public ElevatorSubsystem() {
         leftElevatorMotor = new SparkMax(Elevator.LEFT_ELEVATOR_MOTOR_ID, MotorType.kBrushless);
         rightElevatorMotor = new SparkMax(Elevator.RIGHT_ELEVATOR_MOTOR_ID, MotorType.kBrushless);
-    
-        // Initialize Absolute Encoder from Right Elevator Motor
         elevatorEncoder = rightElevatorMotor.getAbsoluteEncoder();
-    
-        // Configure PID & Feedback for Right Motor
-        SparkMaxConfig rightConfig = new SparkMaxConfig();
-        rightConfig
-            .inverted(false)
-            .idleMode(IdleMode.kBrake)
-            .closedLoop
-                .feedbackSensor(FeedbackSensor.kAbsoluteEncoder) // Use Absolute Encoder
-                .pid(1.5, 0.0, 0.0) // Set static PID values
-                .positionWrappingEnabled(false)
-                .outputRange(-1.0, 1.0);
-    
-        rightElevatorMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    
-        // Left motor follows the right motor
+        
         SparkMaxConfig leftConfig = new SparkMaxConfig();
-        leftConfig.follow(Elevator.RIGHT_ELEVATOR_MOTOR_ID);  
+        leftConfig
+              .inverted(false)  
+              .idleMode(IdleMode.kBrake)  
+              .closedLoop.outputRange(-1.0, 1.0);  
+
+        SparkMaxConfig rightConfig = new SparkMaxConfig();
+        rightConfig.follow(Elevator.LEFT_ELEVATOR_MOTOR_ID);  
+
+
         leftElevatorMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    
-        // Initialize Feedforward
-        feedforward = new ArmFeedforward(0.0, 0.2, 0.0);
-    
-        // Manual Speed Variables
+        rightElevatorMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
         elevatorSpeed = Elevator.DEFAULT_ELEVATOR_SPEED;
+
         elevatorDownSpeed = Elevator.ELEVATOR_DOWN_SPEED;
     
-        // SmartDashboard Constants
         SmartDashboard.putNumber("Elevator Speed", elevatorSpeed);
-        SmartDashboard.putNumber("Elevator Down Speed", elevatorDownSpeed);
+        
+        SmartDashboard.putNumber("Elevator Down Speed",elevatorDownSpeed);
+      
     }
-    
 
     // Moves the elevator up or down 
     public void moveElevator(boolean up) {
         elevatorSpeed = SmartDashboard.getNumber("Elevator Speed", Elevator.DEFAULT_ELEVATOR_SPEED);
         elevatorDownSpeed = SmartDashboard.getNumber("Elevator Down Speed", Elevator.ELEVATOR_DOWN_SPEED);
-        double speed = up ? -elevatorSpeed :  0.1;
+        double speed = up ? -elevatorSpeed :  0.25;
         leftElevatorMotor.set(speed);
     }
 
+    public double getElevatorPosition() {
+                return elevatorEncoder.getPosition();
+            }
     // Stops the elevator movement 
     public void stopElevator() {
         leftElevatorMotor.set(0);
     }
 
-    public double getElevatorPosition() {
-        return elevatorEncoder.getPosition();
-    }
-    
-    public boolean hasReachedTarget(double tolerance) {
-        return Math.abs(getElevatorPosition() - targetPosition) <= tolerance;
-    }
-    
-
-    public void setPosition(double position) {
-        this.targetPosition = position;
-    
-        // Apply PID control without specifying extra parameters
-        rightElevatorMotor.getClosedLoopController().setReference(targetPosition, SparkBase.ControlType.kPosition);
-    
-        // Log reference value for debugging
-        SmartDashboard.putNumber("Elevator Target Position", targetPosition);
-    }
-    
-
-
-
     @Override
-    public void periodic() {
-        //  Log elevator speed for debugging
-        SmartDashboard.putNumber("Current Elevator Speed", elevatorSpeed);
-        SmartDashboard.putNumber("Current Elevator Down Speed",elevatorDownSpeed );
-        SmartDashboard.putNumber("Elevator Encoder Position", getElevatorPosition());
-
-    }
+        public void periodic() {
+            //  Log elevator speed for debugging
+            SmartDashboard.putNumber("Current Elevator Speed", elevatorSpeed);
+            SmartDashboard.putNumber("Current Elevator Down Speed",elevatorDownSpeed );
+            SmartDashboard.putNumber("Elevator Encoder Position", getElevatorPosition());
+        }
 }
+
+// package frc.robot.subsystems;
+
+// import com.revrobotics.AbsoluteEncoder;
+// import com.revrobotics.spark.SparkBase;
+// import com.revrobotics.spark.SparkBase.PersistMode;
+// import com.revrobotics.spark.SparkBase.ResetMode;
+// import com.revrobotics.spark.SparkLowLevel.MotorType;
+// import com.revrobotics.spark.SparkMax;
+// import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+// import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+// import com.revrobotics.spark.config.SparkMaxConfig;
+
+// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+// import edu.wpi.first.wpilibj2.command.SubsystemBase;
+// import frc.robot.Constants.Elevator;
+
+// public class ElevatorSubsystem extends SubsystemBase {
+//     // Right motor is the master (has PID and encoder); left motor follows it.
+//     private final SparkMax rightElevatorMotor;
+//     private final SparkMax leftElevatorMotor;
+//     private final AbsoluteEncoder elevatorEncoder;
+    
+//     // The target position for PID control.
+//     private double targetPosition;
+    
+//     // Speed constants (tunable via SmartDashboard).
+//     private double elevatorSpeed;
+//     private double elevatorDownSpeed;
+    
+//     // A scaling factor for manual adjustments (units per call; adjust as needed)
+//     private final double manualAdjustmentFactor = 0.05;
+
+//     public ElevatorSubsystem() {
+//         // Instantiate motors.
+//         rightElevatorMotor = new SparkMax(Elevator.RIGHT_ELEVATOR_MOTOR_ID, MotorType.kBrushless);
+//         leftElevatorMotor = new SparkMax(Elevator.LEFT_ELEVATOR_MOTOR_ID, MotorType.kBrushless);
+        
+//         // Use the absolute encoder from the right (master) motor.
+//         elevatorEncoder = rightElevatorMotor.getAbsoluteEncoder();
+        
+//         // --- Configure the right motor (Master with PID) ---
+//         SparkMaxConfig rightConfig = new SparkMaxConfig();
+//         rightConfig.inverted(false)
+//                    .idleMode(IdleMode.kBrake)
+//                    .closedLoop
+//                         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+//                         .pid(1.5, 0.0, 0.0)
+//                         // Disable wrapping so the encoder value continues past 2π.
+//                         .positionWrappingEnabled(false)
+//                         .outputRange(-1.0, 1.0);
+//         // Optionally set the conversion factor (e.g. radians).
+//         rightConfig.encoder.positionConversionFactor(2 * Math.PI);
+//         rightElevatorMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        
+//         // --- Configure the left motor (Follower) ---
+//         SparkMaxConfig leftConfig = new SparkMaxConfig();
+//         // Here we call follow on the SparkMaxConfig (using the master’s device ID).
+//         leftConfig.follow(Elevator.RIGHT_ELEVATOR_MOTOR_ID);
+//         leftElevatorMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        
+//         // Load speed constants (and allow tuning via SmartDashboard).
+//         elevatorSpeed = Elevator.DEFAULT_ELEVATOR_SPEED;
+//         elevatorDownSpeed = Elevator.ELEVATOR_DOWN_SPEED;
+//         SmartDashboard.putNumber("Elevator Speed", elevatorSpeed);
+//         SmartDashboard.putNumber("Elevator Down Speed", elevatorDownSpeed);
+        
+//         // Initialize the target position to the current encoder reading.
+//         targetPosition = getElevatorPosition();
+//         SmartDashboard.putNumber("Elevator Target Position", targetPosition);
+//     }
+    
+//     /**
+//      * Sets an absolute target position for the elevator.
+//      * The right motor’s PID controller drives to this target and the left motor follows.
+//      */
+//     public void setPosition(double position) {
+//         targetPosition = position;
+//         rightElevatorMotor.getClosedLoopController()
+//             .setReference(targetPosition, SparkBase.ControlType.kPosition);
+//         SmartDashboard.putNumber("Elevator Target Position", targetPosition);
+//     }
+    
+//     /**
+//      * Moves the elevator up or down at a fixed speed while keeping PID control active.
+//      * @param up If true, moves up; otherwise moves down.
+//      */
+//     public void moveElevator(boolean up) {
+//         elevatorSpeed = SmartDashboard.getNumber("Elevator Speed", Elevator.DEFAULT_ELEVATOR_SPEED);
+//         elevatorDownSpeed = SmartDashboard.getNumber("Elevator Down Speed", Elevator.ELEVATOR_DOWN_SPEED);
+        
+//         // Adjust target position by a scaled amount instead of setting percent output.
+//         double adjustment = up ? -elevatorSpeed * manualAdjustmentFactor
+//                                : elevatorDownSpeed * manualAdjustmentFactor;
+//         targetPosition += adjustment;
+//         setPosition(targetPosition);
+//     }
+
+//     /**
+//      * Checks if the elevator has reached its target (within a given tolerance).
+//      */
+//     public boolean hasReachedTarget(double tolerance) {
+//         return Math.abs(getElevatorPosition() - targetPosition) <= tolerance;
+//     }
+    
+//     /**
+//      * Returns the continuous encoder position from the right motor.
+//      * With wrapping disabled, the value exceeds 2π after one full rotation.
+//      */
+//     public double getElevatorPosition() {
+//         return elevatorEncoder.getPosition();
+//     }
+    
+//     /**
+//      * Stops the elevator by setting the target to the current position.
+//      */
+//     public void stopElevator() {
+//         targetPosition = getElevatorPosition();
+//         setPosition(targetPosition);
+//     }
+    
+//     @Override
+//     public void periodic() {
+//         // Update SmartDashboard values.
+//         SmartDashboard.putNumber("Elevator Encoder Position", getElevatorPosition());
+//         SmartDashboard.putNumber("Elevator Target Position", targetPosition);
+        
+//         // Optionally, refresh speeds from SmartDashboard.
+//         elevatorSpeed = SmartDashboard.getNumber("Elevator Speed", elevatorSpeed);
+//         elevatorDownSpeed = SmartDashboard.getNumber("Elevator Down Speed", elevatorDownSpeed);
+//     }
+// }

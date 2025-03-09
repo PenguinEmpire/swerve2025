@@ -34,7 +34,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     /** Returns true if the limit switch (piece detection) is pressed */
     public boolean getPiece() {
-        boolean pieceDetected = !limitSwitch.get(); // Limit switch is active-low (pressed = false) confirm this
+        boolean pieceDetected = limitSwitch.get(); // Limit switch is active-low (pressed = false) confirm this
         SmartDashboard.putBoolean("Has Piece", pieceDetected);
         return pieceDetected;
     }
