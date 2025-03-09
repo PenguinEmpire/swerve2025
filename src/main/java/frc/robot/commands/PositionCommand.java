@@ -8,8 +8,8 @@ public class PositionCommand extends Command {
 
     public enum Position {
         // Intake Positions
-        INTAKE_IN(0.01),  // Fold intake inside frame
-        INTAKE_OUT(0.383), // Extend intake out for pickup
+        INTAKE_IN(0.04),  // Fold intake inside frame
+        INTAKE_OUT(0.35), // Extend intake out for pickup
 
         // Elevator Positions
         ELEVATOR_LOW(0.0),   // figure these values out just keeping it zero for now

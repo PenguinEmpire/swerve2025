@@ -36,7 +36,7 @@ public class RobotContainer {
   // private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
  
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandPS5Controller m_driverController =
+  private final CommandPS5Controller m_driverController = 
       new CommandPS5Controller(OperatorConstants.CONTROLLER_PORT);
  
   /** The container for the robot. Contains subsystems, OI devices, and commands. */

@@ -38,15 +38,15 @@ public class Jointmodule {
 
         SparkMaxConfig motorConfig = new SparkMaxConfig();
         motorConfig
-            .inverted(true)
+            .inverted(false)
             .idleMode(IdleMode.kCoast)
             .closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                .pid(0.20, 0.0, 0.0)
+                .pid(1.5, 0.0, 0.0)
                 .positionWrappingEnabled(true)
                 .positionWrappingMinInput(0)
                 .positionWrappingMaxInput(2 * Math.PI)
-                .outputRange(-0.75, 0.75);
+                .outputRange(-1, 1);
         motorConfig.encoder.positionConversionFactor(2 * Math.PI);
         
         // Apply the initial configuration
