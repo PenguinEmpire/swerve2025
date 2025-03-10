@@ -12,11 +12,12 @@ public class IntakeSubsystem extends SubsystemBase {
     private final SparkMax leftVerticalRollerMotor;
     private final SparkMax rightVerticalRollerMotor;
     private final Jointmodule intakeRotation;
-    
+    private final ShooterSubsystem shooterSubsystem; 
   
     private double rollerPower = Intake.DEFAULT_ROLLER_POWER;
     private double rotationPower = Intake.DEFAULT_ROTATION_POWER;
-    public IntakeSubsystem() {
+    public IntakeSubsystem(ShooterSubsystem shooterSubsystem) {
+        this.shooterSubsystem = shooterSubsystem;
         horizontalRollerMotor = new SparkMax(Intake.HORIZONTAL_ROLLER_MOTOR_ID, MotorType.kBrushless);
         leftVerticalRollerMotor = new SparkMax(Intake.LEFT_VERTICAL_ROLLER_MOTOR_ID, MotorType.kBrushless);
         rightVerticalRollerMotor = new SparkMax(Intake.RIGHT_VERTICAL_ROLLER_MOTOR_ID, MotorType.kBrushless);
@@ -32,9 +33,15 @@ public class IntakeSubsystem extends SubsystemBase {
 
  
     public void spinRollers(boolean intake) {
-        rollerPower = SmartDashboard.getNumber("Roller Power", rollerPower);
+        // Stop intake if a piece is detected
+        if (shooterSubsystem.getPiece()) {
+            stopAllRollers();
+            return;
+        }
 
+        rollerPower = SmartDashboard.getNumber("Roller Power", rollerPower);
         double power = intake ? rollerPower : -rollerPower;
+
         horizontalRollerMotor.set(-power);
         leftVerticalRollerMotor.set(power);
         rightVerticalRollerMotor.set(-power);

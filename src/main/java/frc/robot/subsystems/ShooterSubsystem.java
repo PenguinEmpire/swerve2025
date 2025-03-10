@@ -23,6 +23,13 @@ public class ShooterSubsystem extends SubsystemBase {
     /** Runs the shooter forward (intake mode) */
     public void spinShooter(boolean intake) {
         shooterPower = SmartDashboard.getNumber("Shooter Power", shooterPower);
+    
+        //  Stop the shooter if a piece is detected
+        if (getPiece()) {
+            stopShooter();
+            return;
+        }
+    
         double power = intake ? shooterPower : -shooterPower;
         shooterMotor.set(power);
     }
@@ -34,7 +41,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     /** Returns true if the limit switch (piece detection) is pressed */
     public boolean getPiece() {
-        boolean pieceDetected = limitSwitch.get(); // Limit switch is active-low (pressed = false) confirm this
+        boolean pieceDetected = limitSwitch.get(); // Limit switch is active - high (pressed = true) confirm this
         SmartDashboard.putBoolean("Has Piece", pieceDetected);
         return pieceDetected;
     }
