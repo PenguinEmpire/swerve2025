@@ -97,17 +97,25 @@ public class RobotContainer {
             shooterSubsystem.stopShooter();    // Stop shooter motor
         }, intakeSubsystem, shooterSubsystem));
 
-      //  Square Button → Move Elevator **UP** (While Held)
-      m_driverController.square()
-      .whileTrue(new RunCommand(() -> elevatorSubsystem.moveElevator(true), elevatorSubsystem))
-      .onFalse(new InstantCommand(elevatorSubsystem::stopElevator, elevatorSubsystem));
+     // Square Button → Move Elevator **UP** (While Held)
+    m_driverController.square()
+    .whileTrue(new RunCommand(() -> elevatorSubsystem.manualMove(true), elevatorSubsystem))
+    .onFalse(new InstantCommand(elevatorSubsystem::stopElevator, elevatorSubsystem));
 
-       //  Cross Button → Move Elevator **DOWN** (While Held)
-       m_driverController.cross()
-       .whileTrue(new RunCommand(() -> elevatorSubsystem.moveElevator(false), elevatorSubsystem))
-       .onFalse(new InstantCommand(elevatorSubsystem::stopElevator, elevatorSubsystem));
-       
+    // Cross Button → Move Elevator **DOWN** (While Held)
+      m_driverController.cross()
+      .whileTrue(new RunCommand(() -> elevatorSubsystem.manualMove(false), elevatorSubsystem))
+      .onFalse(new InstantCommand(elevatorSubsystem::stopElevator, elevatorSubsystem));
     
+      // m_driverController.square()
+      // .whileTrue(new RunCommand(() -> elevatorSubsystem.moveElevator(true), elevatorSubsystem))
+      // .onFalse(new InstantCommand(elevatorSubsystem::stopElevator, elevatorSubsystem));
+
+      //  //  Cross Button → Move Elevator **DOWN** (While Held)
+      //  m_driverController.cross()
+      //  .whileTrue(new RunCommand(() -> elevatorSubsystem.moveElevator(false), elevatorSubsystem))
+      //  .onFalse(new InstantCommand(elevatorSubsystem::stopElevator, elevatorSubsystem));
+
       //  POV LEFT → Move Intake **IN**
       m_driverController.povLeft()
       .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem, PositionCommand.Position.INTAKE_IN));

@@ -55,26 +55,26 @@ public class PositionCommand extends Command {
             case INTAKE_OUT:
                 intakeSubsystem.setRotationPosition(Position.INTAKE_OUT.getEncoderPosition());
                 break;
-            // case ELEVATOR_LOW:
-            //     elevatorSubsystem.setPosition(Position.ELEVATOR_LOW.getEncoderPosition());
-            //     break;
-            // case ELEVATOR_LEVEL_1:
-            //     elevatorSubsystem.setPosition(Position.ELEVATOR_LEVEL_1.getEncoderPosition());
-            //     break;
-            // case ELEVATOR_LEVEL_2:
-            //     elevatorSubsystem.setPosition(Position.ELEVATOR_LEVEL_2.getEncoderPosition());
-            //     break;
-            // case ELEVATOR_LEVEL_3:
-            //     elevatorSubsystem.setPosition(Position.ELEVATOR_LEVEL_3.getEncoderPosition());
-            //     break;
-            // case ELEVATOR_MAX:
-            //     elevatorSubsystem.setPosition(Position.ELEVATOR_MAX.getEncoderPosition());
-            //     break;
+            case ELEVATOR_LOW:
+                elevatorSubsystem.setPosition(Position.ELEVATOR_LOW.getEncoderPosition());
+                break;
+            case ELEVATOR_LEVEL_1:
+                elevatorSubsystem.setPosition(Position.ELEVATOR_LEVEL_1.getEncoderPosition());
+                break;
+            case ELEVATOR_LEVEL_2:
+                elevatorSubsystem.setPosition(Position.ELEVATOR_LEVEL_2.getEncoderPosition());
+                break;
+            case ELEVATOR_LEVEL_3:
+                elevatorSubsystem.setPosition(Position.ELEVATOR_LEVEL_3.getEncoderPosition());
+                break;
+            case ELEVATOR_MAX:
+                elevatorSubsystem.setPosition(Position.ELEVATOR_MAX.getEncoderPosition());
+                break;
          }
     }
 
     @Override
     public boolean isFinished() {
-        return intakeSubsystem.hasReachedRotationTarget(0.01); //|| elevatorSubsystem.hasReachedTarget(0.01);
+        return intakeSubsystem.hasReachedRotationTarget(0.01)|| elevatorSubsystem.hasReachedTarget(0.01);
     }
 }
