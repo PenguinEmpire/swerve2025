@@ -43,8 +43,8 @@ public class IntakeSubsystem extends SubsystemBase {
         double power = intake ? rollerPower : -rollerPower;
 
         horizontalRollerMotor.set(-power);
-        leftVerticalRollerMotor.set(power);
-        rightVerticalRollerMotor.set(-power);
+        leftVerticalRollerMotor.set(power );
+        rightVerticalRollerMotor.set(-power * 1.33); // you could probably hardcode this value( tune later)
     }
 
 

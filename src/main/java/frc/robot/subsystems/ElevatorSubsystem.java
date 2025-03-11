@@ -38,9 +38,12 @@ public class ElevatorSubsystem extends SubsystemBase {
             .idleMode(IdleMode.kBrake)
             .closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder) // Use absolute encoder
-                .pid(0.3, 0.0, 0.0)  // Adjust PID gains
+                .pid(0.1, 0.0, 0.0)  // Adjust PID gains
                 .positionWrappingEnabled(false) // No position wrapping for elevator
                 .outputRange(-1.0, 1.0); // Allow full power in both directions
+
+                rightConfig.encoder.positionConversionFactor(2 * Math.PI);
+        
         
         rightElevatorMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -51,7 +54,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         // Initialize PID Controller & Feedforward
         pidController = rightElevatorMotor.getClosedLoopController();
-        feedforward = new ArmFeedforward(0.0, 0.2, 0.0); // Adjust gains later
+        feedforward = new ArmFeedforward(0.0, 0.0, 0.0); // Adjust gains later
 
         //  Add SmartDashboard toggle for manual mode
         SmartDashboard.putBoolean("Elevator Manual Mode", false); // Default to PID mode
