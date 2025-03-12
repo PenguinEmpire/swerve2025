@@ -33,20 +33,19 @@ public class IntakeSubsystem extends SubsystemBase {
 
  
     public void spinRollers(boolean intake) {
-        // Stop intake if a piece is detected
-        if (shooterSubsystem.getPiece()) {
+        // Stop intake if a piece is detected, but allow outtake
+        if (intake && shooterSubsystem.getPiece()) {
             stopAllRollers();
             return;
         }
-
+    
         rollerPower = SmartDashboard.getNumber("Roller Power", rollerPower);
         double power = intake ? rollerPower : -rollerPower;
-
+    
         horizontalRollerMotor.set(-power);
-        leftVerticalRollerMotor.set(power );
-        rightVerticalRollerMotor.set(-power * 1.33); // you could probably hardcode this value( tune later)
+        leftVerticalRollerMotor.set(power);
+        rightVerticalRollerMotor.set(-power * 2); // Tune this value if needed
     }
-
 
     public void stopAllRollers() {
         horizontalRollerMotor.set(0.0);

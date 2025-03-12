@@ -21,18 +21,18 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     /** Runs the shooter forward (intake mode) */
-    public void spinShooter(boolean intake) {
-        shooterPower = SmartDashboard.getNumber("Shooter Power", shooterPower);
+public void spinShooter(boolean intake) {
+    shooterPower = SmartDashboard.getNumber("Shooter Power", shooterPower);
     
-        //  Stop the shooter if a piece is detected
-        if (getPiece()) {
-            stopShooter();
-            return;
-        }
-    
-        double power = intake ? shooterPower : -shooterPower;
-        shooterMotor.set(power);
+    // Stop the shooter only if a piece is detected AND we are intaking
+    if (intake && getPiece()) {
+        stopShooter();
+        return;
     }
+    
+    double power = intake ? shooterPower : -shooterPower;
+    shooterMotor.set(power);
+}
 
     /** Stops the shooter */
     public void stopShooter() {

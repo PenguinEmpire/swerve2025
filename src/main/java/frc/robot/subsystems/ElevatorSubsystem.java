@@ -42,7 +42,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                 .positionWrappingEnabled(false) // No position wrapping for elevator
                 .outputRange(-1.0, 1.0); // Allow full power in both directions
 
-                rightConfig.encoder.positionConversionFactor(2 * Math.PI);
+             //   rightConfig.encoder.positionConversionFactor(2 * Math.PI);
         
         
         rightElevatorMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

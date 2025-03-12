@@ -56,6 +56,6 @@ public static class Climber{
   public static final int CLIMBER_MOTOR_ID = 25;
   public static final double DEFAULT_CLIMBER_POWER = 0.8;
 }
-public static final double MAX_SPEED = Units.feetToMeters(4.5); // potentially change to 14.5
+public static final double MAX_SPEED = Units.feetToMeters(15); // potentially change to 14.5
 }
 
