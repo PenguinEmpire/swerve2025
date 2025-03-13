@@ -47,10 +47,10 @@ public class RobotContainer {
     configureBindings();
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
   }
-
+// if this doesnt work swap the x and y
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-    () -> m_driverController.getLeftY(), // Forward/Backward
-    () -> m_driverController.getLeftX()) // Strafe
+    () -> m_driverController.getLeftY() * -1, // Forward/Backward 
+    () -> m_driverController.getLeftX() * -1) // Strafe
     .withControllerRotationAxis(() -> m_driverController.getRightX()) // Ensure Rotation is Read
     .deadband(OperatorConstants.DEADBAND)
     .scaleTranslation(0.8)
