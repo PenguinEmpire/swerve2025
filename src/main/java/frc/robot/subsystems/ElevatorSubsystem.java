@@ -42,7 +42,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                 .positionWrappingEnabled(false) // No position wrapping for elevator
                 .outputRange(-1.0, 1.0); // Allow full power in both directions
 
-             //   rightConfig.encoder.positionConversionFactor(2 * Math.PI);
+               rightConfig.encoder.positionConversionFactor(2 * Math.PI);
         
         
         rightElevatorMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -94,7 +94,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     //  Get Encoder Position
     public double getElevatorPosition() {
-        return rightElevatorMotor.getAbsoluteEncoder().getPosition();
+        AbsoluteEncoder absEncoder = rightElevatorMotor.getAbsoluteEncoder();
+
+        return absEncoder.getPosition();
+       //return rightElevatorMotor.getAbsoluteEncoder().getPosition();
+       
     }
 
     //  Check if Elevator Reached Target
