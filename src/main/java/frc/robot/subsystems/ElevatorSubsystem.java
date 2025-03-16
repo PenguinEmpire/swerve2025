@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -17,110 +17,160 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Elevator;
 
 public class ElevatorSubsystem extends SubsystemBase {
+
     private final SparkMax rightElevatorMotor;
     private final SparkMax leftElevatorMotor;
+
+    // Digital Input for the bottom limit switch
+
+
+    // The built-in primary (relative) encoder from the Spark Max
+    private final RelativeEncoder primaryEncoder;
+
     private final SparkClosedLoopController pidController;
-    private final AbsoluteEncoder elevatorEncoder;
     private final ArmFeedforward feedforward;
 
-    private double targetPosition = 0.0;
-    private boolean isManualMode = false; // Toggle for manual/PID mode
+    private double targetPosition = 0.0;      // Desired setpoint in raw motor revolutions
+    private boolean isManualMode  = false;    // Toggle for manual vs. PID mode
 
     public ElevatorSubsystem() {
+        // Create the motors
         rightElevatorMotor = new SparkMax(Elevator.RIGHT_ELEVATOR_MOTOR_ID, MotorType.kBrushless);
-        leftElevatorMotor = new SparkMax(Elevator.LEFT_ELEVATOR_MOTOR_ID, MotorType.kBrushless);
-        elevatorEncoder = rightElevatorMotor.getAbsoluteEncoder();
+        leftElevatorMotor  = new SparkMax(Elevator.LEFT_ELEVATOR_MOTOR_ID,  MotorType.kBrushless);
 
-        // Configure Right Motor (PID & Feedforward)
+        // Create the DIO limit switch for detecting bottom
+       
+
+        // Grab the built-in SparkMax relative encoder 
+        primaryEncoder = rightElevatorMotor.getEncoder();
+
+        // Configure right motor:
         SparkMaxConfig rightConfig = new SparkMaxConfig();
         rightConfig
             .inverted(false)
             .idleMode(IdleMode.kBrake)
             .closedLoop
-                .feedbackSensor(FeedbackSensor.kAbsoluteEncoder) // Use absolute encoder
-                .pid(0.1, 0.0, 0.0)  // Adjust PID gains
-                .positionWrappingEnabled(false) // No position wrapping for elevator
-                .outputRange(-1.0, 1.0); // Allow full power in both directions
+                // Use kPrimaryEncoder for the built-in relative encoder
+                .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                .pid(0.1, 0.0, 0.0)  // Adjust these PID gains as needed
+                .positionWrappingEnabled(false) // Usually false for an elevator
+                .outputRange(-1.0, 1.0);
 
-               rightConfig.encoder.positionConversionFactor(2 * Math.PI);
         
-        
+        //  rightConfig.encoder.positionConversionFactor(2.0);
+
+        // Apply configuration
         rightElevatorMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        // Configure Left Motor to Follow Right Motor
+        // Configure left motor as a follower of the right motor
         SparkMaxConfig leftConfig = new SparkMaxConfig();
-        leftConfig.follow(Elevator.RIGHT_ELEVATOR_MOTOR_ID);  
+        leftConfig.follow(Elevator.RIGHT_ELEVATOR_MOTOR_ID);
         leftElevatorMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        // Initialize PID Controller & Feedforward
+        // Access the Spark's built-in closed-loop PID controller
         pidController = rightElevatorMotor.getClosedLoopController();
-        feedforward = new ArmFeedforward(0.0, 0.0, 0.0); // Adjust gains later
 
-        //  Add SmartDashboard toggle for manual mode
-        SmartDashboard.putBoolean("Elevator Manual Mode", false); // Default to PID mode
+        // If you need feedforward, set your constants in the ArmFeedforward constructor
+        feedforward = new ArmFeedforward(0.0, 0.3, 0.0);
+
+        // Put the manual mode toggle on SmartDashboard
+        SmartDashboard.putBoolean("Elevator Manual Mode", false);
     }
 
-    //  Toggle Modes from SmartDashboard
+    /** Enables manual (open-loop) mode. */
     public void enableManualMode() {
         isManualMode = true;
         SmartDashboard.putBoolean("Elevator Manual Mode", true);
     }
 
+    /** Enables closed-loop (PID) mode. */
     public void enablePIDMode() {
         isManualMode = false;
         SmartDashboard.putBoolean("Elevator Manual Mode", false);
     }
 
-    //  Manual Movement (Up & Down)
+    /**
+     * Manual movement of the elevator.
+     * `up = true` drives upwards, `up = false` drives downwards.
+     */
     public void manualMove(boolean up) {
-        if (isManualMode) { // Only allow manual control in manual mode
+        if (isManualMode) { 
             double speed = up ? -Elevator.DEFAULT_ELEVATOR_SPEED : 0.25;
             rightElevatorMotor.set(speed);
         }
     }
-
-    //  Set Position Using PID
-    public void setPosition(double position) {
-        if (!isManualMode) { // Only run PID if manual mode is disabled
-            targetPosition = position;
-            pidController.setReference(targetPosition, ControlType.kPosition);
-        }
-    }
-
-    //  Stop Elevator
+    /** Stop the elevator immediately (open-loop = 0). */
     public void stopElevator() {
         rightElevatorMotor.set(0);
     }
 
-    //  Get Encoder Position
-    public double getElevatorPosition() {
-        AbsoluteEncoder absEncoder = rightElevatorMotor.getAbsoluteEncoder();
+    /*
+     Set a PID position in terms of raw motor revolutions
 
-        return absEncoder.getPosition();
-       //return rightElevatorMotor.getAbsoluteEncoder().getPosition();
-       
+     */
+    public void setPosition(double position) {
+        if (!isManualMode) {
+            targetPosition = position;
+
+            // Optionally add feedforward to your reference.
+            // double ffVolts = feedforward.calculate(currentAngle, currentVelocity);
+            // pidController.setReference(targetPosition, ControlType.kPosition, 0, ffVolts);
+
+            pidController.setReference(targetPosition, ControlType.kPosition);
+        }
     }
 
-    //  Check if Elevator Reached Target
+    /**
+     * @return The elevator's current position (in raw revolutions),
+     *         or in distance units if you used a positionConversionFactor.
+     */
+    public double getElevatorPosition() {
+        return primaryEncoder.getPosition();
+    }
+
+    /**
+     * Checks whether the elevator is at the bottom limit switch.
+     * (Invert if needed, depending on how you wired the switch.)
+     */
+   
+    /**
+     * Returns true if the elevator is within "tolerance" of the last commanded target.
+     */
     public boolean hasReachedTarget(double tolerance) {
         return Math.abs(targetPosition - getElevatorPosition()) <= tolerance;
     }
 
     @Override
     public void periodic() {
-        //  Read SmartDashboard toggle to check if manual mode is active
+        // Check if we changed the manual mode on the SmartDashboard
         isManualMode = SmartDashboard.getBoolean("Elevator Manual Mode", isManualMode);
 
-        SmartDashboard.putNumber("Elevator Encoder Position", getElevatorPosition());
-        SmartDashboard.putNumber("Elevator Target Position", targetPosition);
+        // If the bottom limit switch is pressed, zero the relative encoder
+       
+        // Show data on SmartDashboard for debugging
+        SmartDashboard.putNumber("Elevator Position (revs)", getElevatorPosition());
+        SmartDashboard.putNumber("Elevator Target (revs)", targetPosition);
+        
 
-        //  If manual mode is enabled, do NOT apply PID
-        if (isManualMode) return;
+        // If we are in manual mode, do not run closed-loop
+        if (isManualMode) {
+            return;
+        }
 
-        // Apply PID control when not in manual mode
+        // Otherwise, keep commanding PID to the target
         pidController.setReference(targetPosition, ControlType.kPosition);
     }
 }
+
+
+
+
+
+
+
+
+
+
 
 
 

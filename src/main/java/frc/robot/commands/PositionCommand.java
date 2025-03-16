@@ -16,7 +16,7 @@ public class PositionCommand extends Command {
 
         ELEVATOR_LOW(0.0),   // figure these values out just keeping it zero for now
         ELEVATOR_LEVEL_1(0.0),  
-        ELEVATOR_LEVEL_2(0.0),  // 0.710
+        ELEVATOR_LEVEL_2(-37.856),  //
         ELEVATOR_LEVEL_3(0.0),  // 0.11
         ELEVATOR_MAX(0.0);   // .151
 

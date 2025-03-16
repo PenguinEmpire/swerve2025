@@ -42,14 +42,14 @@ public static class Elevator {
   public static final int RIGHT_ELEVATOR_MOTOR_ID = 17; // the one with the encoder
   public static final double DEFAULT_ELEVATOR_SPEED = 0.3;  // 1 is way too fast 
   public static final double ELEVATOR_DOWN_SPEED = 0.1;
- 
+ public static int BOTTOM_LIMIT_SWITCH_CHANNEL = 3;
 
 }
 
 public static class Shooter {  
   public static final int SHOOTER_MOTOR_ID = 22;  // Confirm the ID
 
-   public static final double DEFAULT_SHOOTER_POWER = 0.5;
+   public static final double DEFAULT_SHOOTER_POWER = 0.9;
 }
 
 public static class Climber{
