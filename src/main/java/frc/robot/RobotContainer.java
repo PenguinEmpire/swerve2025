@@ -159,6 +159,9 @@ public class RobotContainer {
   .whileTrue(new RunCommand(() -> climberSubsystem.moveClimber(false), climberSubsystem))
   .onFalse(new InstantCommand(climberSubsystem::stopClimber, climberSubsystem));
 
+  // zeros the gyro 
+  m_driverController.L3()
+    .onTrue(new InstantCommand(drivebase::zeroGyro));
  
 }
 

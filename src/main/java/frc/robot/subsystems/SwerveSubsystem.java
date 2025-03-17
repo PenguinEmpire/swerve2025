@@ -1,16 +1,7 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-/*
- issues: it cant rotate on its own, it only rotates when you give it front input
- the strafe is completely messed up
- they dont lock back to zero
- not getting dashboard values of encoder 
- should be able to rotate on its own without giving it front and back
- when i press forward, the krakens turn red which means back according to status lights
- when i press back on left joystick it turnms greenw hich means forward according to status light
- when i go left and right strafe is completely messeed up 
- */
+
 package frc.robot.subsystems;
 
 import java.io.File;
@@ -108,6 +99,10 @@ public void periodic() {
 
 public void driveFieldOriented(ChassisSpeeds velocity){
   swerveDrive.driveFieldOriented(velocity);
+}
+
+public void zeroGyro() {
+  swerveDrive.zeroGyro();
 }
 
 public Command driveFieldOriented(Supplier<ChassisSpeeds> velocity) {

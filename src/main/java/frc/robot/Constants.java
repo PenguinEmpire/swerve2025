@@ -49,7 +49,7 @@ public static class Elevator {
 public static class Shooter {  
   public static final int SHOOTER_MOTOR_ID = 22;  // Confirm the ID
 
-   public static final double DEFAULT_SHOOTER_POWER = 0.9;
+   public static final double DEFAULT_SHOOTER_POWER = 0.6;
 }
 
 public static class Climber{
