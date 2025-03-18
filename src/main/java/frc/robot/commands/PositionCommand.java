@@ -11,15 +11,15 @@ public class PositionCommand extends Command {
         // position to score l1 ( 0.093)
         INTAKE_IN(0.031),  // Fold intake inside frame
         INTAKE_OUT(0.385), // Extend intake out for pickup
+        INTAKE_L1(0.0), // find this position
 
         // Elevator Positions driving position
 
-        ELEVATOR_LOW(0.0),   // figure these values out just keeping it zero for now
-        ELEVATOR_LEVEL_1(0.0),  
-        ELEVATOR_LEVEL_2(-37.856),  //
-        ELEVATOR_LEVEL_3(-60.570),  // 0.11
-        ELEVATOR_MAX(-69.230);   // .151
-
+        ELEVATOR_INTAKEPOS(-12.660),   
+        ELEVATOR_CRUISING(-12.660),  
+        ELEVATOR_LEVEL_2(-64.144),  
+        ELEVATOR_LEVEL_3(-36.265),  
+        ELEVATOR_MAX(-53.204);   
 
         private final double encoderPosition;
 
@@ -55,11 +55,11 @@ public class PositionCommand extends Command {
             case INTAKE_OUT:
                 intakeSubsystem.setRotationPosition(Position.INTAKE_OUT.getEncoderPosition());
                 break;
-            case ELEVATOR_LOW:
-                elevatorSubsystem.setPosition(Position.ELEVATOR_LOW.getEncoderPosition());
+            case ELEVATOR_INTAKEPOS:
+                elevatorSubsystem.setPosition(Position.ELEVATOR_INTAKEPOS.getEncoderPosition());
                 break;
-            case ELEVATOR_LEVEL_1:
-                elevatorSubsystem.setPosition(Position.ELEVATOR_LEVEL_1.getEncoderPosition());
+            case ELEVATOR_CRUISING:
+                elevatorSubsystem.setPosition(Position.ELEVATOR_CRUISING.getEncoderPosition());
                 break;
             case ELEVATOR_LEVEL_2:
                 elevatorSubsystem.setPosition(Position.ELEVATOR_LEVEL_2.getEncoderPosition());

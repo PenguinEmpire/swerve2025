@@ -30,7 +30,7 @@ public final class Constants {
    
 
  
-    public static final double DEFAULT_ROLLER_POWER = 0.45; //tested these values 2/22
+    public static final double DEFAULT_ROLLER_POWER = 0.7; //tested these values 2/22
     public static final double DEFAULT_ROTATION_POWER = 0.50;
     public static final int MOTOR_CURRENT_LIMIT = 30;
 
@@ -53,8 +53,8 @@ public static class Shooter {
 }
 
 public static class Climber{
-  public static final int CLIMBER_MOTOR_ID = 25;
-  public static final double DEFAULT_CLIMBER_POWER = 0.8;
+  public static final int CLIMBER_MOTOR_ID = 31;
+  public static final double DEFAULT_CLIMBER_POWER = 0.6;
 }
 public static final double MAX_SPEED = Units.feetToMeters(15); // potentially change to 14.5
 }
