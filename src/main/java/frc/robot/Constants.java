@@ -40,7 +40,7 @@ public final class Constants {
 public static class Elevator {  
   public static final int LEFT_ELEVATOR_MOTOR_ID = 6;  // confirm these tmr
   public static final int RIGHT_ELEVATOR_MOTOR_ID = 17; // the one with the encoder
-  public static final double DEFAULT_ELEVATOR_SPEED = 0.3;  // 1 is way too fast 
+  public static final double DEFAULT_ELEVATOR_SPEED = 0.5;  // 1 is way too fast 
   public static final double ELEVATOR_DOWN_SPEED = 0.1;
  public static int BOTTOM_LIMIT_SWITCH_CHANNEL = 3;
 
@@ -52,7 +52,7 @@ public static class Shooter {
    public static final double DEFAULT_SHOOTER_POWER = 0.6;
 }
 
-public static class Climber{
+public static class Climber{ // actually using it as the wacker thing
   public static final int CLIMBER_MOTOR_ID = 31;
   public static final double DEFAULT_CLIMBER_POWER = 0.6;
 }
