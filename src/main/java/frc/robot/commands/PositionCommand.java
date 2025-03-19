@@ -9,8 +9,8 @@ public class PositionCommand extends Command {
     public enum Position {
         // Intake Positions
         // position to score l1 ( 0.093)
-        INTAKE_IN(0.031),  // Fold intake inside frame
-        INTAKE_OUT(0.385), // Extend intake out for pickup
+        INTAKE_IN(0.061),  // Fold intake inside frame
+        INTAKE_OUT(0.370), // Extend intake out for pickup
         INTAKE_L1(0.0), // find this position
 
         // Elevator Positions driving position

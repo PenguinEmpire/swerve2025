@@ -6,7 +6,6 @@ import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Intake;
-import frc.robot.commands.PositionCommand;
 import frc.robot.modules.Jointmodule;
 public class IntakeSubsystem extends SubsystemBase {
     private final SparkMax horizontalRollerMotor;
@@ -73,12 +72,14 @@ public class IntakeSubsystem extends SubsystemBase {
     public boolean hasReachedRotationTarget(double tolerance) {
         return intakeRotation.hasReachedTarget(tolerance); //  Check if intake reached position
     }
-     public void checkOvercurrent() {
-        if (horizontalRollerMotor.getOutputCurrent() > 50) {
-            stopAllRollers();
-            new PositionCommand(this, null, PositionCommand.Position.INTAKE_L1).schedule();
-        }
-    }
+
+    // // see if this works
+    //  public void checkOvercurrent() {
+    //     if (horizontalRollerMotor.getOutputCurrent() > 50) {
+    //         stopAllRollers();
+    //         new PositionCommand(this, null, PositionCommand.Position.INTAKE_L1).schedule();
+    //     }
+    // }
     
     @Override
     public void periodic() {

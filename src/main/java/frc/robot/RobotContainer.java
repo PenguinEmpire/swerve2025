@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
@@ -77,27 +78,44 @@ public class RobotContainer {
    */
   private void configureBindings() {
         // // Triangle for intake - Runs while button is held
+        
         // m_driverController.triangle()
         // .whileTrue(new RunCommand(() -> {
         //     intakeSubsystem.spinRollers(true);   // Run intake rollers
-        //     shooterSubsystem.spinShooter(true);  // Run shooter motor forward for intake
+        //   //  shooterSubsystem.spinShooter(true);  // Run shooter motor forward for intake
         // }, intakeSubsystem, shooterSubsystem))
         // .onFalse(new InstantCommand(() -> {
         //     intakeSubsystem.stopAllRollers();  // Stop intake rollers
-        //     shooterSubsystem.stopShooter();    // Stop shooter motor
+        //   //  shooterSubsystem.stopShooter();    // Stop shooter motor
         // }, intakeSubsystem, shooterSubsystem));
 
 
-        m_driverController.triangle()
+    m_driverController.triangle()
     .onTrue(
-        new SequentialCommandGroup(
-            new PositionCommand(intakeSubsystem, elevatorSubsystem, PositionCommand.Position.ELEVATOR_INTAKEPOS), 
-            new PositionCommand(intakeSubsystem, elevatorSubsystem, PositionCommand.Position.INTAKE_OUT),
-            new InstantCommand(() -> {
-                intakeSubsystem.spinRollers(true);   
-                shooterSubsystem.spinShooter(true); 
-            }, intakeSubsystem, shooterSubsystem) )
+        new ParallelCommandGroup(
+            // Move elevator down and extend intake at the same time
+            new SequentialCommandGroup(
+                new PositionCommand(intakeSubsystem, elevatorSubsystem, PositionCommand.Position.ELEVATOR_INTAKEPOS),
+                new PositionCommand(intakeSubsystem, elevatorSubsystem, PositionCommand.Position.INTAKE_OUT)
+            ),
+            // Start intake rollers immediately and continuously
+            new RunCommand(() -> intakeSubsystem.spinRollers(true), intakeSubsystem)
+        )
     );
+
+
+    // m_driverController.triangle()
+    // .onTrue(
+    //     new SequentialCommandGroup(
+    //         // Step 1: Extend the intake first
+    //         new PositionCommand(intakeSubsystem, elevatorSubsystem, PositionCommand.Position.INTAKE_OUT),
+    //         // Step 2: Move elevator to intake position
+    //         new PositionCommand(intakeSubsystem, elevatorSubsystem, PositionCommand.Position.ELEVATOR_INTAKEPOS),
+    //         // Step 3: Start intake rollers and keep them running continuously
+    //         new InstantCommand(() -> intakeSubsystem.spinRollers(true), intakeSubsystem)
+    //     )
+    // );
+
 
     // Circle for outtake - Runs while button is held
        m_driverController.circle()
@@ -120,15 +138,7 @@ public class RobotContainer {
       .whileTrue(new RunCommand(() -> elevatorSubsystem.manualMove(false), elevatorSubsystem))
       .onFalse(new InstantCommand(elevatorSubsystem::stopElevator, elevatorSubsystem));
     
-      // m_driverController.square()
-      // .whileTrue(new RunCommand(() -> elevatorSubsystem.moveElevator(true), elevatorSubsystem))
-      // .onFalse(new InstantCommand(elevatorSubsystem::stopElevator, elevatorSubsystem));
-
-      //  //  Cross Button → Move Elevator **DOWN** (While Held)
-      //  m_driverController.cross()
-      //  .whileTrue(new RunCommand(() -> elevatorSubsystem.moveElevator(false), elevatorSubsystem))
-      //  .onFalse(new InstantCommand(elevatorSubsystem::stopElevator, elevatorSubsystem));
-
+     
       //  POV LEFT → Move Intake **IN**
       m_driverController.povLeft()
       .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem, PositionCommand.Position.INTAKE_IN));
