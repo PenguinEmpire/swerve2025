@@ -52,7 +52,7 @@ public class ElevatorSubsystem extends SubsystemBase {
             .closedLoop
                 // Use kPrimaryEncoder for the built-in relative encoder
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                .pid(0.1, 0.0, 0.0)  // Adjust these PID gains as needed
+                .pid(0.6, 0.0, 0.0)  // Adjust these PID gains as needed
                 .positionWrappingEnabled(false) // Usually false for an elevator
                 .outputRange(-0.6, 0.6);
 

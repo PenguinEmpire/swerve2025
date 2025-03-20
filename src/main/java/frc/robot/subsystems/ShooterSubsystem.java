@@ -5,8 +5,10 @@ import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Shooter;
+import frc.robot.commands.PositionCommand;
 
 public class ShooterSubsystem extends SubsystemBase {
     private final SparkMax shooterMotor;
@@ -29,13 +31,13 @@ public class ShooterSubsystem extends SubsystemBase {
     public void spinShooter(boolean intake) {
         shooterPower = SmartDashboard.getNumber("Shooter Power", shooterPower);
         
-        // Stop shooter and move robot to position when piece is detected
-        if (intake && getPiece()) {
-            stopShooter();
+      //  Stop shooter and move robot to position when piece is detected
+        // if (intake && getPiece()) {
+        //     stopShooter();
             
-            intakeSubsystem.stopAllRollers();
-            return;
-        }
+        //     intakeSubsystem.stopAllRollers();
+        //     return;
+        // }
         
         double power = intake ? shooterPower : -shooterPower;
         shooterMotor.set(power);
@@ -46,27 +48,27 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterMotor.set(0.0);
     }
 
-    /** Returns true if the limit switch (piece detection) is pressed */
-    public boolean getPiece() {
-        boolean pieceDetected = limitSwitch.get(); // Check if the limit switch is triggered
-        SmartDashboard.putBoolean("Has Piece", pieceDetected);
+   public boolean getPiece() {
+    boolean pieceDetected = limitSwitch.get(); // Check if the limit switch is triggered
+    SmartDashboard.putBoolean("Has Piece", pieceDetected);
 
-        if (pieceDetected) {
-            // Stop Intake and Shooter Motors
-            stopShooter();
+    if (pieceDetected) {
+        // Stop Intake and Shooter Motors
+        intakeSubsystem.stopAllRollers();
+        stopShooter();
 
-            // Move Elevator to Cruising and Retract Intake
-            // new SequentialCommandGroup(
-            //     new PositionCommand(intakeSubsystem, elevatorSubsystem, PositionCommand.Position.ELEVATOR_CRUISING),
-            //     new PositionCommand(intakeSubsystem, elevatorSubsystem, PositionCommand.Position.INTAKE_IN)
-            // ).schedule();
-        }
-
-        return pieceDetected;
+        // Move Elevator to Cruising position and then Retract Intake
+        new SequentialCommandGroup(
+            new PositionCommand(intakeSubsystem, elevatorSubsystem, PositionCommand.Position.ELEVATOR_CRUISING), // Move elevator up first
+            new PositionCommand(intakeSubsystem, elevatorSubsystem, PositionCommand.Position.INTAKE_IN) // Then retract intake
+        ).schedule();
     }
+
+    return pieceDetected;
+}
 
     @Override
     public void periodic() {
-        SmartDashboard.putBoolean("Has Piece", getPiece()); // Log on dashboard
+       SmartDashboard.putBoolean("Has Piece", getPiece()); // Log on dashboard
     }
 }

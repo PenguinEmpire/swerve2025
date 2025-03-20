@@ -11,15 +11,14 @@ public class PositionCommand extends Command {
         // position to score l1 ( 0.093)
         INTAKE_IN(0.061),  // Fold intake inside frame
         INTAKE_OUT(0.370), // Extend intake out for pickup
-        INTAKE_L1(0.0), // find this position
 
         // Elevator Positions driving position
 
-        ELEVATOR_INTAKEPOS(-12.660),   
-        ELEVATOR_CRUISING(-12.660),  
-        ELEVATOR_LEVEL_2(-64.144),  
-        ELEVATOR_LEVEL_3(-36.265),  
-        ELEVATOR_MAX(-53.204);   
+        ELEVATOR_INTAKEPOS(-6.547),   
+        ELEVATOR_CRUISING(-17.119),  
+        ELEVATOR_LEVEL_2(-26.071),  
+        ELEVATOR_LEVEL_3(-37.142),  
+        ELEVATOR_MAX(-54.762);   
 
         private final double encoderPosition;
 

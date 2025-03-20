@@ -34,7 +34,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
  
     public void spinRollers(boolean intake) {
-        // Stop intake if a piece is detected, but allow outtake
+       // Stop intake if a piece is detected, but allow outtake
         // if (intake && shooterSubsystem.getPiece()) {
         //     stopAllRollers();
         //     return;
