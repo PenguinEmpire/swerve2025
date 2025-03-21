@@ -30,7 +30,7 @@ public final class Constants {
    
 
  
-    public static final double DEFAULT_ROLLER_POWER = 0.45; //tested these values 2/22
+    public static final double DEFAULT_ROLLER_POWER = 0.7; //tested these values 2/22
     public static final double DEFAULT_ROTATION_POWER = 0.50;
     public static final int MOTOR_CURRENT_LIMIT = 30;
 
@@ -40,21 +40,21 @@ public final class Constants {
 public static class Elevator {  
   public static final int LEFT_ELEVATOR_MOTOR_ID = 6;  // confirm these tmr
   public static final int RIGHT_ELEVATOR_MOTOR_ID = 17; // the one with the encoder
-  public static final double DEFAULT_ELEVATOR_SPEED = 0.3;  // 1 is way too fast 
+  public static final double DEFAULT_ELEVATOR_SPEED = 0.4;  // 1 is way too fast 
   public static final double ELEVATOR_DOWN_SPEED = 0.1;
- 
+ public static int BOTTOM_LIMIT_SWITCH_CHANNEL = 3;
 
 }
 
 public static class Shooter {  
   public static final int SHOOTER_MOTOR_ID = 22;  // Confirm the ID
 
-   public static final double DEFAULT_SHOOTER_POWER = 0.5;
+   public static final double DEFAULT_SHOOTER_POWER = 0.6;
 }
 
-public static class Climber{
-  public static final int CLIMBER_MOTOR_ID = 25;
-  public static final double DEFAULT_CLIMBER_POWER = 0.8;
+public static class Climber{ // actually using it as the wacker thing
+  public static final int CLIMBER_MOTOR_ID = 31;
+  public static final double DEFAULT_CLIMBER_POWER = 0.6;
 }
 public static final double MAX_SPEED = Units.feetToMeters(15); // potentially change to 14.5
 }
