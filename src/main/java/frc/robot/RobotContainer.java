@@ -93,7 +93,10 @@ public class RobotContainer {
     m_driverController.L2()
     .onTrue(
         new SequentialCommandGroup(
+
+          new PositionCommand(intakeSubsystem, elevatorSubsystem, PositionCommand.Position.ELEVATOR_CRUISING),
             // Step 1: Move the intake down first
+
             new PositionCommand(intakeSubsystem, elevatorSubsystem, PositionCommand.Position.INTAKE_OUT),
             // Step 2: After intake is down, move the elevator
             new PositionCommand(intakeSubsystem, elevatorSubsystem, PositionCommand.Position.ELEVATOR_INTAKEPOS),
@@ -158,14 +161,12 @@ public class RobotContainer {
 //     .onFalse(new InstantCommand(intakeSubsystem::stopManualRotate, intakeSubsystem));
 
 // circleButton → Move Elevator to LOW position
-  m_driverController.circle()
-  .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem, PositionCommand.Position.ELEVATOR_INTAKEPOS));
-
+ 
 // // R2 Button → Move Elevator to LEVEL 1 position
 //   m_driverController.R2()
 //   .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem, PositionCommand.Position.ELEVATOR_CRUISING));
 
-  m_driverController.R2()
+  m_driverController.circle()
     .onTrue(
         new SequentialCommandGroup(
             new PositionCommand(intakeSubsystem, elevatorSubsystem, PositionCommand.Position.ELEVATOR_CRUISING), // Step 1: Move Elevator to Cruising Position
@@ -185,11 +186,11 @@ public class RobotContainer {
 m_driverController.triangle()
 .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem, PositionCommand.Position.ELEVATOR_MAX));  
 
-// Create Button → Move Climber **UP** (While Held)
+// Create Button → Move wacker **UP** (While Held)
   m_driverController.create()
   .whileTrue(new RunCommand(() -> climberSubsystem.moveClimber(true), climberSubsystem))
   .onFalse(new InstantCommand(climberSubsystem::stopClimber, climberSubsystem));
-// Options Button → Move Climber **DOWN** (While Held)
+// Options Button → Move wacker  **DOWN** (While Held)
   m_driverController.options()
   .whileTrue(new RunCommand(() -> climberSubsystem.moveClimber(false), climberSubsystem))
   .onFalse(new InstantCommand(climberSubsystem::stopClimber, climberSubsystem));

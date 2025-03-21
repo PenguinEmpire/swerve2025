@@ -15,7 +15,7 @@ public class PositionCommand extends Command {
         // Elevator Positions driving position
 
         ELEVATOR_INTAKEPOS(-6.547),   
-        ELEVATOR_CRUISING(-17.119),  
+        ELEVATOR_CRUISING(-11.305),  
         ELEVATOR_LEVEL_2(-26.071),  
         ELEVATOR_LEVEL_3(-37.142),  
         ELEVATOR_MAX(-54.762);   

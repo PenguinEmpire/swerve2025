@@ -49,12 +49,12 @@ public static class Elevator {
 public static class Shooter {  
   public static final int SHOOTER_MOTOR_ID = 22;  // Confirm the ID
 
-   public static final double DEFAULT_SHOOTER_POWER = 0.6;
+   public static final double DEFAULT_SHOOTER_POWER = 0.5;
 }
 
 public static class Climber{ // actually using it as the wacker thing
   public static final int CLIMBER_MOTOR_ID = 31;
-  public static final double DEFAULT_CLIMBER_POWER = 0.6;
+  public static final double DEFAULT_CLIMBER_POWER = 0.3;
 }
 public static final double MAX_SPEED = Units.feetToMeters(15); // potentially change to 14.5
 }
