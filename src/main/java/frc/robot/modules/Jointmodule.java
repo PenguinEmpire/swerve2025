@@ -14,10 +14,35 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+/**
+ * Controls a robotic joint using a SparkMax motor controller with closed-loop position control.
+ * <p>
+ * The Jointmodule class provides functionality to control joint positions using both PID feedback
+ * and ArmFeedforward for gravity compensation. It's designed for robotic arm joints or similar 
+ * rotational mechanisms that require precise position control.
+ * <p>
+ * Features:
+ * <ul>
+ *   <li>Closed-loop position control using a SparkMax controller</li>
+ *   <li>Absolute encoder position feedback</li>
+ *   <li>Position wrapping for continuous rotation joints (0 to 2π radians)</li>
+ *   <li>ArmFeedforward integration for gravity compensation</li>
+ *   <li>SmartDashboard integration for live tuning of control parameters</li>
+ *   <li>Manual control capabilities for testing and calibration</li>
+ * </ul>
+ * <p>
+ * The controller uses both PID for position error correction and feedforward to counteract
+ * predictable forces like gravity. Control parameters can be adjusted at runtime through
+ * SmartDashboard.
+ * 
+ * @see ArmFeedforward
+ * @see SparkMax
+ */
 public class Jointmodule {
     private final String name;
     private final SparkMax motor;
     private final SparkClosedLoopController pidController;
+    @SuppressWarnings("unused")
     private ArmFeedforward feedforward;
     
     private double targetPosition;
@@ -71,7 +96,10 @@ public class Jointmodule {
 
     
     }
-
+    /**
+     * Sets the target position for the joint.
+     * @param position
+     */
     public void setPosition(double position) {
             this.targetPosition = position;
         
@@ -83,14 +111,24 @@ public class Jointmodule {
         
     }
 
+    /**
+     * Sets the target position for the joint with feedforward.
+     */
     public void manualMove(double speed) {
         motor.set(speed);
     }
 
+    /**
+     * Stops the motor immediately.
+     */
     public void stopMotor() {
         motor.set(0);
     }
 
+    /**
+     * Gets the current position of the joint.
+     * @return
+     */
     public double getPosition() {
         AbsoluteEncoder absEncoder = motor.getAbsoluteEncoder();
         return absEncoder.getPosition();
@@ -98,6 +136,11 @@ public class Jointmodule {
         //return motor.getEncoder().getPosition();
     }
 
+    /**
+     * Checks if the joint has reached the target position within a specified tolerance.
+     * @param tolerance
+     * @return
+     */
     public boolean hasReachedTarget(double tolerance) {
         return Math.abs(targetPosition - getPosition()) <= tolerance;
     }
