@@ -81,10 +81,8 @@ import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Shooter;
-import frc.robot.commands.PositionCommand;
 
 public class ShooterSubsystem extends SubsystemBase {
     private final SparkMax shooterMotor;
@@ -128,10 +126,10 @@ public class ShooterSubsystem extends SubsystemBase {
             stopShooter();
 
             // Move Elevator to Cruising position and then Retract Intake
-            new SequentialCommandGroup(
-                new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.ELEVATOR_CRUISING), // Move elevator up first
-                new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.INTAKE_IN) // Then retract intake
-            ).schedule();
+            // new SequentialCommandGroup(
+            //     new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.ELEVATOR_CRUISING), // Move elevator up first
+            //     new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.INTAKE_IN) // Then retract intake
+            // ).schedule();
         }
 
         return pieceDetected;

@@ -17,11 +17,11 @@ public class PositionCommand extends Command {
         CLIMBER_HIGH(10.0), // Example high position
 
         // Elevator Positions
-        ELEVATOR_INTAKEPOS(-6.547),   
+        ELEVATOR_INTAKEPOS(-20.323),   
         ELEVATOR_CRUISING(-11.305),  
-        ELEVATOR_LEVEL_2(-26.071),  
-        ELEVATOR_LEVEL_3(-37.142),  
-        ELEVATOR_MAX(-54.762);   
+        ELEVATOR_LEVEL_2(-31.714),  
+        ELEVATOR_LEVEL_3(-49.261),  
+        ELEVATOR_MAX(-59.929);   
 
         private final double encoderPosition;
 

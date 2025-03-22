@@ -30,8 +30,15 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final SparkClosedLoopController pidController;
     private final ArmFeedforward feedforward;
 
+    
+
     private double targetPosition = 0.0;      // Desired setpoint in raw motor revolutions
     private boolean isManualMode  = false;    // Toggle for manual vs. PID mode
+
+    private double newP = 0.0;
+    private double newI = 0.0;
+    private double newD = 0.0;
+    private double newPosition = 0.0;
 
     public ElevatorSubsystem() {
         // Create the motors
@@ -52,9 +59,9 @@ public class ElevatorSubsystem extends SubsystemBase {
             .closedLoop
                 // Use kPrimaryEncoder for the built-in relative encoder
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                .pid(0.3, 0.0, 0.0)  // Adjust these PID gains as needed
-                .positionWrappingEnabled(false) // Usually false for an elevator
-                .outputRange(-0.6, 0.6);
+                .pid(0.85, 0.0, 0.0)  // Adjust these PID gains as needed
+                .positionWrappingEnabled(false) // Usually false f∏r an elevator
+                .outputRange(-0.4, 0.4);
 
         
         //  rightConfig.encoder.positionConversionFactor(2.0);
@@ -71,10 +78,13 @@ public class ElevatorSubsystem extends SubsystemBase {
         pidController = rightElevatorMotor.getClosedLoopController();
 
         // If you need feedforward, set your constants in the ArmFeedforward constructor
-        feedforward = new ArmFeedforward(0.0, 0.3, 0.0);
+        feedforward = new ArmFeedforward(0.0, 0.0, 0.0);
 
         // Put the manual mode toggle on SmartDashboard
         SmartDashboard.putBoolean("Elevator Manual Mode", false);
+
+        // SmartDashboard.putNumber()
+       
     }
 
     /** Enables manual (open-loop) mode. */
@@ -150,6 +160,9 @@ public class ElevatorSubsystem extends SubsystemBase {
         // Show data on SmartDashboard for debugging
         SmartDashboard.putNumber("Elevator Position (revs)", getElevatorPosition());
         SmartDashboard.putNumber("Elevator Target (revs)", targetPosition);
+
+     
+
         
 
         // If we are in manual mode, do not run closed-loop
