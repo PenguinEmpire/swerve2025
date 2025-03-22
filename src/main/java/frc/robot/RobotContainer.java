@@ -35,7 +35,7 @@ public class RobotContainer {
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(); 
   private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
-  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(intakeSubsystem, elevatorSubsystem);
+  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(intakeSubsystem, elevatorSubsystem, climberSubsystem);
   // private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
  
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -94,12 +94,12 @@ public class RobotContainer {
     .onTrue(
         new SequentialCommandGroup(
 
-          new PositionCommand(intakeSubsystem, elevatorSubsystem, PositionCommand.Position.ELEVATOR_CRUISING),
+          new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem, PositionCommand.Position.ELEVATOR_CRUISING),
             // Step 1: Move the intake down first
 
-            new PositionCommand(intakeSubsystem, elevatorSubsystem, PositionCommand.Position.INTAKE_OUT),
+            new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.INTAKE_OUT),
             // Step 2: After intake is down, move the elevator
-            new PositionCommand(intakeSubsystem, elevatorSubsystem, PositionCommand.Position.ELEVATOR_INTAKEPOS),
+            new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.ELEVATOR_INTAKEPOS),
             // Step 3: Now that intake & elevator are in position, start intake rollers and shooter rollers
             new RunCommand(() -> {
                 intakeSubsystem.spinRollers(true);
@@ -144,11 +144,11 @@ public class RobotContainer {
      
       //  POV LEFT → Move Intake **IN**
       m_driverController.povLeft()
-      .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem, PositionCommand.Position.INTAKE_IN));
+      .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.INTAKE_IN));
   
      // POV RIGHT → Move Intake OUT
        m_driverController.povRight()
-      .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem, PositionCommand.Position.INTAKE_OUT));
+      .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.INTAKE_OUT));
 
 //     //  POV UP → Slowly Rotate Intake UP (While Held)
 //     m_driverController.povUp()
@@ -169,22 +169,22 @@ public class RobotContainer {
   m_driverController.circle()
     .onTrue(
         new SequentialCommandGroup(
-            new PositionCommand(intakeSubsystem, elevatorSubsystem, PositionCommand.Position.ELEVATOR_CRUISING), // Step 1: Move Elevator to Cruising Position
-            new PositionCommand(intakeSubsystem, elevatorSubsystem, PositionCommand.Position.INTAKE_IN) // Step 2: Retract Intake
+            new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem, PositionCommand.Position.ELEVATOR_CRUISING), // Step 1: Move Elevator to Cruising Position
+            new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.INTAKE_IN) // Step 2: Retract Intake
         )
     );
 
 // cross Button → Move Elevator to LEVEL 2 position
   m_driverController.cross()
-  .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem, PositionCommand.Position.ELEVATOR_LEVEL_2));
+  .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem, PositionCommand.Position.ELEVATOR_LEVEL_2));
 
 // R1 Button → Move Elevator to LEVEL 3 position
   m_driverController.square()
-  .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem, PositionCommand.Position.ELEVATOR_LEVEL_3));
+  .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.ELEVATOR_LEVEL_3));
 
 // R1 Button → Move Elevator to LEVEL 4 position
 m_driverController.triangle()
-.onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem, PositionCommand.Position.ELEVATOR_MAX));  
+.onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.ELEVATOR_MAX));  
 
 // Create Button → Move wacker **UP** (While Held)
   m_driverController.create()
@@ -195,6 +195,13 @@ m_driverController.triangle()
   .whileTrue(new RunCommand(() -> climberSubsystem.moveClimber(false), climberSubsystem))
   .onFalse(new InstantCommand(climberSubsystem::stopClimber, climberSubsystem));
 
+// // Create Button → Move wacker to LOW position
+// m_driverController.create()
+//   .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.CLIMBER_LOW));
+
+// // Options Button → Move wacker to HIGH position
+// m_driverController.options()
+//   .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.CLIMBER_HIGH));
 
   // zeros the gyro 
   m_driverController.L3()
@@ -212,4 +219,4 @@ m_driverController.triangle()
     // An example command will be run in autonomous
     return null;
   }
-} 
+}
