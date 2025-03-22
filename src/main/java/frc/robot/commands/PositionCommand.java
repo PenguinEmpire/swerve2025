@@ -5,11 +5,13 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 
+
 public class PositionCommand extends Command {
 
     public enum Position {
         // Intake Positions
         INTAKE_IN(0.061),  // Fold intake inside frame
+        INTAKE_L1(0.0), //figure this value out
         INTAKE_OUT(0.370), // Extend intake out for pickup
 
         // Climber Positions
@@ -21,8 +23,9 @@ public class PositionCommand extends Command {
         ELEVATOR_CRUISING(-11.305),  
         ELEVATOR_LEVEL_2(-31.714),  
         ELEVATOR_LEVEL_3(-49.261),  
-        ELEVATOR_MAX(-59.929);   
-
+        ELEVATOR_MAX(-59.929),   
+        ELEVATOR_ZERO(0.0);
+      
         private final double encoderPosition;
 
         Position(double encoderPosition) {
@@ -59,21 +62,25 @@ public class PositionCommand extends Command {
             case INTAKE_OUT:
                 intakeSubsystem.setRotationPosition(Position.INTAKE_OUT.getEncoderPosition());
                 break;
-            case ELEVATOR_INTAKEPOS:
-                elevatorSubsystem.setPosition(Position.ELEVATOR_INTAKEPOS.getEncoderPosition());
-                break;
-            case ELEVATOR_CRUISING:
-                elevatorSubsystem.setPosition(Position.ELEVATOR_CRUISING.getEncoderPosition());
-                break;
-            case ELEVATOR_LEVEL_2:
-                elevatorSubsystem.setPosition(Position.ELEVATOR_LEVEL_2.getEncoderPosition());
-                break;
-            case ELEVATOR_LEVEL_3:
-                elevatorSubsystem.setPosition(Position.ELEVATOR_LEVEL_3.getEncoderPosition());
-                break;
-            case ELEVATOR_MAX:
-                elevatorSubsystem.setPosition(Position.ELEVATOR_MAX.getEncoderPosition());
-                break;
+            case INTAKE_L1:
+                 intakeSubsystem.setRotationPosition(Position.INTAKE_L1.getEncoderPosition());
+            // case ELEVATOR_INTAKEPOS:
+            //     elevatorSubsystem.setPosition(Position.ELEVATOR_INTAKEPOS.getEncoderPosition());
+            //     break;
+            // case ELEVATOR_CRUISING:
+            //     elevatorSubsystem.setPosition(Position.ELEVATOR_CRUISING.getEncoderPosition());
+            //     break;
+            // case ELEVATOR_LEVEL_2:
+            //     elevatorSubsystem.setPosition(Position.ELEVATOR_LEVEL_2.getEncoderPosition());
+            //     break;
+            // case ELEVATOR_LEVEL_3:
+            //     elevatorSubsystem.setPosition(Position.ELEVATOR_LEVEL_3.getEncoderPosition());
+            //     break;
+            // case ELEVATOR_MAX:
+            //     elevatorSubsystem.setPosition(Position.ELEVATOR_MAX.getEncoderPosition());
+            //     break;
+            // case ELEVATOR_ZERO:
+            //     elevatorSubsystem.setPosition(Position.ELEVATOR_ZERO.getEncoderPosition());
             case CLIMBER_LOW:
                 climberSubsystem.setPosition(Position.CLIMBER_LOW.getEncoderPosition());
                 break;
@@ -86,7 +93,7 @@ public class PositionCommand extends Command {
     @Override
     public boolean isFinished() {
         return intakeSubsystem.hasReachedRotationTarget(0.01) ||
-               elevatorSubsystem.hasReachedTarget(0.01) ||
+            //    elevatorSubsystem.hasReachedTarget(0.01) ||
                climberSubsystem.hasReachedTarget(0.01);
     }
 }

@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -57,7 +56,7 @@ public class RobotContainer {
     .withControllerRotationAxis(() -> m_driverController.getRightX()) // Ensure Rotation is Read
     .deadband(OperatorConstants.DEADBAND)
     .scaleTranslation(0.8)
-    .allianceRelativeControl(false);
+    .allianceRelativeControl(false); // was true  ( see if this fixes anything)
 
                                                                   
   SwerveInputStream driveDirectAngle = driveAngularVelocity.copy()
@@ -94,21 +93,21 @@ public class RobotContainer {
 
     m_driverController.L2()
     .onTrue(
-        new SequentialCommandGroup(
+        // new SequentialCommandGroup(
 
-          new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem, PositionCommand.Position.ELEVATOR_CRUISING),
-            // Step 1: Move the intake down first
+          // new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem, PositionCommand.Position.ELEVATOR_CRUISING),
+          //   // Step 1: Move the intake down first
 
-            new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.INTAKE_OUT),
+            // new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.INTAKE_OUT),
             // Step 2: After intake is down, move the elevator
-            new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.ELEVATOR_INTAKEPOS),
-            // Step 3: Now that intake & elevator are in position, start intake rollers and shooter rollers
+            // new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.ELEVATOR_INTAKEPOS),
+            // // Step 3: Now that intake & elevator are in position, start intake rollers and shooter rollers
             new RunCommand(() -> {
                 intakeSubsystem.spinRollers(true);
                 shooterSubsystem.spinShooter(true);
             }, intakeSubsystem, shooterSubsystem)
             .until(() -> shooterSubsystem.getPiece()) // Stop when the limit switch is triggered
-        )
+        // )
     );
 
     //l1 for outtake - Runs while button is held
@@ -133,12 +132,12 @@ public class RobotContainer {
 
      // pov up → Move Elevator **UP** (While Held)
     m_driverController.povUp()
-    .whileTrue(new RunCommand(() -> elevatorSubsystem.manualMove(true), elevatorSubsystem))
+    .whileTrue(new RunCommand(() -> elevatorSubsystem.moveElevator(true), elevatorSubsystem))
     .onFalse(new InstantCommand(elevatorSubsystem::stopElevator, elevatorSubsystem));
 
     // pov down → Move Elevator **DOWN** (While Held)
       m_driverController.povDown()
-      .whileTrue(new RunCommand(() -> elevatorSubsystem.manualMove(false), elevatorSubsystem))
+      .whileTrue(new RunCommand(() -> elevatorSubsystem.moveElevator(false), elevatorSubsystem))
       .onFalse(new InstantCommand(elevatorSubsystem::stopElevator, elevatorSubsystem));
     
      
@@ -166,13 +165,13 @@ public class RobotContainer {
 //   m_driverController.R2()
 //   .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem, PositionCommand.Position.ELEVATOR_CRUISING));
 
-  m_driverController.circle()
-    .onTrue(
-        new SequentialCommandGroup(
-            new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem, PositionCommand.Position.ELEVATOR_CRUISING), // Step 1: Move Elevator to Cruising Position
-            new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.INTAKE_IN) // Step 2: Retract Intake
-        )
-    );
+  // m_driverController.circle()
+  //   .onTrue(
+  //       new SequentialCommandGroup(
+  //           new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem, PositionCommand.Position.ELEVATOR_CRUISING), // Step 1: Move Elevator to Cruising Position
+  //           new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.INTAKE_IN) // Step 2: Retract Intake
+  //       )
+  //   );
 
 // cross Button → Move Elevator to LEVEL 2 position
   m_driverController.cross()
@@ -206,8 +205,14 @@ m_driverController.triangle()
   // zeros the gyro 
   m_driverController.L3()
     .onTrue(new InstantCommand(drivebase::zeroGyro));
+
+    m_driverController.R1()
+    .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem, PositionCommand.Position.ELEVATOR_ZERO));
+  
  
 }
+
+
 
 
   /**
