@@ -4,7 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -20,7 +22,6 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import swervelib.SwerveInputStream;
-import frc.robot.commands.MoveForward;
 
 
 /**
@@ -56,7 +57,7 @@ public class RobotContainer {
     .withControllerRotationAxis(() -> m_driverController.getRightX()) // Ensure Rotation is Read
     .deadband(OperatorConstants.DEADBAND)
     .scaleTranslation(0.8)
-    .allianceRelativeControl(true);
+    .allianceRelativeControl(false);
 
                                                                   
   SwerveInputStream driveDirectAngle = driveAngularVelocity.copy()
@@ -110,8 +111,6 @@ public class RobotContainer {
         )
     );
 
-
-    
     //l1 for outtake - Runs while button is held
        m_driverController.L1()
         .whileTrue(new RunCommand(() -> {
@@ -218,6 +217,5 @@ m_driverController.triangle()
    */
   public Command getAutonomousCommand() {
     // Run the MoveForward command in autonomous
-    return new MoveForward(drivebase);
-  }
-}
+    return drivebase.driveFieldOriented(() -> new ChassisSpeeds(0, 0.5, 0.0));
+} 
