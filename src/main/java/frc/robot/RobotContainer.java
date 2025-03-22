@@ -20,6 +20,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import swervelib.SwerveInputStream;
+import frc.robot.commands.MoveForward;
 
 
 /**
@@ -216,7 +217,7 @@ m_driverController.triangle()
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return null;
+    // Run the MoveForward command in autonomous
+    return new MoveForward(drivebase);
   }
 }
