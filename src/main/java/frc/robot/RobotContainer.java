@@ -55,7 +55,7 @@ public class RobotContainer {
     .withControllerRotationAxis(() -> m_driverController.getRightX()) // Ensure Rotation is Read
     .deadband(OperatorConstants.DEADBAND)
     .scaleTranslation(0.8)
-    .allianceRelativeControl(false); // was true  ( see if this fixes anything)
+    .allianceRelativeControl(true); // was true  ( see if this fixes anything)
 
                                                                   
   SwerveInputStream driveDirectAngle = driveAngularVelocity.copy()
@@ -204,6 +204,7 @@ m_driverController.triangle()
   // zeros the gyro 
   m_driverController.L3()
     .onTrue(new InstantCommand(drivebase::zeroGyro));
+
 
     m_driverController.R1()
     .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem, PositionCommand.Position.ELEVATOR_ZERO));

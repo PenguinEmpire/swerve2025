@@ -21,11 +21,9 @@ import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
-
-
-
 public class SwerveSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
+
 
 File directory = new File(Filesystem.getDeployDirectory(),"swerve");
 SwerveDrive  swerveDrive;
@@ -104,6 +102,8 @@ public void driveFieldOriented(ChassisSpeeds velocity){
 public void zeroGyro() {
   swerveDrive.zeroGyro();
 }
+
+
 
 public Command driveFieldOriented(Supplier<ChassisSpeeds> velocity) {
   return run(( ) -> {
