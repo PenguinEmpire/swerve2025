@@ -10,8 +10,8 @@ public class PositionCommand extends Command {
 
     public enum Position {
         // Intake Positions
-        INTAKE_IN(0.061),  // Fold intake inside frame
-        INTAKE_L1(0.0), //figure this value out
+        INTAKE_IN(0.114),  // Fold intake inside frame
+        INTAKE_L1(0.00), //figure this value out
         INTAKE_OUT(0.370), // Extend intake out for pickup
 
         // Climber Positions
@@ -19,11 +19,11 @@ public class PositionCommand extends Command {
         CLIMBER_HIGH(10.0), // Example high position
 
         // Elevator Positions
-        ELEVATOR_INTAKEPOS(-20.323),   
-        ELEVATOR_CRUISING(-11.305),  
-        ELEVATOR_LEVEL_2(-31.714),  
-        ELEVATOR_LEVEL_3(-49.261),  
-        ELEVATOR_MAX(-59.929),   
+        ELEVATOR_INTAKEPOS(-6.382),   
+        ELEVATOR_CRUISING(-11.142),  
+        ELEVATOR_LEVEL_2(-24.523),  
+        ELEVATOR_LEVEL_3(-34.880),  
+        ELEVATOR_MAX(-53.500),   
         ELEVATOR_ZERO(0.0);
       
         private final double encoderPosition;

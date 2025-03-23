@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.SwerveSubsystem;
 
 
 /**
@@ -18,7 +17,7 @@ import frc.robot.subsystems.SwerveSubsystem;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  private SwerveSubsystem swerveSubsystem;
+  // private SwerveSubsystem swerveSubsystem;
 
   private final RobotContainer m_robotContainer;
 
@@ -50,7 +49,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
-    swerveSubsystem = new SwerveSubsystem();
+    // swerveSubsystem = new SwerveSubsystem();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -70,11 +69,6 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
-  }
-@Override
-  public void autonomousExit() {
-
-    swerveSubsystem.zeroGyro(); 
   }
 
   /** This function is called periodically during autonomous. */
@@ -96,11 +90,11 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {}
 
-  @Override
-  public void testInit() {
-    // Cancels all running commands at the start of test mode.
-    CommandScheduler.getInstance().cancelAll();
-  }
+  // @Override
+  // public void testInit() {
+  //   // Cancels all running commands at the start of test mode.
+  //   CommandScheduler.getInstance().cancelAll();
+  // }
 
   /** This function is called periodically during test mode. */
   @Override

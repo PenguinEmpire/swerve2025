@@ -78,36 +78,37 @@ public class RobotContainer {
   private void configureBindings() {
         // l2 for intake - Runs while button is held
         
-        // m_driverController.L2()
-        // .whileTrue(new RunCommand(() -> {
-        //     intakeSubsystem.spinRollers(true);   // Run intake rollers
-        //    shooterSubsystem.spinShooter(true);  // Run shooter motor forward for intake
-        // }, intakeSubsystem, shooterSubsystem))
-        // .onFalse(new InstantCommand(() -> {
-        //     intakeSubsystem.stopAllRollers();  // Stop intake rollers
-        //     shooterSubsystem.stopShooter();    // Stop shooter motor
-        // }, intakeSubsystem, shooterSubsystem));
+        m_driverController.L2()
+        .whileTrue(new RunCommand(() -> {
+            intakeSubsystem.spinRollers(true);   // Run intake rollers
+           shooterSubsystem.spinShooter(true);  // Run shooter motor forward for intake
+        }, intakeSubsystem, shooterSubsystem))
+        .onFalse(new InstantCommand(() -> {
+            intakeSubsystem.stopAllRollers();  // Stop intake rollers
+            shooterSubsystem.stopShooter();    // Stop shooter motor
+        }, intakeSubsystem, shooterSubsystem));
 
 
 
-    m_driverController.L2()
-    .onTrue(
-        // new SequentialCommandGroup(
+    // m_driverController.L2()
+    // .onTrue(
+    //     new SequentialCommandGroup(
 
-          // new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem, PositionCommand.Position.ELEVATOR_CRUISING),
-          //   // Step 1: Move the intake down first
+    //       // new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem, PositionCommand.Position.ELEVATOR_CRUISING),
+    //         // Step 1: Move the intake down first
 
-            // new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.INTAKE_OUT),
-            // Step 2: After intake is down, move the elevator
-            // new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.ELEVATOR_INTAKEPOS),
-            // // Step 3: Now that intake & elevator are in position, start intake rollers and shooter rollers
-            new RunCommand(() -> {
-                intakeSubsystem.spinRollers(true);
-                shooterSubsystem.spinShooter(true);
-            }, intakeSubsystem, shooterSubsystem)
-            .until(() -> shooterSubsystem.getPiece()) // Stop when the limit switch is triggered
-        // )
-    );
+    //         new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.INTAKE_OUT),
+    //         // Step 2: After intake is down, move the elevator
+    //         new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.ELEVATOR_INTAKEPOS),
+    //         // Step 3: Now that intake & elevator are in position, start intake rollers and shooter rollers
+    //         new RunCommand(() -> {
+    //             intakeSubsystem.spinRollers(true);
+    //             shooterSubsystem.spinShooter(true);
+    //         }, intakeSubsystem, shooterSubsystem)
+    //         .until(() -> shooterSubsystem.getPiece()) // Stop when the limit switch is triggered
+    //     )
+        
+    // );
 
     //l1 for outtake - Runs while button is held
        m_driverController.L1()
@@ -150,7 +151,7 @@ public class RobotContainer {
 
 //     //  POV UP → Slowly Rotate Intake UP (While Held)
 //     m_driverController.povUp()
-//       .whileTrue(new RunCommand(() -> intakeSubsystem.manualRotate(false), intakeSubsystem))
+//       .whileTrue(new RunCommand(() -> intakeSubsystem.moveE(false), intakeSubsystem))
 //       .onFalse(new InstantCommand(intakeSubsystem::stopManualRotate, intakeSubsystem));
 
 // //  POV DOWN → Slowly Rotate Intake DOWN (While Held)
@@ -175,6 +176,9 @@ public class RobotContainer {
 // cross Button → Move Elevator to LEVEL 2 position
   m_driverController.cross()
   .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem, PositionCommand.Position.ELEVATOR_LEVEL_2));
+
+  m_driverController.circle()
+  .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem, PositionCommand.Position.ELEVATOR_CRUISING));
 
 // R1 Button → Move Elevator to LEVEL 3 position
   m_driverController.square()
@@ -207,7 +211,7 @@ m_driverController.triangle()
 
 
     m_driverController.R1()
-    .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem, PositionCommand.Position.ELEVATOR_ZERO));
+    .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem, PositionCommand.Position.ELEVATOR_INTAKEPOS));
   
  
 }
