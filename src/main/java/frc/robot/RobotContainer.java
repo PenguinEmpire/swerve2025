@@ -222,6 +222,6 @@ m_driverController.triangle()
    */
   public Command getAutonomousCommand() {
     // Run the MoveForward command in autonomous
-    return drivebase.driveFieldOriented(() -> new ChassisSpeeds(0, 0.5, 0.0));
+    return drivebase.driveFieldOriented(() -> new ChassisSpeeds(1, 0, 0.0));
   }
 }
