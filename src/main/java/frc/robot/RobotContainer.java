@@ -50,8 +50,8 @@ public class RobotContainer {
   }
 // if this doesnt work swap the x and y
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-    () -> m_driverController.getLeftY() * -1 , // Forward/Backward 
-    () -> m_driverController.getLeftX() * -1) // Strafe
+    () -> m_driverController.getLeftY()   , // Forward/Backward 
+    () -> m_driverController.getLeftX()  ) // Strafe
     .withControllerRotationAxis(() -> m_driverController.getRightX()) // Ensure Rotation is Read
     .deadband(OperatorConstants.DEADBAND)
     .scaleTranslation(0.8)
@@ -130,15 +130,15 @@ public class RobotContainer {
             shooterSubsystem.stopShooter();    // Stop shooter motor
         }, shooterSubsystem));
 
-     // pov up → Move Elevator **UP** (While Held)
-    m_driverController.povUp()
-    .whileTrue(new RunCommand(() -> elevatorSubsystem.moveElevator(true), elevatorSubsystem))
-    .onFalse(new InstantCommand(elevatorSubsystem::stopElevator, elevatorSubsystem));
+    //  // pov up → Move Elevator **UP** (While Held)
+    // m_driverController.povUp()
+    // .whileTrue(new RunCommand(() -> elevatorSubsystem.moveElevator(true), elevatorSubsystem))
+    // .onFalse(new InstantCommand(elevatorSubsystem::stopElevator, elevatorSubsystem));
 
-    // pov down → Move Elevator **DOWN** (While Held)
-      m_driverController.povDown()
-      .whileTrue(new RunCommand(() -> elevatorSubsystem.moveElevator(false), elevatorSubsystem))
-      .onFalse(new InstantCommand(elevatorSubsystem::stopElevator, elevatorSubsystem));
+    // // pov down → Move Elevator **DOWN** (While Held)
+    //   m_driverController.povDown()
+    //   .whileTrue(new RunCommand(() -> elevatorSubsystem.moveElevator(false), elevatorSubsystem))
+    //   .onFalse(new InstantCommand(elevatorSubsystem::stopElevator, elevatorSubsystem));
     
      
       //  POV LEFT → Move Intake **IN**
