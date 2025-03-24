@@ -15,11 +15,11 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.PositionCommand;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import swervelib.SwerveInputStream;
+import frc.robot.commands.AlignToAprilTag;
 
 
 /**
@@ -30,7 +30,6 @@ import swervelib.SwerveInputStream;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final SwerveSubsystem drivebase = new SwerveSubsystem();
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(); 
@@ -71,7 +70,7 @@ public class RobotContainer {
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
    * predicate, or via the named factories in {@link
    * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link     
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
+   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller>
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}. 
    */
@@ -93,7 +92,7 @@ public class RobotContainer {
     // m_driverController.L2()
     // .onTrue(
     //     new SequentialCommandGroup(
-
+    
     //       // new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem, PositionCommand.Position.ELEVATOR_CRUISING),
     //         // Step 1: Move the intake down first
 
@@ -213,6 +212,10 @@ m_driverController.triangle()
     m_driverController.R1()
     .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem, PositionCommand.Position.ELEVATOR_INTAKEPOS));
   
+    // Add a button binding for the AprilTag alignment
+    // Using touchpad button for AprilTag alignment with 2.0 degree tolerance
+    m_driverController.touchpad()
+      .onTrue(new AlignToAprilTag(drivebase, 2.0));
  
 }
 
