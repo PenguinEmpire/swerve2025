@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import dev.alphagame.LogManager;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -20,6 +21,7 @@ public final class Main {
    * <p>If you change your main robot class, change the parameter type.
    */
   public static void main(String... args) {
+    LogManager.info("Starting Robot Program");
     RobotBase.startRobot(Robot::new);
   }
 }
