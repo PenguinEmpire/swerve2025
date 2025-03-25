@@ -25,6 +25,7 @@ public class AlignToAprilTag extends Command {
     
     // Constants for controlling alignment speed
     private static final double MAX_ROTATION_SPEED = 1.0; // Maximum rotation speed
+    @SuppressWarnings("unused")
     private static final double MAX_TRANSLATION_SPEED = 0.5; // Maximum translation speed
 
     /**
