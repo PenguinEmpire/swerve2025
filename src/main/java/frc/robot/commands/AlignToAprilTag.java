@@ -25,6 +25,7 @@ public class AlignToAprilTag extends Command {
     
     // Constants for controlling alignment speed
     private static final double MAX_ROTATION_SPEED = 1.0; // Maximum rotation speed
+    @SuppressWarnings("unused")
     private static final double MAX_TRANSLATION_SPEED = 0.5; // Maximum translation speed
 
     /**
@@ -40,7 +41,7 @@ public class AlignToAprilTag extends Command {
         this.tolerance = tolerance;
         
         // Configure PID controller for alignment
-        this.rotationPID = new PIDController(0.03, 0.0, 0.005);
+        this.rotationPID = new PIDController(0.3, 0.0, 0.005);
         this.rotationPID.setTolerance(tolerance);
         
         // Add requirements to prevent command conflicts
@@ -63,7 +64,9 @@ public class AlignToAprilTag extends Command {
     @Override
     public void execute() {
         // Check if we have a valid target
-        if (!LimelightHelpers.getTV(limelightName)) {
+        boolean hasTarget = LimelightHelpers.getTV(limelightName);
+        
+        if (!hasTarget) {
             // No valid target, stop the robot
             swerveSubsystem.driveFieldOriented(() -> new ChassisSpeeds(0, 0, 0));
             return;
@@ -76,21 +79,23 @@ public class AlignToAprilTag extends Command {
         double rotationSpeed = rotationPID.calculate(tx, 0);
         
         // Limit rotation speed
-        rotationSpeed = Math.max(-MAX_ROTATION_SPEED, Math.min(rotationSpeed, MAX_ROTATION_SPEED));
+        double limitedRotationSpeed = Math.max(-MAX_ROTATION_SPEED, Math.min(rotationSpeed, MAX_ROTATION_SPEED));
+        if (limitedRotationSpeed != rotationSpeed) {
+        }
         
         // Calculate translation speed - move forward/backward based on target presence
         // This could be enhanced with distance calculation if needed
         double forwardSpeed = 0.0;
         
         // Store final values for use in lambda
-        final double finalRotationSpeed = rotationSpeed;
+        final double finalRotationSpeed = limitedRotationSpeed;
         
         // Drive the robot using field-oriented control
         swerveSubsystem.driveFieldOriented(() -> new ChassisSpeeds(
             forwardSpeed,
             0.0,  // No sideways movement while aligning
             -finalRotationSpeed  // Negative because positive tx means we need to rotate counterclockwise
-        ));
+        )).execute();
     }
 
     @Override
@@ -102,8 +107,14 @@ public class AlignToAprilTag extends Command {
     @Override
     public boolean isFinished() {
         // Command finishes when we have a valid target and are within tolerance
-        return LimelightHelpers.getTV(limelightName) && 
-               Math.abs(LimelightHelpers.getTX(limelightName)) < tolerance;
+        boolean hasTarget = LimelightHelpers.getTV(limelightName);
+        double currentTx = hasTarget ? LimelightHelpers.getTX(limelightName) : Double.MAX_VALUE;
+        boolean aligned = hasTarget && Math.abs(currentTx) < tolerance;
+        
+        if (aligned) {
+           
+        }
+        
+        return aligned;
     }
 }
-
