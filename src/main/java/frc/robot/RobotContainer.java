@@ -7,19 +7,14 @@ package frc.robot;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.PositionCommand;
-import frc.robot.subsystems.ClimberSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.commands.AlignToAprilTag;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import swervelib.SwerveInputStream;
-import frc.robot.commands.AlignToAprilTag;
 
 
 /**
@@ -31,10 +26,10 @@ import frc.robot.commands.AlignToAprilTag;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase = new SwerveSubsystem();
-  private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+  // private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(); 
-  private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
-  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(intakeSubsystem, elevatorSubsystem, climberSubsystem);
+  // private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
+  // private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(intakeSubsystem, elevatorSubsystem, climberSubsystem);
   // private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
  
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -49,12 +44,12 @@ public class RobotContainer {
   }
 // if this doesnt work swap the x and y
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-    () -> m_driverController.getLeftY() * -1 , // Forward/Backward 
-    () -> m_driverController.getLeftX() * -1) // Strafe
+    () -> m_driverController.getLeftY()   , // Forward/Backward 
+    () -> m_driverController.getLeftX()  ) // Strafe
     .withControllerRotationAxis(() -> m_driverController.getRightX()) // Ensure Rotation is Read
     .deadband(OperatorConstants.DEADBAND)
     .scaleTranslation(0.8)
-    .allianceRelativeControl(true); // was true  ( see if this fixes anything)
+    .allianceRelativeControl(true); 
 
                                                                   
   SwerveInputStream driveDirectAngle = driveAngularVelocity.copy()
@@ -77,15 +72,15 @@ public class RobotContainer {
   private void configureBindings() {
         // l2 for intake - Runs while button is held
         
-        m_driverController.L2()
-        .whileTrue(new RunCommand(() -> {
-            intakeSubsystem.spinRollers(true);   // Run intake rollers
-           shooterSubsystem.spinShooter(true);  // Run shooter motor forward for intake
-        }, intakeSubsystem, shooterSubsystem))
-        .onFalse(new InstantCommand(() -> {
-            intakeSubsystem.stopAllRollers();  // Stop intake rollers
-            shooterSubsystem.stopShooter();    // Stop shooter motor
-        }, intakeSubsystem, shooterSubsystem));
+        // m_driverController.L2()
+        // .whileTrue(new RunCommand(() -> {
+        //     intakeSubsystem.spinRollers(true);   // Run intake rollers
+        //    shooterSubsystem.spinShooter(true);  // Run shooter motor forward for intake
+        // }, intakeSubsystem, shooterSubsystem))
+        // .onFalse(new InstantCommand(() -> {
+        //     intakeSubsystem.stopAllRollers();  // Stop intake rollers
+        //     shooterSubsystem.stopShooter();    // Stop shooter motor
+        // }, intakeSubsystem, shooterSubsystem));
 
 
 
@@ -110,43 +105,43 @@ public class RobotContainer {
     // );
 
     //l1 for outtake - Runs while button is held
-       m_driverController.L1()
-        .whileTrue(new RunCommand(() -> {
-            intakeSubsystem.spinRollers(false);  // Run outtake rollers
-            shooterSubsystem.spinShooter(false); // Run shooter motor in reverse for outtake
-        }, intakeSubsystem, shooterSubsystem))
-        .onFalse(new InstantCommand(() -> {
-            intakeSubsystem.stopAllRollers();  // Stop intake rollers
-            shooterSubsystem.stopShooter();    // Stop shooter motor
-        }, intakeSubsystem, shooterSubsystem));
-// r2 to shoot piece out
-        m_driverController.R2()
-        .whileTrue(new RunCommand(() -> {
-            shooterSubsystem.spinShooter(false); // Run shooter motor in reverse for outtake
-        },  shooterSubsystem))
-        .onFalse(new InstantCommand(() -> {
-       // Stop intake rollers
-            shooterSubsystem.stopShooter();    // Stop shooter motor
-        }, shooterSubsystem));
+//        m_driverController.L1()
+//         .whileTrue(new RunCommand(() -> {
+//             intakeSubsystem.spinRollers(false);  // Run outtake rollers
+//             shooterSubsystem.spinShooter(false); // Run shooter motor in reverse for outtake
+//         }, intakeSubsystem, shooterSubsystem))
+//         .onFalse(new InstantCommand(() -> {
+//             intakeSubsystem.stopAllRollers();  // Stop intake rollers
+//             shooterSubsystem.stopShooter();    // Stop shooter motor
+//         }, intakeSubsystem, shooterSubsystem));
+// // r2 to shoot piece out
+//         m_driverController.R2()
+//         .whileTrue(new RunCommand(() -> {
+//             shooterSubsystem.spinShooter(false); // Run shooter motor in reverse for outtake
+//         },  shooterSubsystem))
+//         .onFalse(new InstantCommand(() -> {
+//        // Stop intake rollers
+//             shooterSubsystem.stopShooter();    // Stop shooter motor
+//         }, shooterSubsystem));
 
-     // pov up → Move Elevator **UP** (While Held)
-    m_driverController.povUp()
-    .whileTrue(new RunCommand(() -> elevatorSubsystem.moveElevator(true), elevatorSubsystem))
-    .onFalse(new InstantCommand(elevatorSubsystem::stopElevator, elevatorSubsystem));
+    //  // pov up → Move Elevator **UP** (While Held)
+    // m_driverController.povUp()
+    // .whileTrue(new RunCommand(() -> elevatorSubsystem.moveElevator(true), elevatorSubsystem))
+    // .onFalse(new InstantCommand(elevatorSubsystem::stopElevator, elevatorSubsystem));
 
-    // pov down → Move Elevator **DOWN** (While Held)
-      m_driverController.povDown()
-      .whileTrue(new RunCommand(() -> elevatorSubsystem.moveElevator(false), elevatorSubsystem))
-      .onFalse(new InstantCommand(elevatorSubsystem::stopElevator, elevatorSubsystem));
+    // // pov down → Move Elevator **DOWN** (While Held)
+    //   m_driverController.povDown()
+    //   .whileTrue(new RunCommand(() -> elevatorSubsystem.moveElevator(false), elevatorSubsystem))
+    //   .onFalse(new InstantCommand(elevatorSubsystem::stopElevator, elevatorSubsystem));
     
      
       //  POV LEFT → Move Intake **IN**
-      m_driverController.povLeft()
-      .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.INTAKE_IN));
+    //   m_driverController.povLeft()
+    //   .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.INTAKE_IN));
   
-     // POV RIGHT → Move Intake OUT
-       m_driverController.povRight()
-      .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.INTAKE_OUT));
+    //  // POV RIGHT → Move Intake OUT
+    //    m_driverController.povRight()
+    //   .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.INTAKE_OUT));
 
 //     //  POV UP → Slowly Rotate Intake UP (While Held)
 //     m_driverController.povUp()
@@ -173,28 +168,28 @@ public class RobotContainer {
   //   );
 
 // cross Button → Move Elevator to LEVEL 2 position
-  m_driverController.cross()
-  .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem, PositionCommand.Position.ELEVATOR_LEVEL_2));
+//   m_driverController.cross()
+//   .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem, PositionCommand.Position.ELEVATOR_LEVEL_2));
 
-  m_driverController.circle()
-  .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem, PositionCommand.Position.ELEVATOR_CRUISING));
+//   m_driverController.circle()
+//   .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem, PositionCommand.Position.ELEVATOR_CRUISING));
 
-// R1 Button → Move Elevator to LEVEL 3 position
-  m_driverController.square()
-  .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.ELEVATOR_LEVEL_3));
+// // R1 Button → Move Elevator to LEVEL 3 position
+//   m_driverController.square()
+//   .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.ELEVATOR_LEVEL_3));
 
-// R1 Button → Move Elevator to LEVEL 4 position
-m_driverController.triangle()
-.onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.ELEVATOR_MAX));  
+// // R1 Button → Move Elevator to LEVEL 4 position
+// m_driverController.triangle()
+// .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.ELEVATOR_MAX));  
 
-// Create Button → Move wacker **UP** (While Held)
-  m_driverController.create()
-  .whileTrue(new RunCommand(() -> climberSubsystem.moveClimber(true), climberSubsystem))
-  .onFalse(new InstantCommand(climberSubsystem::stopClimber, climberSubsystem));
-// Options Button → Move wacker  **DOWN** (While Held)
-  m_driverController.options()
-  .whileTrue(new RunCommand(() -> climberSubsystem.moveClimber(false), climberSubsystem))
-  .onFalse(new InstantCommand(climberSubsystem::stopClimber, climberSubsystem));
+// // Create Button → Move wacker **UP** (While Held)
+//   m_driverController.create()
+//   .whileTrue(new RunCommand(() -> climberSubsystem.moveClimber(true), climberSubsystem))
+//   .onFalse(new InstantCommand(climberSubsystem::stopClimber, climberSubsystem));
+// // Options Button → Move wacker  **DOWN** (While Held)
+//   m_driverController.options()
+//   .whileTrue(new RunCommand(() -> climberSubsystem.moveClimber(false), climberSubsystem))
+//   .onFalse(new InstantCommand(climberSubsystem::stopClimber, climberSubsystem));
 
 // // Create Button → Move wacker to LOW position
 // m_driverController.create()
@@ -209,12 +204,13 @@ m_driverController.triangle()
     .onTrue(new InstantCommand(drivebase::zeroGyro));
 
 
-    m_driverController.R1()
-    .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem, PositionCommand.Position.ELEVATOR_INTAKEPOS));
+    // m_driverController.R1()
+    // .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem, PositionCommand.Position.ELEVATOR_INTAKEPOS));
   
     // Add a button binding for the AprilTag alignment
     // Using touchpad button for AprilTag alignment with 2.0 degree tolerance
-    m_driverController.touchpad()
+    // keeping it cross for now as all the other systems are non functional
+    m_driverController.cross()
       .onTrue(new AlignToAprilTag(drivebase, 2.0));
  
 }
