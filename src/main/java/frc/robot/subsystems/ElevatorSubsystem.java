@@ -15,6 +15,7 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Elevator;
+import dev.alphagame.LogManager;
 
 public class ElevatorSubsystem extends SubsystemBase {
 
@@ -50,6 +51,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         // Create the motors
         rightElevatorMotor = new SparkMax(Elevator.RIGHT_ELEVATOR_MOTOR_ID, MotorType.kBrushless);
         leftElevatorMotor  = new SparkMax(Elevator.LEFT_ELEVATOR_MOTOR_ID,  MotorType.kBrushless);
+        LogManager.info("Elevator subsystem initialized with motors: R=" + Elevator.RIGHT_ELEVATOR_MOTOR_ID + 
+                       ", L=" + Elevator.LEFT_ELEVATOR_MOTOR_ID);
 
         // Create the DIO limit switch for detecting bottom
        
@@ -74,11 +77,13 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         // Apply configuration
         rightElevatorMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        LogManager.debug("Right elevator motor configured with PID: P=0.85, I=0.0, D=0.0");
 
         // Configure left motor as a follower of the right motor
         SparkMaxConfig leftConfig = new SparkMaxConfig();
         leftConfig.follow(Elevator.RIGHT_ELEVATOR_MOTOR_ID);
         leftElevatorMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        LogManager.debug("Left elevator motor configured as follower");
 
         // Access the Spark's built-in closed-loop PID controller
         pidController = rightElevatorMotor.getClosedLoopController();
@@ -100,12 +105,14 @@ public class ElevatorSubsystem extends SubsystemBase {
     /** Enables manual (open-loop) mode. */
     public void enableManualMode() {
         isManualMode = true;
+        LogManager.info("Elevator manual mode enabled");
         SmartDashboard.putBoolean("Elevator Manual Mode", true);
     }
 
     /** Enables closed-loop (PID) mode. */
     public void enablePIDMode() {
         isManualMode = false;
+        LogManager.info("Elevator PID mode enabled");
         SmartDashboard.putBoolean("Elevator Manual Mode", false);
     }
 
@@ -116,11 +123,15 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void manualMove(boolean up) {
         if (isManualMode) { 
             double speed = up ? -Elevator.DEFAULT_ELEVATOR_SPEED : 0.25;
+            LogManager.debug("Manual moving elevator " + (up ? "up" : "down") + " with speed: " + speed);
             rightElevatorMotor.set(speed);
+        } else {
+            LogManager.warning("Attempted manual elevator move while in PID mode");
         }
     }
     /** Stop the elevator immediately (open-loop = 0). */
     public void stopElevator() {
+        LogManager.debug("Stopping elevator");
         rightElevatorMotor.set(0);
     }
 
@@ -131,12 +142,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void setPosition(double position) {
         if (!isManualMode) {
             targetPosition = position;
-
-            // // Optionally add feedforward to your reference.
-            // double ffVolts = feedforward.calculate(currentAngle, currentVelocity);
-            // pidController.setReference(targetPosition, ControlType.kPosition, 0, ffVolts);
-
+            LogManager.debug("Setting elevator position to: " + position + " revolutions");
             pidController.setReference(targetPosition, ControlType.kPosition);
+        } else {
+            LogManager.warning("Attempted to set elevator position while in manual mode");
         }
     }
 
@@ -157,14 +166,24 @@ public class ElevatorSubsystem extends SubsystemBase {
      * Returns true if the elevator is within "tolerance" of the last commanded target.
      */
     public boolean hasReachedTarget(double tolerance) {
-        return Math.abs(targetPosition - getElevatorPosition()) <= tolerance;
+        boolean reached = Math.abs(targetPosition - getElevatorPosition()) <= tolerance;
+        if (reached) {
+            LogManager.info("Elevator reached target position: " + targetPosition + 
+                           " (current: " + getElevatorPosition() + ", tolerance: " + tolerance + ")");
+        }
+        return reached;
     }
 
     @Override
     public void periodic() {
         // Check if we changed the manual mode on the SmartDashboard
+        boolean previousMode = isManualMode;
         isManualMode = SmartDashboard.getBoolean("Elevator Manual Mode", isManualMode);
-
+        
+        if (previousMode != isManualMode) {
+            LogManager.info("Elevator mode changed to: " + (isManualMode ? "MANUAL" : "PID"));
+        }
+        
         // If the bottom limit switch is pressed, zero the relative encoder
        
         // Show data on SmartDashboard for debugging
@@ -196,95 +215,3 @@ public class ElevatorSubsystem extends SubsystemBase {
         pidController.setReference(targetPosition, ControlType.kPosition);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// package frc.robot.subsystems;
-
-// import com.revrobotics.RelativeEncoder;
-// import com.revrobotics.spark.SparkBase.PersistMode;
-// import com.revrobotics.spark.SparkBase.ResetMode;
-// import com.revrobotics.spark.SparkLowLevel.MotorType;
-// import com.revrobotics.spark.SparkMax;
-// import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-//  import com.revrobotics.spark.config.SparkMaxConfig;
-
-// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-// import edu.wpi.first.wpilibj2.command.SubsystemBase;
-// import frc.robot.Constants.Elevator;  
-// // Note : elevator down should barely have any input from motor
-// public class ElevatorSubsystem extends SubsystemBase {
-//     private final SparkMax leftElevatorMotor;
-//     private final SparkMax rightElevatorMotor;
-//     private final RelativeEncoder primaryEncoder;
-    
-//     private double elevatorSpeed;
-//     private double elevatorDownSpeed;
-  
-
-//     public ElevatorSubsystem() {
-//         leftElevatorMotor = new SparkMax(Elevator.LEFT_ELEVATOR_MOTOR_ID, MotorType.kBrushless);
-//         rightElevatorMotor = new SparkMax(Elevator.RIGHT_ELEVATOR_MOTOR_ID, MotorType.kBrushless);
-//         primaryEncoder = rightElevatorMotor.getEncoder();
-
-        
-//         SparkMaxConfig leftConfig = new SparkMaxConfig();
-//         leftConfig
-//               .inverted(false)  
-//               .idleMode(IdleMode.kBrake)  
-//               .closedLoop.outputRange(-1.0, 1.0);  
-
-//         SparkMaxConfig rightConfig = new SparkMaxConfig();
-//         rightConfig.follow(Elevator.LEFT_ELEVATOR_MOTOR_ID);  
-
-
-//         leftElevatorMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-//         rightElevatorMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-//         elevatorSpeed = Elevator.DEFAULT_ELEVATOR_SPEED;
-
-//         elevatorDownSpeed = Elevator.ELEVATOR_DOWN_SPEED;
-    
-//         SmartDashboard.putNumber("Elevator Speed", elevatorSpeed);
-        
-//         SmartDashboard.putNumber("Elevator Down Speed",elevatorDownSpeed);
-      
-//     }
-
-    
-
-//     // Moves the elevator up or down 
-//     public void moveElevator(boolean up) {
-//         elevatorSpeed = SmartDashboard.getNumber("Elevator Speed", Elevator.DEFAULT_ELEVATOR_SPEED);
-//         elevatorDownSpeed = SmartDashboard.getNumber("Elevator Down Speed", Elevator.ELEVATOR_DOWN_SPEED);
-//         double speed = up ? -elevatorSpeed :  0.25;
-//         leftElevatorMotor.set(speed);
-//     }
-
-//     public double getElevatorPosition() {
-//                 return primaryEncoder.getPosition();
-//             }
-//     // Stops the elevator movement 
-//     public void stopElevator() {
-//         leftElevatorMotor.set(0);
-//     }
-
-//     @Override
-//         public void periodic() {
-//             //  Log elevator speed for debugging
-//             SmartDashboard.putNumber("Current Elevator Speed", elevatorSpeed);
-//             SmartDashboard.putNumber("Current Elevator Down Speed",elevatorDownSpeed );
-//             SmartDashboard.putNumber("Elevator Encoder Position", getElevatorPosition());
-//         }
-// }

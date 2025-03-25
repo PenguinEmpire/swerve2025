@@ -42,7 +42,7 @@ public class AlignToAprilTag extends Command {
         this.tolerance = tolerance;
         
         // Configure PID controller for alignment
-        this.rotationPID = new PIDController(0.3, 0.0, 0.005);
+        this.rotationPID = new PIDController(0.4, 0.0, 0.005);
         this.rotationPID.setTolerance(tolerance);
         
         // Add requirements to prevent command conflicts
@@ -118,7 +118,15 @@ public class AlignToAprilTag extends Command {
     @Override
     public boolean isFinished() {
         // Command finishes when we have a valid target and are within tolerance
+
+        // Can we see an AprilTag?  If not, exit
         boolean hasTarget = LimelightHelpers.getTV(limelightName);
+
+        if (!hasTarget) {
+            LogManager.error("No AprilTag Found!");
+            return true;
+        }
+
         double currentTx = hasTarget ? LimelightHelpers.getTX(limelightName) : Double.MAX_VALUE;
         boolean aligned = hasTarget && Math.abs(currentTx) < tolerance;
         

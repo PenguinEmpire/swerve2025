@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import dev.alphagame.LogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -63,7 +64,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    System.out.println("full auto");
+    LogManager.info("Entering fully autonomous mode");
+    LogManager.info("Autonomous command: " + m_autonomousCommand.getName());
     SmartDashboard.putBoolean("isAuto", isAutonomous());
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -81,7 +83,9 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+    LogManager.info("Entering teleoperated mode");
     if (m_autonomousCommand != null) {
+      LogManager.warning("Forcibly killing autonomous command: " + m_autonomousCommand.getName());
       m_autonomousCommand.cancel();
     }
   }

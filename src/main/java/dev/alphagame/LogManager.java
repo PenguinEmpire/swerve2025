@@ -11,6 +11,13 @@ import java.time.format.DateTimeFormatter;
 public class LogManager {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
     
+    /**
+     * Formats a log message with the current timestamp, log level, caller information, and message.
+     * 
+     * @param level The log level (e.g. INFO, DEBUG, WARN, ERROR, FATAL)
+     * @param message The log message
+     * @return The formatted log message
+     */
     private static String formatLogMessage(String level, String message) {
         // Get timestamp
         String timestamp = LocalDateTime.now().format(formatter);
@@ -22,22 +29,52 @@ public class LogManager {
         return String.format("[%s] [%s] [%s] %s", timestamp, level, callerInfo, message);
     }
 
+    /**
+     * Logs an informational message.
+     * 
+     * @param message The message to log
+     * @see #formatLogMessage(String, String)
+     */
     public static void info(String message) {
         System.out.println(formatLogMessage("INFO", message));
     }
     
+    /**
+     * Logs a debug message.
+     * 
+     * @param message The message to log
+     * @see #formatLogMessage(String, String)
+     */
     public static void debug(String message) {
         System.out.println(formatLogMessage("DEBUG", message));
     }
     
+    /**
+     * Logs a warning message.
+     * 
+     * @param message The message to log
+     * @see #formatLogMessage(String, String)
+     */
     public static void warning(String message) {
         System.out.println(formatLogMessage("WARN", message));
     }
     
+    /**
+     * Logs an error message.
+     * 
+     * @param message The message to log
+     * @see #formatLogMessage(String, String)
+     */
     public static void error(String message) {
         System.err.println(formatLogMessage("ERROR", message));
     }
     
+    /**
+     * Logs a fatal error message.
+     * 
+     * @param message The message to log
+     * @see #formatLogMessage(String, String)
+     */
     public static void fatal(String message) {
         System.err.println(formatLogMessage("FATAL", message));
     }

@@ -21,6 +21,8 @@ import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
+import dev.alphagame.LogManager;
+
 public class SwerveSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
 
@@ -30,17 +32,20 @@ SwerveDrive  swerveDrive;
 @SuppressWarnings("UseSpecificCatch")
   public SwerveSubsystem() {
   SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+  LogManager.info("Initializing Swerve Drive Subsystem");
       try
     {
       swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.MAX_SPEED,
                                                                   new Pose2d(new Translation2d(Meter.of(1),
                                                                                                Meter.of(4)),
                                                                              Rotation2d.fromDegrees(0)));
+      LogManager.info("Swerve Drive initialized successfully with max speed: " + Constants.MAX_SPEED);
       // Alternative method if you don't want to supply the conversion factor via JSON files.
       // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
 
     } catch (Exception e)
     {
+      LogManager.error("Failed to initialize Swerve Drive: " + e.getMessage());
       throw new RuntimeException(e);
     }
 
@@ -81,6 +86,7 @@ public void periodic() {
             SmartDashboard.putNumber("Module " + i + " Raw Encoder (ABS)", rawValue);
         } else {
             SmartDashboard.putString("Module " + i + " Encoder Status", "Encoder not found!");
+            LogManager.warning("Module " + i + " encoder not found!");
         }
     }
   }
@@ -96,10 +102,14 @@ public void periodic() {
   }
 
 public void driveFieldOriented(ChassisSpeeds velocity){
+  LogManager.debug("Driving field-oriented: x=" + velocity.vxMetersPerSecond + 
+                    ", y=" + velocity.vyMetersPerSecond + 
+                    ", ω=" + velocity.omegaRadiansPerSecond);
   swerveDrive.driveFieldOriented(velocity);
 }
 
 public void zeroGyro() {
+  LogManager.info("Zeroing gyro");
   swerveDrive.zeroGyro();
 }
 
@@ -107,7 +117,15 @@ public void zeroGyro() {
 
 public Command driveFieldOriented(Supplier<ChassisSpeeds> velocity) {
   return run(( ) -> {
-     swerveDrive.driveFieldOriented(velocity.get());
+    ChassisSpeeds speeds = velocity.get();
+
+    // only log if we're actually moving
+    if (speeds.vxMetersPerSecond != 0 || speeds.vyMetersPerSecond != 0 || speeds.omegaRadiansPerSecond != 0) {
+      LogManager.debug("Command driving field-oriented: x=" + speeds.vxMetersPerSecond + 
+                        ", y=" + speeds.vyMetersPerSecond + 
+                        ", w=" + speeds.omegaRadiansPerSecond);
+    }
+     swerveDrive.driveFieldOriented(speeds);
   });
 }
 
