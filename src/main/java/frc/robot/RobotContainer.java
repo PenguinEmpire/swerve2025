@@ -211,7 +211,7 @@ public class RobotContainer {
     // Using touchpad button for AprilTag alignment with 2.0 degree tolerance
     // keeping it cross for now as all the other systems are non functional
     m_driverController.cross()
-      .onTrue(new AlignToAprilTag(drivebase, 2.0));
+      .onTrue(new AlignToAprilTag(drivebase, 1));
  
 }
 

@@ -22,6 +22,7 @@ public final class Main {
    */
   public static void main(String... args) {
     LogManager.info("Starting Robot Program");
+    
     RobotBase.startRobot(Robot::new);
   }
 }

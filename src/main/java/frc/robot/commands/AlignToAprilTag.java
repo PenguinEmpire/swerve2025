@@ -20,7 +20,7 @@ public class AlignToAprilTag extends Command {
     private final SwerveSubsystem swerveSubsystem;
     private final String limelightName;
     private final double tolerance;
-    
+    private static final int CANNOT_FIND_APRIL_TAG_LIMIT = 5; // Number of cycles to wait before stopping
     // PID controller for adjusting rotation to align with target
     private final PIDController rotationPID;
     
@@ -28,6 +28,11 @@ public class AlignToAprilTag extends Command {
     private static final double MAX_ROTATION_SPEED = 1.0; // Maximum rotation speed
     @SuppressWarnings("unused")
     private static final double MAX_TRANSLATION_SPEED = 0.5; // Maximum translation speed
+    
+    // Add a counter to track how many consecutive loops the robot has been aligned
+    private int alignedCounter = 0;
+    // Number of consecutive aligned loops required to consider alignment stable
+    private static final int ALIGNMENT_STABLE_THRESHOLD = 5;
 
     /**
      * Creates a new AlignToAprilTag command.
@@ -42,7 +47,7 @@ public class AlignToAprilTag extends Command {
         this.tolerance = tolerance;
         
         // Configure PID controller for alignment
-        this.rotationPID = new PIDController(0.4, 0.0, 0.005);
+        this.rotationPID = new PIDController(0.2, 0.0, 0.005);
         this.rotationPID.setTolerance(tolerance);
         
         // Add requirements to prevent command conflicts
@@ -106,6 +111,17 @@ public class AlignToAprilTag extends Command {
             0.0,  // No sideways movement while aligning
             -finalRotationSpeed  // Negative because positive tx means we need to rotate counterclockwise
         )).execute();
+
+        // Check if we're aligned within tolerance, but don't end the command here
+        // We'll track stable alignment in isFinished()
+        boolean currentlyAligned = Math.abs(tx) < tolerance;
+        if (currentlyAligned) {
+            alignedCounter++;
+            LogManager.debug("Robot aligned for " + alignedCounter + " consecutive cycles");
+        } else {
+            // Reset counter if not aligned
+            alignedCounter = 0;
+        }
     }
 
     @Override
@@ -117,7 +133,7 @@ public class AlignToAprilTag extends Command {
 
     @Override
     public boolean isFinished() {
-        // Command finishes when we have a valid target and are within tolerance
+        // Command finishes when we have a valid target and are within tolerance for multiple consecutive cycles
 
         // Can we see an AprilTag?  If not, exit
         boolean hasTarget = LimelightHelpers.getTV(limelightName);
@@ -127,14 +143,16 @@ public class AlignToAprilTag extends Command {
             return true;
         }
 
-        double currentTx = hasTarget ? LimelightHelpers.getTX(limelightName) : Double.MAX_VALUE;
-        boolean aligned = hasTarget && Math.abs(currentTx) < tolerance;
-        
-        if (aligned) {
-            LogManager.info("AprilTag alignment complete! Final X offset: " + currentTx + " degrees");
+        // Check if we've been aligned for enough consecutive cycles to consider it stable
+        if (alignedCounter >= ALIGNMENT_STABLE_THRESHOLD) {
+            double currentTx = LimelightHelpers.getTX(limelightName);
+            LogManager.info("AprilTag alignment stable for " + alignedCounter + 
+                            " cycles! Final X offset: " + currentTx + " degrees");
+            // Do NOT send drive commands here - that's handled in execute() and end()
+            return true;
         }
         
-        return aligned;
+        return false;
     }
 }
 

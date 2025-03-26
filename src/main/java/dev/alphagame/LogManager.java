@@ -10,7 +10,9 @@ import java.time.format.DateTimeFormatter;
 
 public class LogManager {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+    private static final boolean DEBUG_ENABLED = true;
     
+
     /**
      * Formats a log message with the current timestamp, log level, caller information, and message.
      * 
@@ -35,6 +37,17 @@ public class LogManager {
     }
 
     /**
+     * Logs a debug message.
+     * 
+     * @param message The message to log
+     * @see #formatLogMessage(String, String)
+     */
+    public static void debug(String message) {
+        if (!DEBUG_ENABLED) return; // Skip debug messages if not enabled
+        System.out.println(formatLogMessage("DEBUG", message));
+    }
+    
+    /**
      * Logs an informational message.
      * 
      * @param message The message to log
@@ -42,16 +55,6 @@ public class LogManager {
      */
     public static void info(String message) {
         System.out.println(formatLogMessage("INFO", message));
-    }
-    
-    /**
-     * Logs a debug message.
-     * 
-     * @param message The message to log
-     * @see #formatLogMessage(String, String)
-     */
-    public static void debug(String message) {
-        System.out.println(formatLogMessage("DEBUG", message));
     }
     
     /**
@@ -75,7 +78,7 @@ public class LogManager {
     }
     
     /**
-     * Logs a fatal error message.
+     * Logs a fatal error message.String
      * 
      * @param message The message to log
      * @see #formatLogMessage(String, String)
