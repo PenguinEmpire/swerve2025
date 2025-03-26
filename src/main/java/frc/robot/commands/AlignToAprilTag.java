@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.SwerveSubsystem;
 import dev.alphagame.LogManager;
+import edu.wpi.first.math.geometry.Pose3d;
 
 /**
  * Command to align the robot to an AprilTag using Limelight camera feedback.
@@ -21,18 +22,18 @@ public class AlignToAprilTag extends Command {
     private final String limelightName;
     private final double tolerance;
     private static final int CANNOT_FIND_APRIL_TAG_LIMIT = 5; // Number of cycles to wait before stopping
-    // PID controller for adjusting rotation to align with target
+    
+    // PID controllers for alignment
     private final PIDController rotationPID;
+    private final PIDController lateralPID;
+    
+    // Counter to track stable alignment
+    private int alignedCounter = 0;
+    private static final int ALIGNMENT_STABLE_THRESHOLD = 5;
     
     // Constants for controlling alignment speed
     private static final double MAX_ROTATION_SPEED = 1.0; // Maximum rotation speed
-    @SuppressWarnings("unused")
-    private static final double MAX_TRANSLATION_SPEED = 0.5; // Maximum translation speed
-    
-    // Add a counter to track how many consecutive loops the robot has been aligned
-    private int alignedCounter = 0;
-    // Number of consecutive aligned loops required to consider alignment stable
-    private static final int ALIGNMENT_STABLE_THRESHOLD = 5;
+    private static final double MAX_LATERAL_SPEED = 0.5; // Maximum lateral movement speed
 
     /**
      * Creates a new AlignToAprilTag command.
@@ -46,9 +47,13 @@ public class AlignToAprilTag extends Command {
         this.limelightName = limelightName;
         this.tolerance = tolerance;
         
-        // Configure PID controller for alignment
-        this.rotationPID = new PIDController(0.2, 0.0, 0.005);
+        // Configure PID controllers for alignment
+        this.rotationPID = new PIDController(0.05, 0.0, 0.005);
         this.rotationPID.setTolerance(tolerance);
+        
+        // Add lateral movement PID controller
+        this.lateralPID = new PIDController(0.1, 0.0, 0.0);
+        this.lateralPID.setTolerance(tolerance);
         
         // Add requirements to prevent command conflicts
         addRequirements(swerveSubsystem);
@@ -66,9 +71,11 @@ public class AlignToAprilTag extends Command {
 
     @Override
     public void initialize() {
-        // Reset PID controller when command starts
+        // Reset PID controllers when command starts
         rotationPID.reset();
-        LogManager.info("AlignToAprilTag initialized, PID controller reset");
+        lateralPID.reset();
+        alignedCounter = 0;
+        LogManager.info("AlignToAprilTag initialized, PID controllers reset");
     }
 
     @Override
@@ -83,41 +90,100 @@ public class AlignToAprilTag extends Command {
             return;
         }
         
-        // Get horizontal offset to target (negative = target is to the left, positive = target is to the right)
+        // Get traditional TX value first as fallback
         double tx = LimelightHelpers.getTX(limelightName);
-        LogManager.debug("Target X offset: " + tx + " degrees");
         
-        // Calculate rotation speed using PID controller
-        double rotationSpeed = rotationPID.calculate(tx, 0);
+        // Get 3D pose data with error handling
+        double x = 0;
+        double z = 0;
+        double yawToTarget = 0;
+        boolean using3DPose = false;
         
-        // Limit rotation speed
-        double limitedRotationSpeed = Math.max(-MAX_ROTATION_SPEED, Math.min(rotationSpeed, MAX_ROTATION_SPEED));
-        if (limitedRotationSpeed != rotationSpeed) {
-            LogManager.debug("Rotation speed limited from " + rotationSpeed + " to " + limitedRotationSpeed);
+        try {
+            // Try to get 3D pose data
+            Pose3d targetPose = LimelightHelpers.getTargetPose3d_CameraSpace(limelightName);
+            
+            // Verify we got valid pose data
+            if (targetPose != null && !Double.isNaN(targetPose.getX()) && !Double.isNaN(targetPose.getZ())) {
+                // Extract position components from the target pose
+                x = targetPose.getX(); // Left/right offset (+ is right from camera's view)
+                z = targetPose.getZ(); // Depth/distance to target
+                
+                // Only use 3D data if the values are reasonably sized
+                if (Math.abs(x) < 100 && Math.abs(z) < 100 && z != 0) {
+                    double distance = Math.sqrt(x*x + z*z); // Direct distance to target
+                    yawToTarget = Math.toDegrees(Math.atan2(x, z)); // Angle from camera to target
+                    using3DPose = true;
+                    
+                    LogManager.debug(String.format("Using 3D pose - x=%.2f, z=%.2f, dist=%.2f, yaw=%.2f°", 
+                                                 x, z, distance, yawToTarget));
+                }
+            }
+        } catch (Exception e) {
+            LogManager.error("Error getting 3D pose: " + e.getMessage());
         }
         
-        // Calculate translation speed - move forward/backward based on target presence
-        // This could be enhanced with distance calculation if needed
+        // Fall back to TX values if 3D pose isn't usable
+        if (!using3DPose) {
+            LogManager.warning("3D pose data invalid, falling back to 2D tracking");
+            yawToTarget = tx; // Use TX as the yaw angle
+            x = Math.sin(Math.toRadians(tx)) * 2.0; // Approximate lateral offset based on angle
+        }
+        
+        // Debug output
+        LogManager.debug(String.format("Alignment data - tx=%.2f°, 3D yaw=%.2f°, lateral offset=%.2f", 
+                                      tx, yawToTarget, x));
+        
+        // Determine control outputs based on our position and orientation
+        double rotationSpeed, lateralSpeed;
+        
+        // Increased PID gains to ensure movement happens
+        // Rotation control - target angle should be 0 (directly facing the tag)
+        rotationSpeed = rotationPID.calculate(yawToTarget, 0) * 1.5; // Increase gain
+        
+        // Lateral control - target position should be centered (x=0)
+        lateralSpeed = lateralPID.calculate(x, 0) * 1.5; // Increase gain
+        
+        // ENSURE minimum speeds if near zero but not at target
+        if (Math.abs(yawToTarget) > tolerance/2 && Math.abs(rotationSpeed) < 0.05) {
+            rotationSpeed = Math.signum(yawToTarget) * 0.05;
+            LogManager.debug("Applying minimum rotation speed");
+        }
+        
+        if (Math.abs(x) > tolerance/2 && Math.abs(lateralSpeed) < 0.05) {
+            lateralSpeed = Math.signum(x) * 0.05;
+            LogManager.debug("Applying minimum lateral speed");
+        }
+        
+        // Limit rotation and lateral speeds
+        double limitedRotationSpeed = Math.max(-MAX_ROTATION_SPEED, Math.min(rotationSpeed, MAX_ROTATION_SPEED));
+        double limitedLateralSpeed = Math.max(-MAX_LATERAL_SPEED, Math.min(lateralSpeed, MAX_LATERAL_SPEED));
+        
+        // Forward speed remains 0 - we're only focusing on lateral and rotational alignment
         double forwardSpeed = 0.0;
         
         // Store final values for use in lambda
         final double finalRotationSpeed = limitedRotationSpeed;
+        final double finalLateralSpeed = -limitedLateralSpeed; // Note sign - depends on coordinate system
         
-        LogManager.debug("Driving with rotation speed: " + finalRotationSpeed);
+        LogManager.info("Driving with rotation speed: " + finalRotationSpeed + ", lateral speed: " + finalLateralSpeed);
         
         // Drive the robot using field-oriented control
         swerveSubsystem.driveFieldOriented(() -> new ChassisSpeeds(
-            forwardSpeed,
-            0.0,  // No sideways movement while aligning
-            -finalRotationSpeed  // Negative because positive tx means we need to rotate counterclockwise
+            forwardSpeed, 
+            finalLateralSpeed,
+            -finalRotationSpeed  // Negative because positive yaw means we need to rotate counterclockwise
         )).execute();
 
-        // Check if we're aligned within tolerance, but don't end the command here
-        // We'll track stable alignment in isFinished()
-        boolean currentlyAligned = Math.abs(tx) < tolerance;
+        // Check alignment based on distance to the ideal position (directly in front of tag)
+        boolean rotationallyAligned = Math.abs(yawToTarget) < tolerance;
+        boolean laterallyAligned = Math.abs(x) < (using3DPose ? tolerance * 0.05 : tolerance);
+        boolean currentlyAligned = rotationallyAligned && laterallyAligned;
+        
         if (currentlyAligned) {
             alignedCounter++;
-            LogManager.debug("Robot aligned for " + alignedCounter + " consecutive cycles");
+            LogManager.debug("Robot aligned for " + alignedCounter + " consecutive cycles" +
+                            " (yaw: " + yawToTarget + "°, lateral: " + x + ")");
         } else {
             // Reset counter if not aligned
             alignedCounter = 0;
@@ -133,9 +199,7 @@ public class AlignToAprilTag extends Command {
 
     @Override
     public boolean isFinished() {
-        // Command finishes when we have a valid target and are within tolerance for multiple consecutive cycles
-
-        // Can we see an AprilTag?  If not, exit
+        // Check if we have a valid target
         boolean hasTarget = LimelightHelpers.getTV(limelightName);
 
         if (!hasTarget) {
@@ -143,15 +207,13 @@ public class AlignToAprilTag extends Command {
             return true;
         }
 
-        // Check if we've been aligned for enough consecutive cycles to consider it stable
+        // Check if we've been aligned for enough consecutive cycles
         if (alignedCounter >= ALIGNMENT_STABLE_THRESHOLD) {
-            double currentTx = LimelightHelpers.getTX(limelightName);
-            LogManager.info("AprilTag alignment stable for " + alignedCounter + 
-                            " cycles! Final X offset: " + currentTx + " degrees");
-            // Do NOT send drive commands here - that's handled in execute() and end()
+            LogManager.info("AprilTag alignment complete! " + alignedCounter + " stable cycles.");
             return true;
         }
         
+        // Not yet stable for enough cycles
         return false;
     }
 }

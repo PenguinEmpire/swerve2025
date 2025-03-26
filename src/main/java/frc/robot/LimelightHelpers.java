@@ -979,6 +979,15 @@ public class LimelightHelpers {
     }
 
     /**
+     * Gets the target skew or rotation (-90 to 0 degrees).
+     * @param limelightName Name of the Limelight camera ("" for default)
+     * @return Target skew/rotation in degrees
+     */
+    public static double getTargetSkew(String limelightName) {
+        return getLimelightNTDouble(limelightName, "ts");
+    }
+
+    /**
      * T2D is an array that contains several targeting metrcis
      * @param limelightName Name of the Limelight camera
      * @return Array containing  [targetValid, targetCount, targetLatency, captureLatency, tx, ty, txnc, tync, ta, tid, targetClassIndexDetector, 
