@@ -64,23 +64,23 @@ public class PositionCommand extends Command {
                 break;
             case INTAKE_L1:
                  intakeSubsystem.setRotationPosition(Position.INTAKE_L1.getEncoderPosition());
-            case ELEVATOR_INTAKEPOS:
-                elevatorSubsystem.setPosition(Position.ELEVATOR_INTAKEPOS.getEncoderPosition());
-                break;
-            case ELEVATOR_CRUISING:
-                elevatorSubsystem.setPosition(Position.ELEVATOR_CRUISING.getEncoderPosition());
-                break;
-            case ELEVATOR_LEVEL_2:
-                elevatorSubsystem.setPosition(Position.ELEVATOR_LEVEL_2.getEncoderPosition());
-                break;
-            case ELEVATOR_LEVEL_3:
-                elevatorSubsystem.setPosition(Position.ELEVATOR_LEVEL_3.getEncoderPosition());
-                break;
-            case ELEVATOR_MAX:
-                elevatorSubsystem.setPosition(Position.ELEVATOR_MAX.getEncoderPosition());
-                break;
-            case ELEVATOR_ZERO:
-                elevatorSubsystem.setPosition(Position.ELEVATOR_ZERO.getEncoderPosition());
+            // case ELEVATOR_INTAKEPOS:
+            //     elevatorSubsystem.setPosition(Position.ELEVATOR_INTAKEPOS.getEncoderPosition());
+            //     break;
+            // case ELEVATOR_CRUISING:
+            //     elevatorSubsystem.setPosition(Position.ELEVATOR_CRUISING.getEncoderPosition());
+            //     break;
+            // case ELEVATOR_LEVEL_2:
+            //     elevatorSubsystem.setPosition(Position.ELEVATOR_LEVEL_2.getEncoderPosition());
+            //     break;
+            // case ELEVATOR_LEVEL_3:
+            //     elevatorSubsystem.setPosition(Position.ELEVATOR_LEVEL_3.getEncoderPosition());
+            //     break;
+            // case ELEVATOR_MAX:
+            //     elevatorSubsystem.setPosition(Position.ELEVATOR_MAX.getEncoderPosition());
+            //     break;
+            // case ELEVATOR_ZERO:
+            //     elevatorSubsystem.setPosition(Position.ELEVATOR_ZERO.getEncoderPosition());
             case CLIMBER_LOW:
                 climberSubsystem.setPosition(Position.CLIMBER_LOW.getEncoderPosition());
                 break;
@@ -93,7 +93,7 @@ public class PositionCommand extends Command {
     @Override
     public boolean isFinished() {
         return intakeSubsystem.hasReachedRotationTarget(0.01) ||
-                elevatorSubsystem.hasReachedTarget(0.01) ||
+                // elevatorSubsystem.hasReachedTarget(0.01) ||
                climberSubsystem.hasReachedTarget(0.01);
     }
 }
