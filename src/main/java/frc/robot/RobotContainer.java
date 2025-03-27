@@ -225,7 +225,8 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // Run the MoveForward command in autonomous
-    return drivebase.driveFieldOriented(() -> new ChassisSpeeds(1, 0, 0.0));
-  }
+    //return drivebase.driveFieldOriented(() -> new ChassisSpeeds(1, 0, 0.0)); <- Old Auto
 
+    return drivebase.getAutonomousCommand("autoTest1");
+  }
 }

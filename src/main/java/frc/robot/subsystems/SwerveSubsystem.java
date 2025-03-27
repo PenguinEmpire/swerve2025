@@ -56,7 +56,7 @@ SwerveDrive  swerveDrive;
       throw new RuntimeException(e);
     }
 
-
+    setupPathPlanner();
   }
 
   /**
@@ -204,7 +204,11 @@ public Command driveFieldOriented(Supplier<ChassisSpeeds> velocity) {
     }
      swerveDrive.driveFieldOriented(speeds);
   });
+
+  public Command getAutonomousCommand(String pathName)
+  {
+    // Create a path following command using AutoBuilder. This will also trigger event markers.
+    return new PathPlannerAuto(pathName);
+  }
 }
-
-
 }
