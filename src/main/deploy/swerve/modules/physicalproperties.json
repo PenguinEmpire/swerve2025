@@ -1,7 +1,7 @@
 {
   "optimalVoltage": 12,
-  "robotMass": 114.4,
-  "wheelGripCoefficientOfFriction": 1.50,
+  "robotMass": 80.0,
+  "wheelGripCoefficientOfFriction": 1.60,
   "currentLimit": {
     "drive": 40,
     "angle": 30
