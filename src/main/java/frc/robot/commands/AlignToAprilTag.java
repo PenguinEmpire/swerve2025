@@ -137,27 +137,14 @@ public class AlignToAprilTag extends Command {
         LogManager.debug(String.format("Alignment data - tx=%.2f°, 3D yaw=%.2f°, lateral offset=%.2f", 
                                       tx, yawToTarget, x));
         
-        // Determine control outputs based on our position and orientation
-        double rotationSpeed, lateralSpeed;
-        
-        // Increased PID gains to ensure movement happens
-        // Rotation control - target angle should be 0 (directly facing the tag)
-        rotationSpeed = rotationPID.calculate(yawToTarget, 0) * 1.5; // Increase gain
-        
-        // Lateral control - target position should be centered (x=0)
-        lateralSpeed = lateralPID.calculate(x, 0) * 1.5; // Increase gain
-        
-        // ENSURE minimum speeds if near zero but not at target
-        if (Math.abs(yawToTarget) > tolerance/2 && Math.abs(rotationSpeed) < 0.05) {
-            rotationSpeed = Math.signum(yawToTarget) * 0.05;
-            LogManager.debug("Applying minimum rotation speed");
-        }
-        
-        if (Math.abs(x) > tolerance/2 && Math.abs(lateralSpeed) < 0.05) {
-            lateralSpeed = Math.signum(x) * 0.05;
-            LogManager.debug("Applying minimum lateral speed");
-        }
-        
+        // Gradient ascent logic for lateral and rotational alignment
+        double rotationSpeed = rotationPID.calculate(yawToTarget, 0);
+        double lateralSpeed = lateralPID.calculate(x, 0);
+
+        // Apply gradient ascent scaling
+        rotationSpeed *= Math.abs(yawToTarget);
+        lateralSpeed *= Math.abs(x);
+
         // Limit rotation and lateral speeds
         double limitedRotationSpeed = Math.max(-MAX_ROTATION_SPEED, Math.min(rotationSpeed, MAX_ROTATION_SPEED));
         double limitedLateralSpeed = Math.max(-MAX_LATERAL_SPEED, Math.min(lateralSpeed, MAX_LATERAL_SPEED));
