@@ -48,6 +48,8 @@ SwerveDrive  swerveDrive;
                                                                                                Meter.of(4)),
                                                                              Rotation2d.fromDegrees(0)));
       LogManager.info("Swerve Drive initialized successfully with max speed: " + Constants.MAX_SPEED);
+      LogManager.warning("Set swerve properties");
+      swerveDrive.setHeadingCorrection(true);
       // Alternative method if you don't want to supply the conversion factor via JSON files.
       // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
 

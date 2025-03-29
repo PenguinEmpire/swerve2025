@@ -146,7 +146,7 @@ public class AlignToAprilTag extends Command {
         lateralSpeed *= Math.abs(x);
 
         // Limit rotation and lateral speeds
-        double limitedRotationSpeed = Math.max(-MAX_ROTATION_SPEED, Math.min(rotationSpeed, MAX_ROTATION_SPEED));
+        double limitedRotationSpeed = Math.max(- MAX_ROTATION_SPEED, Math.min(rotationSpeed, MAX_ROTATION_SPEED));
         double limitedLateralSpeed = Math.max(-MAX_LATERAL_SPEED, Math.min(lateralSpeed, MAX_LATERAL_SPEED));
         
         // Forward speed remains 0 - we're only focusing on lateral and rotational alignment
@@ -162,7 +162,7 @@ public class AlignToAprilTag extends Command {
         swerveSubsystem.driveFieldOriented(() -> new ChassisSpeeds(
             forwardSpeed, 
             finalLateralSpeed,
-            -finalRotationSpeed  // Negative because positive yaw means we need to rotate counterclockwise
+            finalRotationSpeed  // Negative because positive yaw means we need to rotate counterclockwise
         )).execute();
 
         // Check alignment based on distance to the ideal position (directly in front of tag)
