@@ -3,10 +3,12 @@
   "robotLength": 0.921,
   "holonomicMode": true,
   "pathFolders": [
+    "FRC 2025 Auto Paths",
     "Testing"
   ],
   "autoFolders": [
-    "New Folder"
+    "Auto Testing",
+    "FRC 2025 Autos"
   ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,
