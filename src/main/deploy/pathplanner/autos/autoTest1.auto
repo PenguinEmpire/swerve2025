@@ -7,7 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Straight Line"
+            "pathName": "MoveToReefTest"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ReturnToStart"
           }
         }
       ]
