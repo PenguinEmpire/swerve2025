@@ -9,11 +9,13 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AlignToAprilTag;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 
@@ -27,7 +29,7 @@ import swervelib.SwerveInputStream;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase = new SwerveSubsystem();
-  // private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+  private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
   // private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(); 
   // private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
   // private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(intakeSubsystem, elevatorSubsystem, climberSubsystem);
@@ -130,14 +132,14 @@ public class RobotContainer {
 
 
     //  pov up → Move Elevator **UP** (While Held)
-    // m_driverController.povUp()
-    // .whileTrue(new RunCommand(() -> elevatorSubsystem.moveElevator(true), elevatorSubsystem))
-    // .onFalse(new InstantCommand(elevatorSubsystem::stopElevator, elevatorSubsystem));
+    m_driverController.povUp()
+    .whileTrue(new RunCommand(() -> elevatorSubsystem.moveElevator(true), elevatorSubsystem))
+    .onFalse(new InstantCommand(elevatorSubsystem::stopElevator, elevatorSubsystem));
 
     // // pov down → Move Elevator **DOWN** (While Held)
-    //   m_driverController.povDown()
-    //   .whileTrue(new RunCommand(() -> elevatorSubsystem.moveElevator(false), elevatorSubsystem))
-    //   .onFalse(new InstantCommand(elevatorSubsystem::stopElevator, elevatorSubsystem));
+      m_driverController.povDown()
+      .whileTrue(new RunCommand(() -> elevatorSubsystem.moveElevator(false), elevatorSubsystem))
+      .onFalse(new InstantCommand(elevatorSubsystem::stopElevator, elevatorSubsystem));
     
      
       //  POV LEFT → Move Intake **IN**
