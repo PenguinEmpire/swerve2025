@@ -81,19 +81,15 @@ public class PositionCommand extends Command {
             //     break;
             // case ELEVATOR_ZERO:
             //     elevatorSubsystem.setPosition(Position.ELEVATOR_ZERO.getEncoderPosition());
-            case CLIMBER_LOW:
-                climberSubsystem.setPosition(Position.CLIMBER_LOW.getEncoderPosition());
-                break;
-            case CLIMBER_HIGH:
-                climberSubsystem.setPosition(Position.CLIMBER_HIGH.getEncoderPosition());
+           
                 break;
         }
     }
 
     @Override
     public boolean isFinished() {
-        return intakeSubsystem.hasReachedRotationTarget(0.01) ||
+        return intakeSubsystem.hasReachedRotationTarget(0.01);
                 // elevatorSubsystem.hasReachedTarget(0.01) ||
-               climberSubsystem.hasReachedTarget(0.01);
+     
     }
 }
