@@ -4,6 +4,7 @@
   "holonomicMode": true,
   "pathFolders": [
     "FRC 2025 Auto Paths",
+    "FRC Test Paths",
     "Testing"
   ],
   "autoFolders": [
