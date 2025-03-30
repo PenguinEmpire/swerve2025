@@ -47,9 +47,9 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("AlignToAprilTag", new AlignToAprilTag(drivebase, 1)); //Command for pathplanner which aligns runs aligntoapriltag command
   
-    autoChooser.addOption("Option 1", "FRCAuto");
-    autoChooser.addOption("Option 2", "StraightLineAuto");
-    autoChooser.addOption("Option 3", "SpinAuto");
+    autoChooser.addOption("FRC Auto 1", "FRCAuto");
+    autoChooser.addOption("Straight Line Auto", "StraightLineAuto");
+    autoChooser.addOption("Spin Auto", "SpinAuto");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
