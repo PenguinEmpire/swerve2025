@@ -48,12 +48,12 @@ public class AlignToAprilTag extends Command {
         this.tolerance = tolerance;
         
         // Configure PID controllers for alignment
-        this.rotationPID = new PIDController(0.016, 0.0, 0.00);
+        this.rotationPID = new PIDController(0.010, 0.0, 0.00);
 
         this.rotationPID.setTolerance(tolerance);
         
         // Add lateral movement PID controller
-        this.lateralPID = new PIDController(0.50, 0.0, 0.0);
+        this.lateralPID = new PIDController(0.05, 0.0, 0.0);
         this.lateralPID.setTolerance(tolerance);
 
 
