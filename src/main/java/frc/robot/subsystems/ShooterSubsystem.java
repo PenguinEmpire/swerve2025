@@ -15,6 +15,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private final SparkMax algaeBottomMotor;
 
     private final DigitalInput limitSwitch;
+    private final DigitalInput algaeLimitSwitch; 
     private final IntakeSubsystem intakeSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
     private final ClimberSubsystem climberSubsystem;
@@ -31,6 +32,7 @@ public class ShooterSubsystem extends SubsystemBase {
         algaeBottomMotor = new SparkMax(Shooter.ALGAE_BOTTOM_MOTOR_ID, MotorType.kBrushless);
 
         limitSwitch = new DigitalInput(9); // Limit switch connected to DIO Port 9
+        algaeLimitSwitch = new DigitalInput(8); // update this number
         LogManager.info("Shooter subsystem initialized with motor ID: " + Shooter.SHOOTER_MOTOR_ID);
 
         SmartDashboard.putNumber("Shooter Power", Shooter.DEFAULT_SHOOTER_POWER);
@@ -86,12 +88,23 @@ public class ShooterSubsystem extends SubsystemBase {
         return pieceDetected;
     }
 
+    public boolean algaeLimitTriggered() {
+        boolean algaeTriggered = algaeLimitSwitch.get(); // Check if switch is pressed
+        SmartDashboard.putBoolean("xAlgae Limit Triggered", algaeTriggered);
+    
+        if (algaeTriggered) {
+            LogManager.info("Algae limit switch triggered! Stopping algae shooter motors.");
+            stopAlgaeShooter();
+        }
+    
+        return algaeTriggered;
+    }
+
     @Override
     public void periodic() {
        boolean hasPiece = getPiece();
-       if (hasPiece) {
-           LogManager.debug("Shooter has game piece");
-       }
+       boolean hasAlgae = algaeLimitTriggered();  
        SmartDashboard.putBoolean("Has Piece", hasPiece); // Log on dashboard
+       SmartDashboard.putBoolean (" Has Algae", hasAlgae);
     }
 }
