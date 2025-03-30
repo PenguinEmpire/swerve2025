@@ -8,11 +8,14 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Shooter;
+import frc.robot.modules.Shootermodule;
 
 public class ShooterSubsystem extends SubsystemBase {
     private final SparkMax shooterMotor;
     private final SparkMax algaeTopMotor;
     private final SparkMax algaeBottomMotor;
+     private final Shootermodule shooterRotation;
+    
 
     private final DigitalInput limitSwitch;
     private final DigitalInput algaeLimitSwitch; 
@@ -20,6 +23,8 @@ public class ShooterSubsystem extends SubsystemBase {
     private final ElevatorSubsystem elevatorSubsystem;
     private final ClimberSubsystem climberSubsystem;
     private double shooterPower = Shooter.DEFAULT_SHOOTER_POWER;
+   
+
 
     public ShooterSubsystem(IntakeSubsystem intakeSubsystem, ElevatorSubsystem elevatorSubsystem, ClimberSubsystem climberSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
@@ -31,6 +36,8 @@ public class ShooterSubsystem extends SubsystemBase {
         algaeTopMotor = new SparkMax(Shooter.ALGAE_TOP_MOTOR_ID, MotorType.kBrushless);
         algaeBottomMotor = new SparkMax(Shooter.ALGAE_BOTTOM_MOTOR_ID, MotorType.kBrushless);
 
+         shooterRotation = new Shootermodule(" ShooterRotation", Shooter.ROTATION_MOTOR_ID); 
+
         limitSwitch = new DigitalInput(9); // Limit switch connected to DIO Port 9
         algaeLimitSwitch = new DigitalInput(8); // update this number
         LogManager.info("Shooter subsystem initialized with motor ID: " + Shooter.SHOOTER_MOTOR_ID);
@@ -38,6 +45,32 @@ public class ShooterSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Shooter Power", Shooter.DEFAULT_SHOOTER_POWER);
     }
 
+
+    public void setShooterRotationPosition(double position) {
+        LogManager.debug("Setting shooter rotation position to: " + position);
+        shooterRotation.setPosition(position);
+    }
+    
+    public void manualRotateShooter(boolean down) {
+        double rotationPower = SmartDashboard.getNumber("Shooter Rotation Power", 0.3); // default value
+        double power = down ? -rotationPower : rotationPower;
+        LogManager.debug("Manual rotating shooter: " + (down ? "down" : "up") + " with power: " + power);
+        shooterRotation.manualMove(power);
+    }
+    
+    public void stopShooterRotation() {
+        LogManager.debug("Stopping shooter rotation");
+        shooterRotation.stopMotor();
+    }
+    
+    public boolean hasReachedShooterTarget(double tolerance) {
+        boolean reached = shooterRotation.hasReachedTarget(tolerance);
+        if (reached) {
+            LogManager.info("Shooter rotation reached target position (tolerance: " + tolerance + ")");
+        }
+        return reached;
+    }
+    
     /** Runs the shooter forward (intake mode) */
     public void spinShooter(boolean intake) {
         shooterPower = SmartDashboard.getNumber("Shooter Power", shooterPower);

@@ -19,6 +19,7 @@ public class Shootermodule {
     private final String name;
     private final SparkMax motor;
     private final SparkClosedLoopController pidController;
+    
     @SuppressWarnings("unused")
     private ArmFeedforward feedforward;
     

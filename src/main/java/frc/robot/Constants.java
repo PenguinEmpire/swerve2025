@@ -52,8 +52,9 @@ public static class Shooter {
   public static final int ALGAE_TOP_MOTOR_ID = 99;
 
   public static final int ALGAE_BOTTOM_MOTOR_ID = 98;
-
+   public static final int ROTATION_MOTOR_ID = 88;
    public static final double DEFAULT_SHOOTER_POWER = 0.5;
+   public static final double DEFAULT_ROTATION_POWER = 0.3;
 }
 
 public static class Climber{ // actually using it as the wacker thing

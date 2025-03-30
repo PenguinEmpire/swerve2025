@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
 
 public class PositionCommand extends Command {
@@ -24,7 +25,13 @@ public class PositionCommand extends Command {
         ELEVATOR_LEVEL_2(-24.523),  
         ELEVATOR_LEVEL_3(-34.880),  
         ELEVATOR_MAX(-53.500),   
-        ELEVATOR_ZERO(0.0);
+        ELEVATOR_ZERO(0.0),
+
+        // shooter Positions
+
+        SHOOTER_INTAKE(0.0),
+        SHOOTER_SCORING(1.0);
+    
       
         private final double encoderPosition;
 
@@ -40,12 +47,14 @@ public class PositionCommand extends Command {
     private final IntakeSubsystem intakeSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
     private final ClimberSubsystem climberSubsystem;
+    private final ShooterSubsystem shooterSubsystem;
     private final Position pos;
 
-    public PositionCommand(IntakeSubsystem intakeSubsystem, ElevatorSubsystem elevatorSubsystem, ClimberSubsystem climberSubsystem, Position pos) {
+    public PositionCommand(IntakeSubsystem intakeSubsystem, ElevatorSubsystem elevatorSubsystem, ClimberSubsystem climberSubsystem, ShooterSubsystem shooterSubsystem,Position pos) {
         this.intakeSubsystem = intakeSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
         this.climberSubsystem = climberSubsystem;
+        this.shooterSubsystem = shooterSubsystem;
         this.pos = pos;
         addRequirements(intakeSubsystem, elevatorSubsystem, climberSubsystem);
     }
@@ -81,6 +90,8 @@ public class PositionCommand extends Command {
             //     break;
             // case ELEVATOR_ZERO:
             //     elevatorSubsystem.setPosition(Position.ELEVATOR_ZERO.getEncoderPosition());
+          // case SHOOTER_INTAKE:
+                // shooterSubsystem.setShooterRotationPosition(Position.SHOOTER_INTAKE.getEncoderPosition());
            
                 break;
         }
@@ -88,8 +99,8 @@ public class PositionCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return intakeSubsystem.hasReachedRotationTarget(0.01);
-                // elevatorSubsystem.hasReachedTarget(0.01) ||
+         return intakeSubsystem.hasReachedRotationTarget(0.01);
+        //   || elevatorSubsystem.hasReachedTarget(0.01) || shooterSubsystem.hasReachedShooterTarget(0.01);
      
     }
 }
