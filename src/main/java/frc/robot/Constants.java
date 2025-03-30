@@ -49,6 +49,10 @@ public static class Elevator {
 public static class Shooter {  
   public static final int SHOOTER_MOTOR_ID = 22;  // Confirm the ID
 
+  public static final int ALGAE_TOP_MOTOR_ID = 99;
+
+  public static final int ALGAE_BOTTOM_MOTOR_ID = 98;
+
    public static final double DEFAULT_SHOOTER_POWER = 0.5;
 }
 

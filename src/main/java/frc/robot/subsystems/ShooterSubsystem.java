@@ -3,14 +3,17 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
+import dev.alphagame.LogManager;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Shooter;
-import dev.alphagame.LogManager;
 
 public class ShooterSubsystem extends SubsystemBase {
     private final SparkMax shooterMotor;
+    private final SparkMax algaeTopMotor;
+    private final SparkMax algaeBottomMotor;
+
     private final DigitalInput limitSwitch;
     private final IntakeSubsystem intakeSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
@@ -23,6 +26,10 @@ public class ShooterSubsystem extends SubsystemBase {
         this.climberSubsystem = climberSubsystem;
 
         shooterMotor = new SparkMax(Shooter.SHOOTER_MOTOR_ID, MotorType.kBrushless);
+
+        algaeTopMotor = new SparkMax(Shooter.ALGAE_TOP_MOTOR_ID, MotorType.kBrushless);
+        algaeBottomMotor = new SparkMax(Shooter.ALGAE_BOTTOM_MOTOR_ID, MotorType.kBrushless);
+
         limitSwitch = new DigitalInput(9); // Limit switch connected to DIO Port 9
         LogManager.info("Shooter subsystem initialized with motor ID: " + Shooter.SHOOTER_MOTOR_ID);
 
@@ -43,6 +50,21 @@ public class ShooterSubsystem extends SubsystemBase {
         LogManager.debug("Stopping shooter");
         shooterMotor.set(0.0);
     }
+
+
+    public void spinAlgaeShooter(double power) {
+        LogManager.debug("Spinning algae shooter motors at power: " + power);
+        algaeTopMotor.set(power);
+        algaeBottomMotor.set(power);
+    }
+
+    // 🔽 Method to stop both algae shooter motors
+    public void stopAlgaeShooter() {
+        LogManager.debug("Stopping algae shooter motors");
+        algaeTopMotor.set(0.0);
+        algaeBottomMotor.set(0.0);
+    }
+
 
     public boolean getPiece() {
         boolean pieceDetected = limitSwitch.get(); // Check if the limit switch is triggered
