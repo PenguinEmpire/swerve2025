@@ -6,6 +6,8 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
@@ -24,6 +26,7 @@ import swervelib.SwerveInputStream;
  * subsystems, commands, and trigger mappings) should be declared here. 
  */
 public class RobotContainer {
+  private final SendableChooser<String> autoChooser = new SendableChooser<>();
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase = new SwerveSubsystem();
   // private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
@@ -43,6 +46,12 @@ public class RobotContainer {
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
 
     NamedCommands.registerCommand("AlignToAprilTag", new AlignToAprilTag(drivebase, 1)); //Command for pathplanner which aligns runs aligntoapriltag command
+  
+    autoChooser.addOption("Option 1", "FRCAuto");
+    autoChooser.addOption("Option 2", "StraightLineAuto");
+    autoChooser.addOption("Option 3", "SpinAuto");
+
+    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 // if this doesnt work swap the x and y
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
@@ -231,6 +240,6 @@ public class RobotContainer {
     // Run the MoveForward command in autonomous
     //return drivebase.driveFieldOriented(() -> new ChassisSpeeds(1, 0, 0.0)); <- Old Auto
 
-    return drivebase.getAutonomousCommand("autoTest1");
+    return drivebase.getAutonomousCommand(autoChooser.getSelected());
   }
 }

@@ -7,13 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "MoveToReefTest"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ReturnToStart"
+            "pathName": "Spin Loop Test"
           }
         }
       ]
