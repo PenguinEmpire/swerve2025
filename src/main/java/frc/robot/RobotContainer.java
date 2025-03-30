@@ -49,7 +49,8 @@ public class RobotContainer {
   
     autoChooser.addOption("FRC Auto 1", "FRCAuto");
     autoChooser.addOption("Straight Line Auto", "StraightLineAuto");
-    autoChooser.addOption("Spin Auto", "SpinAuto");
+    autoChooser.addOption("Big Spin Auto", "BigSpinAuto");
+    autoChooser.addOption("Little Spin Auto", "LittleSpinAuto");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
