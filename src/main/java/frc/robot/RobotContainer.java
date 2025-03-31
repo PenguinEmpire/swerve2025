@@ -10,14 +10,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.AlignToAprilTag;
+import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.subsystems.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 
+import frc.robot.BooleanReference;
+import frc.robot.commands.SwerveDriveCommand;;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -35,6 +38,8 @@ public class RobotContainer {
   // private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(intakeSubsystem, elevatorSubsystem, climberSubsystem);
   // private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
  
+  BooleanReference crossPressed = new BooleanReference(false);
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandPS5Controller m_driverController = 
       new CommandPS5Controller(OperatorConstants.CONTROLLER_PORT);
@@ -43,10 +48,12 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
-    drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
+    drivebase.setDefaultCommand(new SwerveDriveCommand(drivebase, driveAngularVelocity, crossPressed));
+    //drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
 
-    NamedCommands.registerCommand("AlignToAprilTag", new AlignToAprilTag(drivebase, 1)); //Command for pathplanner which aligns runs aligntoapriltag command
-  
+    System.out.println("Container pressed ref: ");
+    System.out.println(crossPressed);
+
     autoChooser.addOption("FRC Auto 1", "FRCAuto");
     autoChooser.addOption("Straight Line Auto", "StraightLineAuto");
     autoChooser.addOption("Big Spin Auto", "BigSpinAuto");
@@ -55,6 +62,7 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 // if this doesnt work swap the x and y
+
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
     () -> m_driverController.getLeftY() * -1  , // Forward/Backward 
     () -> m_driverController.getLeftX()  * -1 ) // Strafe
@@ -67,12 +75,12 @@ public class RobotContainer {
   SwerveInputStream driveDirectAngle = driveAngularVelocity.copy()
                                                          .withControllerHeadingAxis(m_driverController::getRightX, m_driverController::getRightY)
                                                          .headingWhile(true);
-                                                               
-  
+                                                                
   Command driveFieldOrientedDirectAngle = drivebase.driveFieldOriented(driveDirectAngle);
 
   Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
-  /**
+
+  /*
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
    * predicate, or via the named factories in {@link
@@ -215,7 +223,7 @@ public class RobotContainer {
 
   // zeros the gyro 
   m_driverController.L3()
-    .onTrue(new InstantCommand(drivebase::zeroGyro));
+  .onTrue(new InstantCommand(drivebase::zeroGyro));
 
 
     // m_driverController.R1()
@@ -224,9 +232,14 @@ public class RobotContainer {
     // Add a button binding for the AprilTag alignment
     // Using touchpad button for AprilTag alignment with 2.0 degree tolerance
     // keeping it cross for now as all the other systems are non functional
+
     m_driverController.cross()
-      .onTrue(new AlignToAprilTag(drivebase, 1));
- 
+      .whileTrue(new InstantCommand(() -> {
+        crossPressed.bool = true;
+      }))
+      .onFalse(new InstantCommand(() -> {
+        crossPressed.bool = false;
+      }));
 }
 
 
