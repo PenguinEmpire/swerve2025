@@ -193,6 +193,10 @@ public void zeroGyro() {
   swerveDrive.zeroGyro();
 }
 
+public Pose2d getPose()
+{
+  return swerveDrive.getPose();
+}
 
 
 public Command driveFieldOriented(Supplier<ChassisSpeeds> velocity) {
@@ -205,6 +209,7 @@ public Command driveFieldOriented(Supplier<ChassisSpeeds> velocity) {
                         ", y=" + speeds.vyMetersPerSecond + 
                         ", w=" + speeds.omegaRadiansPerSecond);
     }
+
      swerveDrive.driveFieldOriented(speeds);
   });
 }
