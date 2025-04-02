@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.SwerveDriveCommand;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 ;
@@ -31,7 +32,7 @@ public class RobotContainer {
   // private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(); 
   // private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
   // private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(intakeSubsystem, elevatorSubsystem, climberSubsystem);
-  // private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
+   private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
  
   BooleanReference crossPressed = new BooleanReference(false);
 
@@ -199,22 +200,18 @@ public class RobotContainer {
 // m_driverController.triangle()
 // .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.ELEVATOR_MAX));  
 
-// // Create Button → Move wacker **UP** (While Held)
-//   m_driverController.create()
-//   .whileTrue(new RunCommand(() -> climberSubsystem.moveClimber(true), climberSubsystem))
-//   .onFalse(new InstantCommand(climberSubsystem::stopClimber, climberSubsystem));
-// // Options Button → Move wacker  **DOWN** (While Held)
-//   m_driverController.options()
-//   .whileTrue(new RunCommand(() -> climberSubsystem.moveClimber(false), climberSubsystem))
-//   .onFalse(new InstantCommand(climberSubsystem::stopClimber, climberSubsystem));
+ 
 
-// // Create Button → Move wacker to LOW position
-// m_driverController.create()
-//   .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.CLIMBER_LOW));
+// Create Button → Move climber UP
+m_driverController.create()
+    .onTrue(new InstantCommand(() -> climberSubsystem.moveUp(), climberSubsystem))
+    .onFalse(new InstantCommand(() -> climberSubsystem.stop(), climberSubsystem));
 
-// // Options Button → Move wacker to HIGH position
-// m_driverController.options()
-//   .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.CLIMBER_HIGH));
+// Options Button → Move climber DOWN
+m_driverController.options()
+    .onTrue(new InstantCommand(() -> climberSubsystem.moveDown(), climberSubsystem))
+    .onFalse(new InstantCommand(() -> climberSubsystem.stop(), climberSubsystem));
+
 
   // zeros the gyro 
   m_driverController.L3()
