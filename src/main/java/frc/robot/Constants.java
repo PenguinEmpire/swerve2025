@@ -58,7 +58,7 @@ public static class Shooter {
 }
 
 public static class Climber{ // actually using it as the wacker thing
-  public static final int CLIMBER_MOTOR_ID = 31;
+  public static final int CLIMBER_MOTOR_ID = 0;
   public static final double DEFAULT_CLIMBER_POWER = 0.3;
 }
 public static final double MAX_SPEED = Units.feetToMeters(14.5); // potentially change to 14.5
