@@ -232,7 +232,23 @@ m_driverController.options()
       .onFalse(new InstantCommand(() -> {
         crossPressed.bool = false;
       }));
+
+      // Square → Manual Control of Shooter Pivot (Hold = Move Up) ( make it false to spin the other way)
+// m_driverController.square()
+//   .whileTrue(new RunCommand(() -> shooterSubsystem.manualRotateShooter(false), shooterSubsystem))
+//   .onFalse(new InstantCommand(shooterSubsystem::stopShooterRotation, shooterSubsystem));
+
+// binds to run the algae motors forward and reverse
+// m_driverController.triangle()
+//     .whileTrue(new RunCommand(() -> shooterSubsystem.spinAlgaeShooter(0.5), shooterSubsystem))  // Adjust power if needed
+//     .onFalse(new InstantCommand(() -> shooterSubsystem.stopAlgaeShooter(), shooterSubsystem));
+
+// // Circle → Run Algae Motors REVERSE while held
+// m_driverController.circle()
+//     .whileTrue(new RunCommand(() -> shooterSubsystem.spinAlgaeShooter(-0.5), shooterSubsystem)) // Reverse power
+//     .onFalse(new InstantCommand(() -> shooterSubsystem.stopAlgaeShooter(), shooterSubsystem));
 }
+
 
 
 
