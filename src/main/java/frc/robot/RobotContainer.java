@@ -10,10 +10,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 ;
@@ -29,7 +31,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase = new SwerveSubsystem();
   // private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
-  // private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(); 
+   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(); 
   // private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
   // private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(intakeSubsystem, elevatorSubsystem, climberSubsystem);
    private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
@@ -96,7 +98,14 @@ public class RobotContainer {
         //     intakeSubsystem.stopAllRollers();  // Stop intake rollers
         //     shooterSubsystem.stopShooter();    // Stop shooter motor
         // }, intakeSubsystem, shooterSubsystem));
-
+        
+        m_driverController.L2()
+        .whileTrue(new RunCommand(() -> {
+            intakeSubsystem.spinRollers(true);   // Run intake rollers
+        }, intakeSubsystem))
+        .onFalse(new InstantCommand(() -> {
+            intakeSubsystem.stopAllRollers();  // Stop intake rollers
+        }, intakeSubsystem));
 
 
     // m_driverController.L2()
@@ -120,15 +129,24 @@ public class RobotContainer {
     // );
 
     //l1 for outtake - Runs while button is held
-//        m_driverController.L1()
-//         .whileTrue(new RunCommand(() -> {
-//             intakeSubsystem.spinRollers(false);  // Run outtake rollers
-//             shooterSubsystem.spinShooter(false); // Run shooter motor in reverse for outtake
-//         }, intakeSubsystem, shooterSubsystem))
-//         .onFalse(new InstantCommand(() -> {
-//             intakeSubsystem.stopAllRollers();  // Stop intake rollers
-//             shooterSubsystem.stopShooter();    // Stop shooter motor
-//         }, intakeSubsystem, shooterSubsystem));
+      //  m_driverController.L1()
+      //   .whileTrue(new RunCommand(() -> {
+      //       intakeSubsystem.spinRollers(false);  // Run outtake rollers
+      //       // shooterSubsystem.spinShooter(false); // Run shooter motor in reverse for outtake
+      //   }, intakeSubsystem, shooterSubsystem))
+      //   .onFalse(new InstantCommand(() -> {
+      //       intakeSubsystem.stopAllRollers();  // Stop intake rollers
+      //       // shooterSubsystem.stopShooter();    // Stop shooter motor
+      //   }, intakeSubsystem, shooterSubsystem));
+
+      m_driverController.L1()
+        .whileTrue(new RunCommand(() -> {
+            intakeSubsystem.spinRollers(false);  // Run outtake rollers
+        }, intakeSubsystem))
+        .onFalse(new InstantCommand(() -> {
+            intakeSubsystem.stopAllRollers();  // Stop intake rollers
+        }, intakeSubsystem));
+
 // // r2 to shoot piece out
 //         m_driverController.R2()
 //         .whileTrue(new RunCommand(() -> {
@@ -161,14 +179,14 @@ public class RobotContainer {
     //   .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.INTAKE_OUT));
 
 //     //  POV UP → Slowly Rotate Intake UP (While Held)
-//     m_driverController.povUp()
-//       .whileTrue(new RunCommand(() -> intakeSubsystem.moveE(false), intakeSubsystem))
-//       .onFalse(new InstantCommand(intakeSubsystem::stopManualRotate, intakeSubsystem));
+    m_driverController.povUp()
+      .whileTrue(new RunCommand(() -> intakeSubsystem.manualRotate(false), intakeSubsystem))
+      .onFalse(new InstantCommand(intakeSubsystem::stopManualRotate, intakeSubsystem));
 
 // //  POV DOWN → Slowly Rotate Intake DOWN (While Held)
-//     m_driverController.povDown()
-//     .whileTrue(new RunCommand(() -> intakeSubsystem.manualRotate(true), intakeSubsystem))
-//     .onFalse(new InstantCommand(intakeSubsystem::stopManualRotate, intakeSubsystem));
+    m_driverController.povDown()
+    .whileTrue(new RunCommand(() -> intakeSubsystem.manualRotate(true), intakeSubsystem))
+    .onFalse(new InstantCommand(intakeSubsystem::stopManualRotate, intakeSubsystem));
 
 // circleButton → Move Elevator to LOW position
  
