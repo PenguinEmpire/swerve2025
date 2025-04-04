@@ -108,8 +108,11 @@ public void periodic() {
     // This method will be called once per scheduler run during simulation
   }
   
+  private static boolean isZeroVelocity(ChassisSpeeds speeds) {
+    return Math.abs(speeds.vxMetersPerSecond) < 0.01 && Math.abs(speeds.vyMetersPerSecond) < 0.01 && Math.abs(speeds.omegaRadiansPerSecond) < 0.01;
+  }
 
-    public void setupPathPlanner()
+  public void setupPathPlanner()
   {
     // Load the RobotConfig from the GUI settings. You should probably
     // store this in your Constants file
@@ -182,10 +185,13 @@ public void periodic() {
    return swerveDrive;
   }
 
+@SuppressWarnings("unused")
 public void driveFieldOriented(ChassisSpeeds velocity){
-  LogManager.debug("Driving field-oriented: x=" + velocity.vxMetersPerSecond + 
-                    ", y=" + velocity.vyMetersPerSecond + 
-                    ", ω=" + velocity.omegaRadiansPerSecond);
+  if (!isZeroVelocity(velocity) && Constants.Logging.DO_SWERVE_NOISY_LOGGING) {
+    LogManager.debug("Driving field-oriented: x=" + velocity.vxMetersPerSecond + 
+                      ", y=" + velocity.vyMetersPerSecond + 
+                      ", ω=" + velocity.omegaRadiansPerSecond);
+  }
   swerveDrive.driveFieldOriented(velocity);
 }
 
@@ -200,19 +206,21 @@ public Pose2d getPose()
 }
 
 
+@SuppressWarnings("unused") // "dead code" raised because of the config being constant (not changing at runtime)
 public Command driveFieldOriented(Supplier<ChassisSpeeds> velocity) {
   return run(( ) -> {
     ChassisSpeeds speeds = velocity.get();
 
     // only log if we're actually moving
-    if (speeds.vxMetersPerSecond != 0 || speeds.vyMetersPerSecond != 0 || speeds.omegaRadiansPerSecond != 0) {
+    
+    if (!isZeroVelocity(speeds) && Constants.Logging.DO_SWERVE_NOISY_LOGGING) {
       LogManager.debug("Command driving field-oriented: x=" + speeds.vxMetersPerSecond + 
                         ", y=" + speeds.vyMetersPerSecond + 
                         ", w=" + speeds.omegaRadiansPerSecond);
     }
-
-     swerveDrive.driveFieldOriented(speeds);
+    swerveDrive.driveFieldOriented(speeds);
   });
+
 }
 public Command getAutonomousCommand(String pathName)
 {
