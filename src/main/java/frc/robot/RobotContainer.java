@@ -46,16 +46,15 @@ public class RobotContainer {
     configureBindings();
     drivebase.setDefaultCommand(new SwerveDriveCommand(drivebase, driveAngularVelocity, crossPressed));
     //drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
-
-    System.out.println("Container pressed ref: ");
-    System.out.println(crossPressed);
-
     autoChooser.addOption("FRC Auto 1", "FRCAuto");
     autoChooser.addOption("Straight Line Auto", "StraightLineAuto");
     autoChooser.addOption("Big Spin Auto", "BigSpinAuto");
     autoChooser.addOption("Little Spin Auto", "LittleSpinAuto");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
+    SmartDashboard.putBoolean("LOffset", false);
+    SmartDashboard.putBoolean("ROffset", false);
+
   }
 // if this doesnt work swap the x and y
 
