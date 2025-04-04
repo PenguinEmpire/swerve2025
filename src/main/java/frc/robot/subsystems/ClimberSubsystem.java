@@ -15,20 +15,18 @@ import frc.robot.Constants.Climber;
 public class ClimberSubsystem extends SubsystemBase {
     private final TalonFX climberMotor;
 
-
-
     public ClimberSubsystem() {
         // Instantiate the TalonFX device
         climberMotor = new TalonFX(Climber.CLIMBER_MOTOR_ID);
 
-        //  Factory default  then configure
+        // Factory default then configure
         TalonFXConfiguration initialFactoryDefault = new TalonFXConfiguration();
         StatusCode factoryDefaultStatus = climberMotor.getConfigurator().apply(initialFactoryDefault);
         if (!factoryDefaultStatus.isOK()) {
             System.err.println("Could not factory-default TalonFX: " + factoryDefaultStatus);
         }
 
-        //  Create a TalonFXConfiguration for permanent settings
+        // Create a TalonFXConfiguration for permanent settings
         TalonFXConfiguration talonConfig = new TalonFXConfiguration();
 
         // Configure motor output settings
@@ -36,7 +34,7 @@ public class ClimberSubsystem extends SubsystemBase {
         // Brake or Coast for neutral
         motorOutput.NeutralMode = NeutralModeValue.Brake;
         // Choose the direction for "positive" outputs
-        motorOutput.Inverted = InvertedValue.CounterClockwise_Positive; 
+        motorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         // Or use Clockwise_Positive if your motor spins the other way
 
         // Apply those motor output settings
@@ -49,23 +47,22 @@ public class ClimberSubsystem extends SubsystemBase {
         }
     }
 
-   public void moveUp() {
-    double power = SmartDashboard.getNumber("Climber Power", 0.5); 
-    climberMotor.setControl(new DutyCycleOut(power));
-    } 
-
-public void moveDown() {
-    double power = SmartDashboard.getNumber("Climber Power", 0.5);
-    climberMotor.setControl(new DutyCycleOut(-power));
+    public void moveUp() {
+        double power = SmartDashboard.getNumber("Climber Power", 0.5);
+        climberMotor.setControl(new DutyCycleOut(power));
     }
 
-  
+    public void moveDown() {
+        double power = SmartDashboard.getNumber("Climber Power", 0.5);
+        climberMotor.setControl(new DutyCycleOut(-power));
+    }
+
     public void stop() {
         climberMotor.setControl(new DutyCycleOut(0.0));
     }
 
     @Override
     public void periodic() {
-     
+
     }
 }
