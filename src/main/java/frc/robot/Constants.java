@@ -15,6 +15,10 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static class Logging {
+    public static final boolean DO_SWERVE_NOISY_LOGGING = false;
+  }
+  
   public static class OperatorConstants {
     public static final int CONTROLLER_PORT = 0;
     public static final double DEADBAND = 0.05;
