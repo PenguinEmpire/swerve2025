@@ -42,25 +42,24 @@ public class ElevatorSubsystem extends SubsystemBase {
     public ElevatorSubsystem() {
         // Create the motors
         rightElevatorMotor = new SparkMax(Elevator.RIGHT_ELEVATOR_MOTOR_ID, MotorType.kBrushless);
-        leftElevatorMotor  = new SparkMax(Elevator.LEFT_ELEVATOR_MOTOR_ID,  MotorType.kBrushless);
-        
+        leftElevatorMotor = new SparkMax(Elevator.LEFT_ELEVATOR_MOTOR_ID, MotorType.kBrushless);
+
         // Grab the built-in SparkMax relative encoder from the right motor
         primaryEncoder = rightElevatorMotor.getEncoder();
 
         // Configure right motor
         SparkMaxConfig rightConfig = new SparkMaxConfig();
         rightConfig
-            .inverted(false)
-            .idleMode(IdleMode.kBrake)
-            .closedLoop
+                .inverted(false)
+                .idleMode(IdleMode.kBrake).closedLoop
                 // Use kPrimaryEncoder for the built-in relative encoder
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                .pid(0.4, 0.0, 0.0) 
+                .pid(0.4, 0.0, 0.0)
                 .positionWrappingEnabled(false)
                 .outputRange(-0.4, 0.4);
 
         rightElevatorMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-       
+
         // Configure left motor as a follower of the right motor
         SparkMaxConfig leftConfig = new SparkMaxConfig();
         leftConfig.follow(Elevator.RIGHT_ELEVATOR_MOTOR_ID,true);
@@ -103,24 +102,21 @@ public class ElevatorSubsystem extends SubsystemBase {
         rightElevatorMotor.set(0);
     }
 
- 
     public void setPosition(double position) {
         targetPosition = position;
         LogManager.debug("Setting elevator position to: " + position + " revolutions");
         pidController.setReference(targetPosition, ControlType.kPosition);
     }
 
-   
     public double getElevatorPosition() {
         return primaryEncoder.getPosition();
     }
 
-  
     public boolean hasReachedTarget(double tolerance) {
         boolean reached = Math.abs(targetPosition - getElevatorPosition()) <= tolerance;
         if (reached) {
-            LogManager.info("Elevator reached target position: " + targetPosition 
-                           + " (current: " + getElevatorPosition() + ", tolerance: " + tolerance + ")");
+            LogManager.info("Elevator reached target position: " + targetPosition
+                    + " (current: " + getElevatorPosition() + ", tolerance: " + tolerance + ")");
         }
         return reached;
     }
@@ -136,12 +132,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 }
 
-
-
-
-
-
-
 // package frc.robot.subsystems;
 
 // import com.revrobotics.AbsoluteEncoder;
@@ -154,7 +144,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj2.command.SubsystemBase;
-// import frc.robot.Constants.Elevator;  
+// import frc.robot.Constants.Elevator;
 // // Note : elevator down should barely have any input from motor
 // public class ElevatorSubsystem extends SubsystemBase {
 //     private final SparkMax leftElevatorMotor;
@@ -173,25 +163,29 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   
 
-//     public ElevatorSubsystem() {
-//         leftElevatorMotor = new SparkMax(Elevator.LEFT_ELEVATOR_MOTOR_ID, MotorType.kBrushless);
-//         rightElevatorMotor = new SparkMax(Elevator.RIGHT_ELEVATOR_MOTOR_ID, MotorType.kBrushless);
-//         elevatorEncoder = rightElevatorMotor.getAbsoluteEncoder();
-        
-//         SparkMaxConfig leftConfig = new SparkMaxConfig();
-//         leftConfig
-//               .inverted(false)  
-//               .idleMode(IdleMode.kBrake)  
-//               .closedLoop.outputRange(-1.0, 1.0);  
+// public ElevatorSubsystem() {
+// leftElevatorMotor = new SparkMax(Elevator.LEFT_ELEVATOR_MOTOR_ID,
+// MotorType.kBrushless);
+// rightElevatorMotor = new SparkMax(Elevator.RIGHT_ELEVATOR_MOTOR_ID,
+// MotorType.kBrushless);
+// elevatorEncoder = rightElevatorMotor.getAbsoluteEncoder();
+
+// SparkMaxConfig leftConfig = new SparkMaxConfig();
+// leftConfig
+// .inverted(false)
+// .idleMode(IdleMode.kBrake)
+// .closedLoop.outputRange(-1.0, 1.0);
 
 //         SparkMaxConfig rightConfig = new SparkMaxConfig();
         
 
 
-//         leftElevatorMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-//         rightElevatorMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+// leftElevatorMotor.configure(leftConfig, ResetMode.kResetSafeParameters,
+// PersistMode.kPersistParameters);
+// rightElevatorMotor.configure(rightConfig, ResetMode.kResetSafeParameters,
+// PersistMode.kPersistParameters);
 
-//         elevatorSpeed = Elevator.DEFAULT_ELEVATOR_SPEED;
+// elevatorSpeed = Elevator.DEFAULT_ELEVATOR_SPEED;
 
 //         elevatorDownSpeed = Elevator.ELEVATOR_DOWN_SPEED;
 
@@ -218,19 +212,19 @@ public class ElevatorSubsystem extends SubsystemBase {
 //         rightElevatorMotor.set(-speed);
 //     }
 
-//     public double getElevatorPosition() {
-//                 return elevatorEncoder.getPosition();
-//             }
-//     // Stops the elevator movement 
-//     public void stopElevator() {
-//         leftElevatorMotor.set(0);
-//     }
+// public double getElevatorPosition() {
+// return elevatorEncoder.getPosition();
+// }
+// // Stops the elevator movement
+// public void stopElevator() {
+// leftElevatorMotor.set(0);
+// }
 
-//     @Override
-//         public void periodic() {
-//             //  Log elevator speed for debugging
-//             SmartDashboard.putNumber("Current Elevator Speed", elevatorSpeed);
-//             SmartDashboard.putNumber("Current Elevator Down Speed",elevatorDownSpeed );
-//             SmartDashboard.putNumber("Elevator Encoder Position", getElevatorPosition());
-//         }
+// @Override
+// public void periodic() {
+// // Log elevator speed for debugging
+// SmartDashboard.putNumber("Current Elevator Speed", elevatorSpeed);
+// SmartDashboard.putNumber("Current Elevator Down Speed",elevatorDownSpeed );
+// SmartDashboard.putNumber("Elevator Encoder Position", getElevatorPosition());
+// }
 // }

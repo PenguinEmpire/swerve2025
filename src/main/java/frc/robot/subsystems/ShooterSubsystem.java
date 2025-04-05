@@ -14,19 +14,17 @@ public class ShooterSubsystem extends SubsystemBase {
     private final SparkMax shooterMotor;
     // private final SparkMax algaeTopMotor;
 
-     private final Shootermodule shooterRotation;
-    
+    private final Shootermodule shooterRotation;
 
     private final DigitalInput limitSwitch;
-   
+
     private final IntakeSubsystem intakeSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
     private final ClimberSubsystem climberSubsystem;
     private double shooterPower = Shooter.DEFAULT_SHOOTER_POWER;
-   
 
-
-    public ShooterSubsystem(IntakeSubsystem intakeSubsystem, ElevatorSubsystem elevatorSubsystem, ClimberSubsystem climberSubsystem) {
+    public ShooterSubsystem(IntakeSubsystem intakeSubsystem, ElevatorSubsystem elevatorSubsystem,
+            ClimberSubsystem climberSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
         this.climberSubsystem = climberSubsystem;
@@ -42,24 +40,23 @@ public class ShooterSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Shooter Power", Shooter.DEFAULT_SHOOTER_POWER);
     }
 
-
     public void setShooterRotationPosition(double position) {
         LogManager.debug("Setting shooter rotation position to: " + position);
         shooterRotation.setPosition(position);
     }
-    
+
     public void manualRotateShooter(boolean down) {
         double rotationPower = SmartDashboard.getNumber("Shooter Rotation Power", 0.3); // default value
         double power = down ? -rotationPower : rotationPower;
         LogManager.debug("Manual rotating shooter: " + (down ? "down" : "up") + " with power: " + power);
         shooterRotation.manualMove(power);
     }
-    
+
     public void stopShooterRotation() {
         LogManager.debug("Stopping shooter rotation");
         shooterRotation.stopMotor();
     }
-    
+
     public boolean hasReachedShooterTarget(double tolerance) {
         boolean reached = shooterRotation.hasReachedTarget(tolerance);
         if (reached) {
@@ -67,11 +64,11 @@ public class ShooterSubsystem extends SubsystemBase {
         }
         return reached;
     }
-    
+
     /** Runs the shooter forward (intake mode) */
     public void spinShooter(boolean intake) {
         shooterPower = SmartDashboard.getNumber("Shooter Power", shooterPower);
-        
+
         double power = intake ? shooterPower : -shooterPower;
         LogManager.debug("Spinning shooter with power: " + power + " (intake mode: " + intake + ")");
         shooterMotor.set(power);
@@ -110,8 +107,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
             // Move Elevator to Cruising position and then Retract Intake
             // new SequentialCommandGroup(
-            //     new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.ELEVATOR_CRUISING), // Move elevator up first
-            //     new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.INTAKE_IN) // Then retract intake
+            // new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem,
+            // PositionCommand.Position.ELEVATOR_CRUISING), // Move elevator up first
+            // new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem,
+            // PositionCommand.Position.INTAKE_IN) // Then retract intake
             // ).schedule();
         }
 
