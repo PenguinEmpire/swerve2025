@@ -26,16 +26,16 @@ public final class Constants {
   }
   
   public static class Intake { //check rotation motor id and also bore encoder, most likely plugged into sparkmax
-    public static final int HORIZONTAL_ROLLER_MOTOR_ID = 20;
-    public static final int LEFT_VERTICAL_ROLLER_MOTOR_ID = 5;
+    public static final int HORIZONTAL_ROLLER_MOTOR_ID = 54;
+    public static final int LEFT_VERTICAL_ROLLER_MOTOR_ID = 2;
     public static final int RIGHT_VERTICAL_ROLLER_MOTOR_ID = 1;
-     public static final int ROTATION_MOTOR_ID = 8;
+     public static final int ROTATION_MOTOR_ID = 3;
     
    
 
  
-    public static final double DEFAULT_ROLLER_POWER = 0.7; //tested these values 2/22
-    public static final double DEFAULT_ROTATION_POWER = 0.50;
+    public static final double DEFAULT_ROLLER_POWER = 1.0; //tested these values 2/22
+    public static final double DEFAULT_ROTATION_POWER = 0.05;
     public static final int MOTOR_CURRENT_LIMIT = 30;
 
 
@@ -44,8 +44,8 @@ public final class Constants {
 public static class Elevator {  
   public static final int LEFT_ELEVATOR_MOTOR_ID = 6;  // confirm these tmr
   public static final int RIGHT_ELEVATOR_MOTOR_ID = 17; // the one with the encoder
-  public static final double DEFAULT_ELEVATOR_SPEED = 0.6;  // 1 is way too fast 
-  public static final double ELEVATOR_DOWN_SPEED = 0.1;
+  public static final double DEFAULT_ELEVATOR_SPEED = 1;  // 1 is way too fast 
+  public static final double ELEVATOR_DOWN_SPEED = 1;
  public static int BOTTOM_LIMIT_SWITCH_CHANNEL = 3;
 
 }
@@ -56,7 +56,7 @@ public static class Shooter {
   public static final int ALGAE_TOP_MOTOR_ID = 99;
 
   public static final int ALGAE_BOTTOM_MOTOR_ID = 98;
-   public static final int ROTATION_MOTOR_ID = 88;
+   public static final int ROTATION_MOTOR_ID = 37;
    public static final double DEFAULT_SHOOTER_POWER = 0.5;
    public static final double DEFAULT_ROTATION_POWER = 0.3;
 }

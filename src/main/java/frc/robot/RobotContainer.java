@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.PositionCommand;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -30,13 +31,15 @@ public class RobotContainer {
   private final SendableChooser<String> autoChooser = new SendableChooser<>();
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase = new SwerveSubsystem();
-  // private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+  //  private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
    private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(); 
-  // private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
-  // private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(intakeSubsystem, elevatorSubsystem, climberSubsystem);
    private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
+  // private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(intakeSubsystem,  elevatorSubsystem,climberSubsystem);
+   //private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
  
-  BooleanReference crossPressed = new BooleanReference(false);
+  BooleanReference L3Pressed = new BooleanReference(false);
+  BooleanReference PsPressed = new BooleanReference(false);
+  BooleanReference R3Pressed = new BooleanReference(false);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandPS5Controller m_driverController = 
@@ -46,7 +49,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
-    drivebase.setDefaultCommand(new SwerveDriveCommand(drivebase, driveAngularVelocity, crossPressed));
+    drivebase.setDefaultCommand(new SwerveDriveCommand(drivebase, driveAngularVelocity, L3Pressed, PsPressed, R3Pressed));
     //drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
     autoChooser.addOption("FRC Auto 1", "FRCAuto");
     autoChooser.addOption("Straight Line Auto", "StraightLineAuto");
@@ -98,7 +101,7 @@ public class RobotContainer {
         //     intakeSubsystem.stopAllRollers();  // Stop intake rollers
         //     shooterSubsystem.stopShooter();    // Stop shooter motor
         // }, intakeSubsystem, shooterSubsystem));
-        
+
         m_driverController.L2()
         .whileTrue(new RunCommand(() -> {
             intakeSubsystem.spinRollers(true);   // Run intake rollers
@@ -139,7 +142,7 @@ public class RobotContainer {
       //       // shooterSubsystem.stopShooter();    // Stop shooter motor
       //   }, intakeSubsystem, shooterSubsystem));
 
-      m_driverController.L1()
+      m_driverController.R1()
         .whileTrue(new RunCommand(() -> {
             intakeSubsystem.spinRollers(false);  // Run outtake rollers
         }, intakeSubsystem))
@@ -159,13 +162,13 @@ public class RobotContainer {
 
 
 
-    //  pov up → Move Elevator **UP** (While Held)
-    // m_driverController.povUp()
+    // //  pov up → Move Elevator **UP** (While Held)
+    // m_driverController.povLeft()
     // .whileTrue(new RunCommand(() -> elevatorSubsystem.moveElevator(true), elevatorSubsystem))
     // .onFalse(new InstantCommand(elevatorSubsystem::stopElevator, elevatorSubsystem));
 
-    // // // pov down → Move Elevator **DOWN** (While Held)
-    //   m_driverController.povDown()
+    // // // // pov down → Move Elevator **DOWN** (While Held)
+    //   m_driverController.povRight()
     //   .whileTrue(new RunCommand(() -> elevatorSubsystem.moveElevator(false), elevatorSubsystem))
     //   .onFalse(new InstantCommand(elevatorSubsystem::stopElevator, elevatorSubsystem));
     
@@ -231,7 +234,7 @@ m_driverController.options()
 
 
   // zeros the gyro 
-  m_driverController.L3()
+  m_driverController.cross()
   .onTrue(new InstantCommand(drivebase::zeroGyro));
 
 
@@ -242,18 +245,49 @@ m_driverController.options()
     // Using touchpad button for AprilTag alignment with 2.0 degree tolerance
     // keeping it cross for now as all the other systems are non functional
 
-    m_driverController.cross()
+    m_driverController.L3()
       .whileTrue(new InstantCommand(() -> {
-        crossPressed.bool = true;
+        L3Pressed.bool = true;
       }))
       .onFalse(new InstantCommand(() -> {
-        crossPressed.bool = false;
+        L3Pressed.bool = false;
       }));
 
-      // Square → Manual Control of Shooter Pivot (Hold = Move Up) ( make it false to spin the other way)
+      m_driverController.PS()
+      .whileTrue(new InstantCommand(() -> {
+        PsPressed.bool = true;
+      }))
+      .onFalse(new InstantCommand(() -> {
+        PsPressed.bool = false;
+      }));
+
+      m_driverController.R3()
+      .whileTrue(new InstantCommand(() -> {
+        R3Pressed.bool = true;
+      }))
+      .onFalse(new InstantCommand(() -> {
+        R3Pressed.bool = false;
+      }));
+
+//       // Square → Manual Control of Shooter Pivot (Hold = Move Up) ( make it false to spin the other way)
 // m_driverController.square()
 //   .whileTrue(new RunCommand(() -> shooterSubsystem.manualRotateShooter(false), shooterSubsystem))
 //   .onFalse(new InstantCommand(shooterSubsystem::stopShooterRotation, shooterSubsystem));
+
+//   m_driverController.circle()
+//   .whileTrue(new RunCommand(() -> shooterSubsystem.manualRotateShooter(true), shooterSubsystem))
+//   .onFalse(new InstantCommand(shooterSubsystem::stopShooterRotation, shooterSubsystem));
+
+
+  m_driverController.square()
+    .onTrue(new InstantCommand(() -> intakeSubsystem.movePivot(true), intakeSubsystem))
+    .onFalse(new InstantCommand(() -> intakeSubsystem.stopPivot(), intakeSubsystem));
+
+// // Options Button → Move climber DOWN
+m_driverController.circle()
+.onTrue(new InstantCommand(() -> intakeSubsystem.movePivot(false), intakeSubsystem))
+.onFalse(new InstantCommand(() -> intakeSubsystem.stopPivot(), intakeSubsystem));
+
 
 // binds to run the algae motors forward and reverse
 // m_driverController.triangle()
@@ -264,6 +298,24 @@ m_driverController.options()
 // m_driverController.circle()
 //     .whileTrue(new RunCommand(() -> shooterSubsystem.spinAlgaeShooter(-0.5), shooterSubsystem)) // Reverse power
 //     .onFalse(new InstantCommand(() -> shooterSubsystem.stopAlgaeShooter(), shooterSubsystem));
+
+// binds for l1 intake mode to purposely jam the piece
+
+m_driverController.L1()
+  .whileTrue(new RunCommand(() -> {
+      intakeSubsystem.runL1Intake();  // Run L1 intake mode (horizontal in, vertical out)
+  }, intakeSubsystem))
+  .onFalse(new InstantCommand(() -> {
+      intakeSubsystem.stopAllRollers();  // Stop rollers on release
+  }, intakeSubsystem));
+
+  // bind to test l1 position
+  m_driverController.R2()
+  .onTrue(new PositionCommand(intakeSubsystem, PositionCommand.Position.INTAKE_L1));
+
+  m_driverController.L2()
+  .onTrue(new PositionCommand(intakeSubsystem, PositionCommand.Position.INTAKE_OUT));
+
 }
 
 

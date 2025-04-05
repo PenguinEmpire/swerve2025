@@ -63,7 +63,7 @@ public class ElevatorSubsystem extends SubsystemBase {
        
         // Configure left motor as a follower of the right motor
         SparkMaxConfig leftConfig = new SparkMaxConfig();
-        leftConfig.follow(Elevator.RIGHT_ELEVATOR_MOTOR_ID);
+        leftConfig.follow(Elevator.RIGHT_ELEVATOR_MOTOR_ID,true);
         leftElevatorMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // Access the Spark's built-in closed-loop PID controller
@@ -163,6 +163,14 @@ public class ElevatorSubsystem extends SubsystemBase {
     
 //     private double elevatorSpeed;
 //     private double elevatorDownSpeed;
+
+//     private double elevatorLeftSpeedDown;
+//     private double elevatorLeftSpeedUp;
+
+//     private double elevatorRightSpeedDown;
+//     private double elevatorRightSpeedUp;
+
+
   
 
 //     public ElevatorSubsystem() {
@@ -177,7 +185,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 //               .closedLoop.outputRange(-1.0, 1.0);  
 
 //         SparkMaxConfig rightConfig = new SparkMaxConfig();
-//         rightConfig.follow(Elevator.LEFT_ELEVATOR_MOTOR_ID);  
+        
 
 
 //         leftElevatorMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -186,6 +194,12 @@ public class ElevatorSubsystem extends SubsystemBase {
 //         elevatorSpeed = Elevator.DEFAULT_ELEVATOR_SPEED;
 
 //         elevatorDownSpeed = Elevator.ELEVATOR_DOWN_SPEED;
+
+//         elevatorLeftSpeedDown = -0.5;
+//         elevatorLeftSpeedUp =0.5;
+
+//         elevatorRightSpeedUp = 0.5;
+//         elevatorRightSpeedDown = -0.5;
     
 //         SmartDashboard.putNumber("Elevator Speed", elevatorSpeed);
         
@@ -197,10 +211,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 //     // Moves the elevator up or down 
 //     public void moveElevator(boolean up) {
-//         elevatorSpeed = SmartDashboard.getNumber("Elevator Speed", Elevator.DEFAULT_ELEVATOR_SPEED);
+//         elevatorSpeed = 1;
 //         elevatorDownSpeed = SmartDashboard.getNumber("Elevator Down Speed", Elevator.ELEVATOR_DOWN_SPEED);
-//         double speed = up ? -elevatorSpeed :  0.25;
+//         double speed = up ? -  elevatorSpeed:  elevatorSpeed;
 //         leftElevatorMotor.set(speed);
+//         rightElevatorMotor.set(-speed);
 //     }
 
 //     public double getElevatorPosition() {

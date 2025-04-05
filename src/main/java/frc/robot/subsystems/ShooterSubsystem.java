@@ -12,7 +12,7 @@ import frc.robot.modules.Shootermodule;
 
 public class ShooterSubsystem extends SubsystemBase {
     private final SparkMax shooterMotor;
-    private final SparkMax algaeTopMotor;
+    // private final SparkMax algaeTopMotor;
 
      private final Shootermodule shooterRotation;
     
@@ -31,13 +31,12 @@ public class ShooterSubsystem extends SubsystemBase {
         this.elevatorSubsystem = elevatorSubsystem;
         this.climberSubsystem = climberSubsystem;
 
-        shooterMotor = new SparkMax(Shooter.SHOOTER_MOTOR_ID, MotorType.kBrushless);
+         shooterMotor = new SparkMax(Shooter.SHOOTER_MOTOR_ID, MotorType.kBrushless);
 
-        algaeTopMotor = new SparkMax(Shooter.ALGAE_TOP_MOTOR_ID, MotorType.kBrushless);
+      
+         shooterRotation = new Shootermodule(" ShooterRotation", 37); 
 
-         shooterRotation = new Shootermodule(" ShooterRotation", Shooter.ROTATION_MOTOR_ID); 
-
-        limitSwitch = new DigitalInput(9); // Limit switch connected to DIO Port 9
+        limitSwitch = new DigitalInput(0); // Limit switch connected to DIO Port 0
         LogManager.info("Shooter subsystem initialized with motor ID: " + Shooter.SHOOTER_MOTOR_ID);
 
         SmartDashboard.putNumber("Shooter Power", Shooter.DEFAULT_SHOOTER_POWER);
@@ -85,18 +84,18 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
 
-    public void spinAlgaeShooter(double power) {
-        LogManager.debug("Spinning algae shooter motors at power: " + power);
-        algaeTopMotor.set(power);
+    // public void spinAlgaeShooter(double power) {
+    //     LogManager.debug("Spinning algae shooter motors at power: " + power);
+    //     algaeTopMotor.set(power);
 
-    }
+    // }
 
-    // 🔽 Method to stop both algae shooter motors
-    public void stopAlgaeShooter() {
-        LogManager.debug("Stopping algae shooter motors");
-        algaeTopMotor.set(0.0);
+    // //  Method to stop both algae shooter motors
+    // public void stopAlgaeShooter() {
+    //     LogManager.debug("Stopping algae shooter motors");
+    //     algaeTopMotor.set(0.0);
 
-    }
+    // }
 
 
     public boolean getPiece() {
@@ -121,6 +120,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        shooterRotation.periodic();
        boolean hasPiece = getPiece();
    
        SmartDashboard.putBoolean("Has Piece", hasPiece); // Log on dashboard

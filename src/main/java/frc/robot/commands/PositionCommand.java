@@ -1,19 +1,16 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ClimberSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
 
 
 public class PositionCommand extends Command {
 
     public enum Position {
         // Intake Positions
-        INTAKE_IN(0.114),  // Fold intake inside frame
-        INTAKE_L1(0.00), //figure this value out
-        INTAKE_OUT(0.370), // Extend intake out for pickup
+        INTAKE_IN(0.0),  // Fold intake inside frame
+        INTAKE_L1(0.922), //figure this value out
+        INTAKE_OUT(0.648), // Extend intake out for pickup
 
         // Climber Positions
         CLIMBER_LOW(0.0),  // Example low position
@@ -45,18 +42,20 @@ public class PositionCommand extends Command {
     }
 
     private final IntakeSubsystem intakeSubsystem;
-    private final ElevatorSubsystem elevatorSubsystem;
-    private final ClimberSubsystem climberSubsystem;
-    private final ShooterSubsystem shooterSubsystem;
+    // private final ElevatorSubsystem elevatorSubsystem;
+    // private final ClimberSubsystem climberSubsystem;
+    // private final ShooterSubsystem shooterSubsystem;
     private final Position pos;
 
-    public PositionCommand(IntakeSubsystem intakeSubsystem, ElevatorSubsystem elevatorSubsystem, ClimberSubsystem climberSubsystem, ShooterSubsystem shooterSubsystem,Position pos) {
+    public PositionCommand(IntakeSubsystem intakeSubsystem, Position pos) {
+    //, ElevatorSubsystem elevatorSubsystem, ClimberSubsystem climberSubsystem, ShooterSubsystem shooterSubsystem,Position pos) {
         this.intakeSubsystem = intakeSubsystem;
-        this.elevatorSubsystem = elevatorSubsystem;
-        this.climberSubsystem = climberSubsystem;
-        this.shooterSubsystem = shooterSubsystem;
+        // this.elevatorSubsystem = elevatorSubsystem;
+        // this.climberSubsystem = climberSubsystem;
+        // this.shooterSubsystem = shooterSubsystem;
         this.pos = pos;
-        addRequirements(intakeSubsystem, elevatorSubsystem, climberSubsystem);
+        addRequirements(intakeSubsystem);
+        // , elevatorSubsystem, climberSubsystem);
     }
 
     @Override

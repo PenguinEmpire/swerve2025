@@ -60,15 +60,15 @@ public class Jointmodule {
 
     public Jointmodule(String name, int motorID) {
         this.name = name + ": ";
-        motor = new SparkMax(8 , MotorType.kBrushless);
+        motor = new SparkMax(3 , MotorType.kBrushless);
 
         SparkMaxConfig motorConfig = new SparkMaxConfig();
         motorConfig
-            .inverted(false)
-            .idleMode(IdleMode.kCoast)
+            .inverted(true)
+            .idleMode(IdleMode.kBrake)
             .closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                .pid(0.7, 0.0, 0.0)
+                .pid(0.95, 0.0, 0.001)
                 .positionWrappingEnabled(true)
                 .positionWrappingMinInput(0)
                 .positionWrappingMaxInput(2 * Math.PI)
@@ -130,10 +130,13 @@ public class Jointmodule {
      * @return
      */
     public double getPosition() {
-        AbsoluteEncoder absEncoder = motor.getAbsoluteEncoder();
-        return absEncoder.getPosition();
+       AbsoluteEncoder absEncoder = motor.getAbsoluteEncoder();
+
+       
+      return absEncoder.getPosition();
         
-        //return motor.getEncoder().getPosition();
+      // return motor.getEncoder().getPosition();
+    //   return relativeEncoder.getPosition();
     }
 
     /**

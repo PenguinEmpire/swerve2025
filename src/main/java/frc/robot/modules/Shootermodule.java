@@ -39,7 +39,7 @@ public class Shootermodule {
         this.name = name + ": ";
 
         // update motor name 
-        motor = new SparkMax(motorID, MotorType.kBrushless);
+        motor = new SparkMax(37, MotorType.kBrushless);
 
         // Configure motor
         SparkMaxConfig motorConfig = new SparkMaxConfig();

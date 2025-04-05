@@ -10,7 +10,9 @@ import swervelib.SwerveInputStream;
 
 public class SwerveDriveCommand extends Command {
     SwerveInputStream driveAngularVelocity;
-    BooleanReference crossPressed;
+    BooleanReference L3Pressed;
+    BooleanReference PsPressed;
+    BooleanReference R3Pressed;
 
     private final SwerveSubsystem swerveSubsystem;
 
@@ -20,14 +22,16 @@ public class SwerveDriveCommand extends Command {
   
     boolean hold = false;
 
-    public SwerveDriveCommand(SwerveSubsystem swerve, SwerveInputStream input, BooleanReference pressed) {
+    public SwerveDriveCommand(SwerveSubsystem swerve, SwerveInputStream input, BooleanReference L3Pressed, BooleanReference PsPressed, BooleanReference R3Pressed) {
         rotationPID = new PIDController(0.02, 0.0, 0.0);
         strafePID = new PIDController(0.25, 0.0, 0.0);
         strafePID.setTolerance(1);
 
         this.swerveSubsystem = swerve;
         this.driveAngularVelocity = input;
-        this.crossPressed = pressed;
+        this.L3Pressed = L3Pressed;
+        this.PsPressed = PsPressed;
+        this.R3Pressed = R3Pressed;
         addRequirements(swerve);
     }
 
@@ -44,7 +48,7 @@ public class SwerveDriveCommand extends Command {
             SmartDashboard.putNumber("Dash TY", LimelightHelpers.getTY("limelight"));
         }
 
-        if (crossPressed.bool) {
+        if (L3Pressed.bool || PsPressed.bool || R3Pressed.bool) {
             boolean hasTarget = LimelightHelpers.getTV("limelight");
 
             if (hasTarget) {
@@ -59,9 +63,9 @@ public class SwerveDriveCommand extends Command {
               
                 double xOffset = positions[0];
 
-                if (SmartDashboard.getBoolean("LOffset", false)) {
+                if (L3Pressed.bool) {
                     offset -= 0.25;
-                } else if (SmartDashboard.getBoolean("ROffset", false)) {
+                } else if (R3Pressed.bool) {
                     offset += 0.25;
                 }
 
