@@ -13,7 +13,7 @@ public class IntakeSubsystem extends SubsystemBase {
     private final SparkMax horizontalRollerMotor;
     private final SparkMax leftVerticalRollerMotor;
     private final SparkMax rightVerticalRollerMotor;
-     private final SparkMax rollingShooter;
+     // private final SparkMax rollingShooter;
     private final Jointmodule intakeRotation;
 
   
@@ -24,7 +24,7 @@ public class IntakeSubsystem extends SubsystemBase {
         horizontalRollerMotor = new SparkMax(Intake.HORIZONTAL_ROLLER_MOTOR_ID, MotorType.kBrushless);
         leftVerticalRollerMotor = new SparkMax(Intake.LEFT_VERTICAL_ROLLER_MOTOR_ID, MotorType.kBrushless);
         rightVerticalRollerMotor = new SparkMax(Intake.RIGHT_VERTICAL_ROLLER_MOTOR_ID, MotorType.kBrushless);
-      rollingShooter = new SparkMax(37,MotorType.kBrushless);
+      // rollingShooter = new SparkMax(37,MotorType.kBrushless);
          intakeRotation = new Jointmodule("Intake Rotation", Intake.ROTATION_MOTOR_ID); 
         
         LogManager.info("Intake subsystem initialized with motors: H=" + Intake.HORIZONTAL_ROLLER_MOTOR_ID + 
@@ -41,18 +41,18 @@ public class IntakeSubsystem extends SubsystemBase {
 
 
     //     // Moves climber up or down manually
-    public void movePivot(boolean up) {
-       pivotPower = SmartDashboard.getNumber("pivot shooter power", pivotPower);
-        double power = up ? pivotPower : - pivotPower;
-        LogManager.debug("Moving climber " + (up ? "up" : "down") + " with power: " + power);
-        rollingShooter.set(power);
-    }
+    // public void movePivot(boolean up) {
+    //    pivotPower = SmartDashboard.getNumber("pivot shooter power", pivotPower);
+    //     double power = up ? pivotPower : - pivotPower;
+    //     LogManager.debug("Moving climber " + (up ? "up" : "down") + " with power: " + power);
+    //     rollingShooter.set(power);
+    // }
 
     // // // Stops climber movement
-    public void stopPivot() {
-        LogManager.debug("Stopping climber");
-     rollingShooter.set(0);
-    }
+    // public void stopPivot() {
+    //     LogManager.debug("Stopping climber");
+    //  rollingShooter.set(0);
+    // }
  
     public void spinRollers(boolean intake) {
         // Stop intake if a piece is detected, but allow outtake

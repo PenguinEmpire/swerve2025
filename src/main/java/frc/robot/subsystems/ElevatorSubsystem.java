@@ -32,7 +32,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private double I = 0.0;
     private double D = 0.0;
     private double FF = 0.0;
-
+ 
     private double targetPosition = 0.0; // Desired setpoint in raw motor revolutions
 
     // Elevator speeds read from SmartDashboard (up vs. down)
@@ -54,9 +54,9 @@ public class ElevatorSubsystem extends SubsystemBase {
                 .idleMode(IdleMode.kBrake).closedLoop
                 // Use kPrimaryEncoder for the built-in relative encoder
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                .pid(0.4, 0.0, 0.0)
+                .pid(0.8, 0.0, 0.00)
                 .positionWrappingEnabled(false)
-                .outputRange(-0.4, 0.4);
+                .outputRange(-1, 1);
 
         rightElevatorMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 

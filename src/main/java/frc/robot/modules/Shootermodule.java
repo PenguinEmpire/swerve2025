@@ -38,22 +38,22 @@ public class Shootermodule {
     public Shootermodule(String name, int motorID) {
         this.name = name + ": ";
 
-        // update motor name 
+        // update motor name
         motor = new SparkMax(37, MotorType.kBrushless);
 
         // Configure motor
         SparkMaxConfig motorConfig = new SparkMaxConfig();
         motorConfig
-            .inverted(false)
+            .inverted(true)
             .idleMode(IdleMode.kBrake)
             .closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                .pid(0.3, 0.0, 0.0)
+                .pid(  0.8, 0.0, 0.0)
                 .positionWrappingEnabled(true)
                 .positionWrappingMinInput(0)
                 .positionWrappingMaxInput(2 * Math.PI)
                 .outputRange(-1, 1);
-        motorConfig.encoder.positionConversionFactor(2 * Math.PI);
+       //  motorConfig.encoder.positionConversionFactor(2 * Math.PI); // see if this causes the issue 
 
         // Apply the initial configuration
         motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

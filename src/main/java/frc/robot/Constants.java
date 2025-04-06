@@ -44,8 +44,8 @@ public final class Constants {
 public static class Elevator {  
   public static final int LEFT_ELEVATOR_MOTOR_ID = 6;  // confirm these tmr
   public static final int RIGHT_ELEVATOR_MOTOR_ID = 17; // the one with the encoder
-  public static final double DEFAULT_ELEVATOR_SPEED = 1;  // 1 is way too fast 
-  public static final double ELEVATOR_DOWN_SPEED = 1;
+  public static final double DEFAULT_ELEVATOR_SPEED = 0.3;  // 1 is way too fast 
+  public static final double ELEVATOR_DOWN_SPEED = 0.3;
  public static int BOTTOM_LIMIT_SWITCH_CHANNEL = 3;
 
 }
