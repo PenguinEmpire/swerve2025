@@ -166,20 +166,20 @@ public class RobotContainer {
 
 
     // //  pov up → Move Elevator **UP** (While Held)
-    m_driverController.povLeft() 
-    .whileTrue(new RunCommand(() -> elevatorSubsystem.moveElevator(true), elevatorSubsystem))
-    .onFalse(new InstantCommand(elevatorSubsystem::stopElevator, elevatorSubsystem));
+    // m_driverController.povLeft() 
+    // .whileTrue(new RunCommand(() -> elevatorSubsystem.moveElevator(true), elevatorSubsystem))
+    // .onFalse(new InstantCommand(elevatorSubsystem::stopElevator, elevatorSubsystem));
 
-    // // // // pov down → Move Elevator **DOWN** (While Held)
-      m_driverController.povRight()
-      .whileTrue(new RunCommand(() -> elevatorSubsystem.moveElevator(false), elevatorSubsystem))
-      .onFalse(new InstantCommand(elevatorSubsystem::stopElevator, elevatorSubsystem));
+    // // // // // // pov down → Move Elevator **DOWN** (While Held)
+    //   m_driverController.povRight()
+    //   .whileTrue(new RunCommand(() -> elevatorSubsystem.moveElevator(false), elevatorSubsystem))
+    //   .onFalse(new InstantCommand(elevatorSubsystem::stopElevator, elevatorSubsystem));
     
      
    
-// // // R2 Button → Move Elevator to LEVEL 2 position
-  m_driverController.povUp()
-  .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem,shooterSubsystem,PositionCommand.Position.SHOOTER_TEST));
+// // // // R2 Button → Move Elevator to LEVEL 2 position
+//   m_driverController.povUp()
+//   .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem,shooterSubsystem,PositionCommand.Position.SHOOTER_TEST));
 
   // m_driverController.circle()
   //   .onTrue(
@@ -279,9 +279,9 @@ m_driverController.square()
 //     .onFalse(new InstantCommand(() -> shooterSubsystem.stopAlgaeShooter(), shooterSubsystem));
 
 // // Circle → Run Algae Motors REVERSE while held
-// m_driverController.circle()
-//     .whileTrue(new RunCommand(() -> shooterSubsystem.spinAlgaeShooter(-0.5), shooterSubsystem)) // Reverse power
-//     .onFalse(new InstantCommand(() -> shooterSubsystem.stopAlgaeShooter(), shooterSubsystem));
+m_driverController.povUp()
+    .whileTrue(new RunCommand(() -> shooterSubsystem.spinAlgaeShooter(-0.5), shooterSubsystem)) // Reverse power
+    .onFalse(new InstantCommand(() -> shooterSubsystem.stopAlgaeShooter(), shooterSubsystem));
 
 // binds for l1 intake mode to purposely jam the piece
 
