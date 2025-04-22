@@ -56,7 +56,7 @@ public class Jointmodule {
     private double gravityGain = 0.0;
     private double velocityGain = 0.0;
     
-
+ // two separate pid controllers via the wpilib way not actually configuring it 
 
     public Jointmodule(String name, int motorID) {
         this.name = name + ": ";
@@ -68,7 +68,7 @@ public class Jointmodule {
             .idleMode(IdleMode.kBrake)
             .closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                .pid(0.2, 0.0, 0.0)
+                .pid(3.0, 0.0, 0.0)
                 .positionWrappingEnabled(true)
                 .positionWrappingMinInput(0)
                 .positionWrappingMaxInput(2 * Math.PI)
