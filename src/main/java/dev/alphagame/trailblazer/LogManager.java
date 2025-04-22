@@ -43,6 +43,33 @@ public class LogManager {
     }
 
     /**
+     * Formats a log message with arguments.
+     * 
+     * @param level The log level (e.g. INFO, DEBUG, WARN, ERROR, FATAL)
+     * @param message The log message with format specifiers
+     * @param args The arguments to replace format specifiers
+     * @return The formatted log message
+     */
+    private static String formatLogMessage(String level, String message, Object... args) {
+        // Get timestamp
+        String timestamp = LocalDateTime.now().format(formatter);
+
+        // Get caller information
+        StackTraceElement caller = Thread.currentThread().getStackTrace()[3];
+        String callerInfo = caller.getFileName() + ":" + caller.getLineNumber();
+
+        // Format the message with arguments
+        String formattedMessage = String.format(message, args);
+
+        // Format with fixed-width columns for better alignment
+        return String.format("%-23s | %-7s | %-30s | %s",
+                             timestamp,
+                             level,
+                             callerInfo,
+                             formattedMessage);
+    }
+
+    /**
      * Logs a debug message.
      * 
      * @param message The message to log
@@ -51,6 +78,17 @@ public class LogManager {
     public static void debug(String message) {
         if (!DEBUG_ENABLED) return; // Skip debug messages if not enabled
         System.out.println(formatLogMessage("DEBUG", message));
+    }
+
+    /**
+     * Logs a debug message with arguments.
+     * 
+     * @param message The message to log with format specifiers
+     * @param args The arguments to replace format specifiers
+     */
+    public static void debug(String message, Object... args) {
+        if (!DEBUG_ENABLED) return; // Skip debug messages if not enabled
+        System.out.println(formatLogMessage("DEBUG", message, args));
     }
     
     /**
@@ -62,6 +100,16 @@ public class LogManager {
     public static void info(String message) {
         System.out.println(formatLogMessage("INFO", message));
     }
+
+    /**
+     * Logs an informational message with arguments.
+     * 
+     * @param message The message to log with format specifiers
+     * @param args The arguments to replace format specifiers
+     */
+    public static void info(String message, Object... args) {
+        System.out.println(formatLogMessage("INFO", message, args));
+    }
     
     /**
      * Logs a warning message.
@@ -71,6 +119,16 @@ public class LogManager {
      */
     public static void warning(String message) {
         System.out.println(formatLogMessage("WARN", message));
+    }
+
+    /**
+     * Logs a warning message with arguments.
+     * 
+     * @param message The message to log with format specifiers
+     * @param args The arguments to replace format specifiers
+     */
+    public static void warning(String message, Object... args) {
+        System.out.println(formatLogMessage("WARN", message, args));
     }
     
     /**
@@ -82,6 +140,16 @@ public class LogManager {
     public static void error(String message) {
         System.err.println(formatLogMessage("ERROR", message));
     }
+
+    /**
+     * Logs an error message with arguments.
+     * 
+     * @param message The message to log with format specifiers
+     * @param args The arguments to replace format specifiers
+     */
+    public static void error(String message, Object... args) {
+        System.err.println(formatLogMessage("ERROR", message, args));
+    }
     
     /**
      * Logs a fatal error message.String
@@ -91,5 +159,15 @@ public class LogManager {
      */
     public static void fatal(String message) {
         System.err.println(formatLogMessage("FATAL", message));
+    }
+
+    /**
+     * Logs a fatal error message with arguments.
+     * 
+     * @param message The message to log with format specifiers
+     * @param args The arguments to replace format specifiers
+     */
+    public static void fatal(String message, Object... args) {
+        System.err.println(formatLogMessage("FATAL", message, args));
     }
 }
