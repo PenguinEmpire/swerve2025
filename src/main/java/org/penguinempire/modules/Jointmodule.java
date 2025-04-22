@@ -68,7 +68,7 @@ public class Jointmodule {
             .idleMode(IdleMode.kBrake)
             .closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                .pid(0.5, 0.00, 0.00)
+                .pid(0.2, 0.0, 0.0)
                 .positionWrappingEnabled(true)
                 .positionWrappingMinInput(0)
                 .positionWrappingMaxInput(2 * Math.PI)

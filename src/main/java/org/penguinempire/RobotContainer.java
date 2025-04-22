@@ -165,16 +165,14 @@ public class RobotContainer {
 
 
     // //  pov up → Move Elevator **UP** (While Held)
-    // m_driverController.povLeft() 
-    // .whileTrue(new RunCommand(() -> elevatorSubsystem.moveElevator(true), elevatorSubsystem))
-    // .onFalse(new InstantCommand(elevatorSubsystem::stopElevator, elevatorSubsystem));
+    m_driverController.povLeft() 
+    .whileTrue(new RunCommand(() -> intakeSubsystem.manualRotate(true), intakeSubsystem))
+    .onFalse(new InstantCommand(intakeSubsystem::stopManualRotate,intakeSubsystem));
 
-    // // // // // // pov down → Move Elevator **DOWN** (While Held)
-    //   m_driverController.povRight()
-    //   .whileTrue(new RunCommand(() -> elevatorSubsystem.moveElevator(false), elevatorSubsystem))
-    //   .onFalse(new InstantCommand(elevatorSubsystem::stopElevator, elevatorSubsystem));
-    
-     
+    // pov down → Move Elevator **DOWN** (While Held)
+      m_driverController.povRight()
+      .whileTrue(new RunCommand(() -> intakeSubsystem.manualRotate(false), intakeSubsystem))
+      .onFalse(new InstantCommand(intakeSubsystem::stopManualRotate,intakeSubsystem));
    
 // // // // R2 Button → Move Elevator to LEVEL 2 position
 //   m_driverController.povUp()
@@ -262,12 +260,12 @@ m_driverController.square()
   .onFalse(new InstantCommand(shooterSubsystem::stopShooterRotation, shooterSubsystem));
 
 
-//   m_driverController.square()
+//   m_driverController.cross()
 //     .onTrue(new InstantCommand(() -> intakeSubsystem.movePivot(true), intakeSubsystem))
 //     .onFalse(new InstantCommand(() -> intakeSubsystem.stopPivot(), intakeSubsystem));
 
-// // // Options Button → Move climber DOWN
-// m_driverController.circle()
+// // // // Options Button → Move climber DOWN
+// m_driverController.triangle()
 // .onTrue(new InstantCommand(() -> intakeSubsystem.movePivot(false), intakeSubsystem))
 // .onFalse(new InstantCommand(() -> intakeSubsystem.stopPivot(), intakeSubsystem));
 
