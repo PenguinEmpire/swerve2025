@@ -2,12 +2,13 @@ package org.penguinempire.subsystems;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import dev.alphagame.trailblazer.LogManager;
+
 import org.penguinempire.Constants.Intake;
 import org.penguinempire.modules.Jointmodule;
 
 import com.revrobotics.spark.SparkMax;
 
-import dev.alphagame.LogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 

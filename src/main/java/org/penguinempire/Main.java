@@ -4,7 +4,7 @@
 
 package org.penguinempire;
 
-import dev.alphagame.LogManager;
+import dev.alphagame.trailblazer.LogManager;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**

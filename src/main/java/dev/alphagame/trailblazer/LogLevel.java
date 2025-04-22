@@ -3,7 +3,7 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-package dev.alphagame;
+package dev.alphagame.trailblazer;
 
 public enum LogLevel {
     INFO(0), DEBUG(1), WARN(2), ERROR(3), FATAL(4);
