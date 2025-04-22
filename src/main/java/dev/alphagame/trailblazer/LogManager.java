@@ -3,11 +3,17 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-package dev.alphagame;
+package dev.alphagame.trailblazer;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/*
+ * LogManager.java
+ * 
+ * This class provides a simple logging utility for people too lazy to use Log4J.
+ * It formats log messages with a timestamp, log level, and caller information.
+ */
 public class LogManager {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
     private static final boolean DEBUG_ENABLED = true;
