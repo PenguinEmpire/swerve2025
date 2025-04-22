@@ -13,8 +13,6 @@ import org.penguinempire.subsystems.IntakeSubsystem;
 import org.penguinempire.subsystems.ShooterSubsystem;
 import org.penguinempire.subsystems.SwerveSubsystem;
 
-// import com.pathplanner.lib.auto.NamedCommands;
-
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,7 +35,7 @@ public class RobotContainer {
    private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
    private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(); 
    private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
-  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(intakeSubsystem,  elevatorSubsystem,climberSubsystem);
+  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(intakeSubsystem,  elevatorSubsystem ,climberSubsystem);
    //private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
  
   BooleanReference L3Pressed = new BooleanReference(false);
@@ -95,15 +93,15 @@ public class RobotContainer {
   private void configureBindings() {
         // l2 for intake - Runs while button is held
         
-        m_driverController.triangle()
-        .whileTrue(new RunCommand(() -> {
-            intakeSubsystem.spinRollers(true);   // Run intake rollers
-           shooterSubsystem.spinShooter(true);  // Run shooter motor forward for intake
-        }, intakeSubsystem, shooterSubsystem))
-        .onFalse(new InstantCommand(() -> {
-            intakeSubsystem.stopAllRollers();  // Stop intake rollers
-            shooterSubsystem.stopShooter();    // Stop shooter motor
-        }, intakeSubsystem, shooterSubsystem));
+        // m_driverController.triangle()
+        // .whileTrue(new RunCommand(() -> {
+        //     intakeSubsystem.spinRollers(true);   // Run intake rollers
+        //    shooterSubsystem.spinShooter(true);  // Run shooter motor forward for intake
+        // }, intakeSubsystem, shooterSubsystem))
+        // .onFalse(new InstantCommand(() -> {
+        //     intakeSubsystem.stopAllRollers();  // Stop intake rollers
+        //     shooterSubsystem.stopShooter();    // Stop shooter motor
+        // }, intakeSubsystem, shooterSubsystem));
 
         // m_driverController.L2()
         // .whileTrue(new RunCommand(() -> {
@@ -135,23 +133,23 @@ public class RobotContainer {
     // );
 
     //l1 for outtake - Runs while button is held
-       m_driverController.cross()
-        .whileTrue(new RunCommand(() -> {
-            intakeSubsystem.spinRollers(false);  // Run outtake rollers
-             shooterSubsystem.spinShooter(false); // Run shooter motor in reverse for outtake
-        }, intakeSubsystem, shooterSubsystem))
-        .onFalse(new InstantCommand(() -> {
-            intakeSubsystem.stopAllRollers();  // Stop intake rollers
-             shooterSubsystem.stopShooter();    // Stop shooter motor
-        }, intakeSubsystem, shooterSubsystem));
+      //  m_driverController.cross()
+      //   .whileTrue(new RunCommand(() -> {
+      //       intakeSubsystem.spinRollers(false);  // Run outtake rollers
+      //        shooterSubsystem.spinShooter(false); // Run shooter motor in reverse for outtake
+      //   }, intakeSubsystem, shooterSubsystem))
+      //   .onFalse(new InstantCommand(() -> {
+      //       intakeSubsystem.stopAllRollers();  // Stop intake rollers
+      //        shooterSubsystem.stopShooter();    // Stop shooter motor
+      //   }, intakeSubsystem, shooterSubsystem));
 
-      m_driverController.R1()
-        .whileTrue(new RunCommand(() -> {
-            intakeSubsystem.spinRollers(false);  // Run outtake rollers
-        }, intakeSubsystem))
-        .onFalse(new InstantCommand(() -> {
-            intakeSubsystem.stopAllRollers();  // Stop intake rollers
-        }, intakeSubsystem));
+      // m_driverController.R1()
+      //   .whileTrue(new RunCommand(() -> {
+      //       intakeSubsystem.spinRollers(false);  // Run outtake rollers
+      //   }, intakeSubsystem))
+      //   .onFalse(new InstantCommand(() -> {
+      //       intakeSubsystem.stopAllRollers();  // Stop intake rollers
+      //   }, intakeSubsystem));
 
 // // r2 to shoot piece out
 //         m_driverController.R2()
@@ -280,19 +278,19 @@ m_driverController.square()
 //     .onFalse(new InstantCommand(() -> shooterSubsystem.stopAlgaeShooter(), shooterSubsystem));
 
 // // Circle → Run Algae Motors REVERSE while held
-m_driverController.povUp()
-    .whileTrue(new RunCommand(() -> shooterSubsystem.spinAlgaeShooter(-0.5), shooterSubsystem)) // Reverse power
-    .onFalse(new InstantCommand(() -> shooterSubsystem.stopAlgaeShooter(), shooterSubsystem));
+// m_driverController.povUp()
+//     .whileTrue(new RunCommand(() -> shooterSubsystem.spinAlgaeShooter(-0.5), shooterSubsystem)) // Reverse power
+//     .onFalse(new InstantCommand(() -> shooterSubsystem.stopAlgaeShooter(), shooterSubsystem));
 
 // binds for l1 intake mode to purposely jam the piece
 
-m_driverController.L1()
-  .whileTrue(new RunCommand(() -> {
-      intakeSubsystem.runL1Intake();  // Run L1 intake mode (horizontal in, vertical out)
-  }, intakeSubsystem))
-  .onFalse(new InstantCommand(() -> {
-      intakeSubsystem.stopAllRollers();  // Stop rollers on release
-  }, intakeSubsystem));
+// m_driverController.L1()
+//   .whileTrue(new RunCommand(() -> {
+//       intakeSubsystem.runL1Intake();  // Run L1 intake mode (horizontal in, vertical out)
+//   }, intakeSubsystem))
+//   .onFalse(new InstantCommand(() -> {
+//       intakeSubsystem.stopAllRollers();  // Stop rollers on release
+//   }, intakeSubsystem));
 
   // bind to test l1 position
   m_driverController.R2()
