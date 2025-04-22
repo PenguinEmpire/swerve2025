@@ -1,9 +1,10 @@
-package frc.robot.commands;
+package org.penguinempire.commands;
+
+import org.penguinempire.subsystems.ElevatorSubsystem;
+import org.penguinempire.subsystems.IntakeSubsystem;
+import org.penguinempire.subsystems.ShooterSubsystem;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
 
 
 public class PositionCommand extends Command {
@@ -101,6 +102,9 @@ public class PositionCommand extends Command {
                 break;
             case SHOOTER_TEST:
             shooterSubsystem.setShooterRotationPosition(Position.SHOOTER_TEST.getEncoderPosition());
+                break;
+            default:
+                // Handle other positions or do nothing
                 break;
             
         }

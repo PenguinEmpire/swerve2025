@@ -1,4 +1,4 @@
-package frc.robot;
+package org.penguinempire;
 
 public class BooleanReference {
     public boolean bool = false; 

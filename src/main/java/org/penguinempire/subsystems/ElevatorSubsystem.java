@@ -1,4 +1,6 @@
-package frc.robot.subsystems;
+package org.penguinempire.subsystems;
+
+import org.penguinempire.Constants.Elevator;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -15,7 +17,6 @@ import dev.alphagame.LogManager;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.Elevator;
 
 public class ElevatorSubsystem extends SubsystemBase {
 

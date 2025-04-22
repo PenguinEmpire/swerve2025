@@ -1,14 +1,16 @@
-package frc.robot.subsystems;
+package org.penguinempire.subsystems;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+
+import org.penguinempire.Constants.Shooter;
+import org.penguinempire.modules.Shootermodule;
+
 import com.revrobotics.spark.SparkMax;
 
 import dev.alphagame.LogManager;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.Shooter;
-import frc.robot.modules.Shootermodule;
 
 public class ShooterSubsystem extends SubsystemBase {
     private final SparkMax shooterMotor;
