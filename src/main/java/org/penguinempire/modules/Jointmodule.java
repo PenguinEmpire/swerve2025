@@ -12,8 +12,10 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import org.penguinempire.commands.PositionCommand;
 /**
  * Controls a robotic joint using a SparkMax motor controller with closed-loop position control.
  * <p>
@@ -55,12 +57,15 @@ public class Jointmodule {
     private double staticGain = 0.0;
     private double gravityGain = 0.0;
     private double velocityGain = 0.0;
-    
+
+    PIDController pidUptoDown = new PIDController(3.0, 0, 0);
+    PIDController pidDowntoUp = new PIDController(3.0, 0, 0);
  // two separate pid controllers via the wpilib way not actually configuring it 
 
     public Jointmodule(String name, int motorID) {
         this.name = name + ": ";
         motor = new SparkMax(3 , MotorType.kBrushless);
+
 
         SparkMaxConfig motorConfig = new SparkMaxConfig();
         motorConfig
@@ -68,7 +73,7 @@ public class Jointmodule {
             .idleMode(IdleMode.kBrake)
             .closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                .pid(3.0, 0.0, 0.0)
+                //.pid(3.0, 0.0, 0.0)
                 .positionWrappingEnabled(true)
                 .positionWrappingMinInput(0)
                 .positionWrappingMaxInput(2 * Math.PI)
@@ -104,8 +109,13 @@ public class Jointmodule {
             this.targetPosition = position;
         
             //  Last year's code only set the target position, without FF here
-            pidController.setReference(targetPosition, SparkBase.ControlType.kPosition);
-        
+            //pidController.setReference(targetPosition, SparkBase.ControlType.kPosition);
+            if (position == PositionCommand.Position.INTAKE_L1.getEncoderPosition()) { //If the target position is the lower position then it calls pidUptoDown
+                motor.set(pidDowntoUp.calculate(motor.getAbsoluteEncoder().getPosition(), targetPosition));
+            } else if (position == PositionCommand.Position.INTAKE_OUT.getEncoderPosition()) { //If the target position is the upper position then it calls pidDowntoUp
+                motor.set(pidUptoDown.calculate(motor.getAbsoluteEncoder().getPosition(), targetPosition));
+            }
+
             // Log reference value for debugging
             SmartDashboard.putNumber(name + " Reference", targetPosition);
         
