@@ -1,5 +1,7 @@
 package org.penguinempire.modules;
 
+import org.penguinempire.commands.PositionCommand;
+
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -12,6 +14,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
@@ -33,6 +36,9 @@ public class Shootermodule {
     private double staticGain = 0.0;
     private double gravityGain = 0.0;
     private double velocityGain = 0.0;
+
+    //PIDController pidUptoDown = new PIDController(0.8, 0, 0);
+    //PIDController pidDowntoUp = new PIDController(0.8, 0, 0);
    
 
     public Shootermodule(String name, int motorID) {
@@ -83,6 +89,12 @@ public class Shootermodule {
 
         // Send position setpoint to PID controller
         pidController.setReference(targetPosition, SparkBase.ControlType.kPosition);
+
+        /**if (position == PositionCommand.Position.SHOOTER_l2.getEncoderPosition()) { //If the target position is the lower position then it calls pidUptoDown
+                motor.set(pidDowntoUp.calculate(motor.getAbsoluteEncoder().getPosition(), targetPosition));
+            } else if (position == PositionCommand.Position.SHOOTER_l3.getEncoderPosition()) { //If the target position is the upper position then it calls pidDowntoUp
+                motor.set(pidUptoDown.calculate(motor.getAbsoluteEncoder().getPosition(), targetPosition));
+            }**/
 
         // Log reference value for debugging
         SmartDashboard.putNumber(name + " Reference", targetPosition);
