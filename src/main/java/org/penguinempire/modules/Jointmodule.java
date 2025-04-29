@@ -61,14 +61,18 @@ public class Jointmodule {
     public Jointmodule(String name, int motorID) {
         this.name = name + ": ";
         motor = new SparkMax(3 , MotorType.kBrushless);
-
+// values for down : ( 3.3,0.0,0.0)
+// for next time: work on the individual pid controllers 
+// do this in a branch 
+// do the same thing for the shooter module ( IN A BRANCH)
+// dont forget to add the position wrapping for both , look at revdocs
         SparkMaxConfig motorConfig = new SparkMaxConfig();
         motorConfig
             .inverted(true)
             .idleMode(IdleMode.kBrake)
             .closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                .pid(3.0, 0.0, 0.0)
+                .pid(3.3, 0.0, 0.0)
                 .positionWrappingEnabled(true)
                 .positionWrappingMinInput(0)
                 .positionWrappingMaxInput(2 * Math.PI)

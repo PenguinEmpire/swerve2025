@@ -35,7 +35,7 @@ public final class Constants {
 
  
     public static final double DEFAULT_ROLLER_POWER = 1.0; //tested these values 2/22
-    public static final double DEFAULT_ROTATION_POWER = 0.05;
+    public static final double DEFAULT_ROTATION_POWER = 0.0005;
     public static final int MOTOR_CURRENT_LIMIT = 30;
 
 
