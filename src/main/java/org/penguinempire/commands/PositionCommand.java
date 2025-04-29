@@ -12,7 +12,7 @@ public class PositionCommand extends Command {
     public enum Position {
         // Intake Positions
         INTAKE_IN(0.0),  // Fold intake inside frame
-        INTAKE_L1(0.922), //figure this value out
+        INTAKE_L1(0.985), //figure this value out
         INTAKE_OUT(0.692), // Extend intake out for pickup origionally 0.648
 
         // Climber Positions

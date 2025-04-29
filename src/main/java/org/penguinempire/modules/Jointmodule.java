@@ -62,8 +62,8 @@ public class Jointmodule {
     private double gravityGain = 0.0;
     private double velocityGain = 0.0;
 
-    PIDController pidUptoDown = new PIDController(0.2, 0, 0);
-    PIDController pidDowntoUp = new PIDController(3.0, 0, 0);
+    PIDController pidUptoDown = new PIDController(0.3, 0, 0);
+    PIDController pidDowntoUp = new PIDController(0.3, 0, 0);
  // two separate pid controllers via the wpilib way not actually configuring it 
 
     public Jointmodule(String name, int motorID) {
