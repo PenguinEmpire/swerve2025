@@ -49,16 +49,20 @@ public class Jointmodule {
     
     private double targetPosition;
     
-    private double armP = 0.3;
-    private double armI = 0.0;
-    private double armD = 0.0;
-    private double armFF = 0.0;
+    private double UDarmP;
+    private double UDarmI;;
+    private double UDarmD;;
+    private double armFF;
+
+    private double DUarmP;
+    private double DUarmI;
+    private double DUarmD;
 
     private double staticGain = 0.0;
     private double gravityGain = 0.0;
     private double velocityGain = 0.0;
 
-    PIDController pidUptoDown = new PIDController(3.0, 0, 0);
+    PIDController pidUptoDown = new PIDController(0.2, 0, 0);
     PIDController pidDowntoUp = new PIDController(3.0, 0, 0);
  // two separate pid controllers via the wpilib way not actually configuring it 
 
@@ -87,18 +91,22 @@ public class Jointmodule {
         pidController = motor.getClosedLoopController();
 
         // Initialize SmartDashboard with PID and FF values
-        SmartDashboard.putNumber(name + " P", armP);
-        SmartDashboard.putNumber(name + " I", armI);
-        SmartDashboard.putNumber(name + " D", armD);
+        SmartDashboard.putNumber(name + " Up -> Down P", UDarmP);
+        SmartDashboard.putNumber(name + " Up -> Down I", UDarmI);
+        SmartDashboard.putNumber(name + " Up -> Down D", UDarmD);
+
+        SmartDashboard.putNumber(name + " Down -> Up P", DUarmP);
+        SmartDashboard.putNumber(name + " Down -> Up I", DUarmI);
+        SmartDashboard.putNumber(name + " Down -> Up D", DUarmD);
+
         SmartDashboard.putNumber(name + " FF", armFF);
 
         SmartDashboard.putNumber(name + " Static Gain", staticGain);
         SmartDashboard.putNumber(name + " Gravity Gain", gravityGain);
         SmartDashboard.putNumber(name + " Velocity Gain", velocityGain);
-
+        
         // Initialize feedforward
         feedforward = new ArmFeedforward(staticGain, gravityGain, velocityGain);
-
     
     }
     /**
@@ -112,8 +120,10 @@ public class Jointmodule {
             //pidController.setReference(targetPosition, SparkBase.ControlType.kPosition);
             if (position == PositionCommand.Position.INTAKE_L1.getEncoderPosition()) { //If the target position is the lower position then it calls pidUptoDown
                 motor.set(pidDowntoUp.calculate(motor.getAbsoluteEncoder().getPosition(), targetPosition));
+                System.out.println("Down to Up");
             } else if (position == PositionCommand.Position.INTAKE_OUT.getEncoderPosition()) { //If the target position is the upper position then it calls pidDowntoUp
                 motor.set(pidUptoDown.calculate(motor.getAbsoluteEncoder().getPosition(), targetPosition));
+                System.out.println("Up to Down");
             }
 
             // Log reference value for debugging
