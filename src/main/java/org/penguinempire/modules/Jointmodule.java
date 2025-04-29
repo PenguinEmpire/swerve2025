@@ -49,14 +49,18 @@ public class Jointmodule {
     
     private double targetPosition;
     
-    private double UDarmP;
-    private double UDarmI;;
-    private double UDarmD;;
+    private double UDarmP = 3.0;
+    private double UDarmI = 0.0;
+    private double UDarmD = 0.0;
     private double armFF;
 
-    private double DUarmP;
-    private double DUarmI;
-    private double DUarmD;
+    private double DUarmP = 3.0;
+    private double DUarmI = 0.0;
+    private double DUarmD = 0.0;
+
+    private double armP;
+    private double armI;
+    private double armD;
 
     private double staticGain = 0.0;
     private double gravityGain = 0.0;
@@ -77,7 +81,7 @@ public class Jointmodule {
             .idleMode(IdleMode.kBrake)
             .closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                //.pid(3.0, 0.0, 0.0)
+                .pid(armP, armI, armD)
                 .positionWrappingEnabled(true)
                 .positionWrappingMinInput(0)
                 .positionWrappingMaxInput(2 * Math.PI)
@@ -117,15 +121,26 @@ public class Jointmodule {
             this.targetPosition = position;
         
             //  Last year's code only set the target position, without FF here
-            //pidController.setReference(targetPosition, SparkBase.ControlType.kPosition);
+
             if (position == PositionCommand.Position.INTAKE_L1.getEncoderPosition()) { //If the target position is the lower position then it calls pidUptoDown
-                motor.set(pidDowntoUp.calculate(motor.getAbsoluteEncoder().getPosition(), targetPosition));
+                //motor.set(pidDowntoUp.calculate(motor.getAbsoluteEncoder().getPosition(), targetPosition));
                 System.out.println("Down to Up");
+
+                armP = DUarmP;
+                armI = DUarmI;
+                armD = DUarmD;
             } else if (position == PositionCommand.Position.INTAKE_OUT.getEncoderPosition()) { //If the target position is the upper position then it calls pidDowntoUp
-                motor.set(pidUptoDown.calculate(motor.getAbsoluteEncoder().getPosition(), targetPosition));
+                //motor.set(pidUptoDown.calculate(motor.getAbsoluteEncoder().getPosition(), targetPosition));
                 System.out.println("Up to Down");
+
+                armP = UDarmP;
+                armI = UDarmI;
+                armD = UDarmD;
             }
 
+            pidController.setReference(targetPosition, SparkBase.ControlType.kPosition);
+
+            System.out.println(armP);
             // Log reference value for debugging
             SmartDashboard.putNumber(name + " Reference", targetPosition);
         
