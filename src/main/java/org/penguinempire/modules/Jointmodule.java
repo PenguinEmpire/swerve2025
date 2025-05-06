@@ -109,6 +109,7 @@ public class Jointmodule {
         
             //  Last year's code only set the target position, without FF here
             pidController.setReference(targetPosition, SparkBase.ControlType.kPosition);
+            feedforward.setReference(targetPosition, SparkBase.ControlType.kPosition);
         
             // Log reference value for debugging
             SmartDashboard.putNumber(name + " Reference", targetPosition);

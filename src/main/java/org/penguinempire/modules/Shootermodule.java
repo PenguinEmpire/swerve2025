@@ -24,6 +24,7 @@ public class Shootermodule {
     private ArmFeedforward feedforward;
     
     private double targetPosition;
+
     
     private double armP = 0.3;
     private double armI = 0.0;
@@ -87,6 +88,7 @@ public class Shootermodule {
         // Log reference value for debugging
         SmartDashboard.putNumber(name + " Reference", targetPosition);
     }
+
 
     /**
      * Allows manual movement control for testing or calibration.
