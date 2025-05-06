@@ -10,10 +10,13 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import java.io.ObjectInputFilter.Config;
 
 import org.penguinempire.commands.PositionCommand;
 /**
@@ -46,34 +49,36 @@ public class Jointmodule {
     private final SparkClosedLoopController pidController;
     @SuppressWarnings("unused")
     private ArmFeedforward feedforward;
+
+    private double twoPi = 2 * Math.PI;
     
     private double targetPosition;
     
-    private double UDarmP = 3.0;
+    private double UDarmP = 1.5;
     private double UDarmI = 0.0;
     private double UDarmD = 0.0;
     private double armFF;
 
-    private double DUarmP = 3.0;
+    private double DUarmP = 1.5;
     private double DUarmI = 0.0;
     private double DUarmD = 0.0;
-
-    private double armP;
-    private double armI;
-    private double armD;
 
     private double staticGain = 0.0;
     private double gravityGain = 0.0;
     private double velocityGain = 0.0;
 
-    PIDController pidUptoDown = new PIDController(0.3, 0, 0);
-    PIDController pidDowntoUp = new PIDController(0.3, 0, 0);
+    PIDController pidUptoDown = new PIDController(UDarmP, UDarmI, UDarmD);
+    PIDController pidDowntoUp = new PIDController(DUarmP, DUarmI, DUarmD);
+
  // two separate pid controllers via the wpilib way not actually configuring it 
 
     public Jointmodule(String name, int motorID) {
         this.name = name + ": ";
         motor = new SparkMax(3 , MotorType.kBrushless);
+        
 
+        pidDowntoUp.enableContinuousInput(0, twoPi);
+        pidUptoDown.enableContinuousInput(0, twoPi);
 
         SparkMaxConfig motorConfig = new SparkMaxConfig();
         motorConfig
@@ -81,7 +86,7 @@ public class Jointmodule {
             .idleMode(IdleMode.kBrake)
             .closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                .pid(armP, armI, armD)
+                //.pid(armP, armI, armD)
                 .positionWrappingEnabled(true)
                 .positionWrappingMinInput(0)
                 .positionWrappingMaxInput(2 * Math.PI)
@@ -90,7 +95,6 @@ public class Jointmodule {
         
         // Apply the initial configuration
         motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        
 
         pidController = motor.getClosedLoopController();
 
@@ -123,32 +127,23 @@ public class Jointmodule {
             //  Last year's code only set the target position, without FF here
 
             if (position == PositionCommand.Position.INTAKE_L1.getEncoderPosition()) { //If the target position is the lower position then it calls pidUptoDown
-                //motor.set(pidDowntoUp.calculate(motor.getAbsoluteEncoder().getPosition(), targetPosition));
+                motor.set(-pidDowntoUp.calculate(motor.getAbsoluteEncoder().getPosition(), targetPosition));
                 System.out.println("Down to Up");
 
-                armP = DUarmP;
-                armI = DUarmI;
-                armD = DUarmD;
             } else if (position == PositionCommand.Position.INTAKE_OUT.getEncoderPosition()) { //If the target position is the upper position then it calls pidDowntoUp
-                //motor.set(pidUptoDown.calculate(motor.getAbsoluteEncoder().getPosition(), targetPosition));
+                motor.set(-pidUptoDown.calculate(motor.getAbsoluteEncoder().getPosition(), targetPosition));
                 System.out.println("Up to Down");
-
-                armP = UDarmP;
-                armI = UDarmI;
-                armD = UDarmD;
             }
 
-            pidController.setReference(targetPosition, SparkBase.ControlType.kPosition);
+            // pidController.setReference(targetPosition, SparkBase.ControlType.kPosition);
 
-            System.out.println(armP);
             // Log reference value for debugging
             SmartDashboard.putNumber(name + " Reference", targetPosition);
         
     }
 
-    /**
-     * Sets the target position for the joint with feedforward.
-     */
+
+    //Sets the target position for the joint with feedforward.
     public void manualMove(double speed) {
         motor.set(speed);
     }
@@ -164,6 +159,7 @@ public class Jointmodule {
      * Gets the current position of the joint.
      * @return
      */
+    
     public double getPosition() {
        AbsoluteEncoder absEncoder = motor.getAbsoluteEncoder();
 
@@ -214,6 +210,15 @@ public class Jointmodule {
         double newStatic = SmartDashboard.getNumber(name + " Static Gain", staticGain);
         double newGravity = SmartDashboard.getNumber(name + " Gravity Gain", gravityGain);
         double newVelocity = SmartDashboard.getNumber(name + " Velocity Gain", velocityGain);
+        double newarmFF;
+
+        double newUDarmP = SmartDashboard.getNumber(name + " Up -> Down P", UDarmP);
+        double newUDarmI = SmartDashboard.getNumber(name + " Up -> Down I", UDarmI);
+        double newUDarmD = SmartDashboard.getNumber(name + " Up -> Down D", UDarmD);
+
+        double newDUarmP = SmartDashboard.getNumber(name + " Down -> Up P", DUarmP);
+        double newDUarmI = SmartDashboard.getNumber(name + " Down -> Up I", DUarmI);
+        double newDUarmD = SmartDashboard.getNumber(name + " Down -> Up D", DUarmD);
     
         if (newStatic != staticGain || newGravity != gravityGain || newVelocity != velocityGain) {
             staticGain = newStatic;
@@ -221,8 +226,19 @@ public class Jointmodule {
             velocityGain = newVelocity;
             feedforward = new ArmFeedforward(staticGain, gravityGain, velocityGain);
         }
-    
+        
+        if (UDarmP != newUDarmP || UDarmI != newUDarmI || UDarmD != newUDarmD) {
+            UDarmP = newUDarmP;
+            UDarmI = newUDarmI;
+            UDarmD = newUDarmD;
+            pidUptoDown = new PIDController(UDarmP, UDarmI, UDarmD);
+        }
+
+        if (DUarmP != newDUarmP || DUarmI != newDUarmI || DUarmD != newDUarmD) {
+            DUarmP = newDUarmP;
+            DUarmI = newDUarmI;
+            DUarmD = newDUarmD;
+            pidDowntoUp = new PIDController(DUarmP, DUarmI, DUarmD);
+        }
     }
-    
-    
 }
