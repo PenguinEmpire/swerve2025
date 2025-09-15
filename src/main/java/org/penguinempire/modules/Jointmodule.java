@@ -1,6 +1,7 @@
 package org.penguinempire.modules;
 
 import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -10,13 +11,10 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.SparkBaseConfig;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import java.io.ObjectInputFilter.Config;
 
 import org.penguinempire.commands.PositionCommand;
 /**
@@ -50,49 +48,60 @@ public class Jointmodule {
     @SuppressWarnings("unused")
     private ArmFeedforward feedforward;
 
-    private double twoPi = 2 * Math.PI;
+    private final TrapezoidProfile m_profile =
+      new TrapezoidProfile(new TrapezoidProfile.Constraints(20, 7.5));
+    private TrapezoidProfile.State m_goal = new TrapezoidProfile.State();
+    private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
     
     private double targetPosition;
     
-    private double UDarmP = 1.5;
+    //Creates the PID values for when moving from the upright position to out
+    private double UDarmP = 3.4;
     private double UDarmI = 0.0;
-    private double UDarmD = 0.0;
+    private double UDarmD = 0.005;
     private double armFF;
 
-    private double DUarmP = 1.5;
+    //Creates the PID values for when moving from the out position to upright
+    private double DUarmP = 1.25;
     private double DUarmI = 0.0;
-    private double DUarmD = 0.0;
+    private double DUarmD = 0.01;
+
+    private double kDt = 0.2;
 
     private double staticGain = 0.0;
     private double gravityGain = 0.0;
     private double velocityGain = 0.0;
 
-    PIDController pidUptoDown = new PIDController(UDarmP, UDarmI, UDarmD);
-    PIDController pidDowntoUp = new PIDController(DUarmP, DUarmI, DUarmD);
+    private boolean commandRan = false;
+
+    
+    private ClosedLoopSlot slot0 = ClosedLoopSlot.kSlot0;
+    private ClosedLoopSlot slot1 = ClosedLoopSlot.kSlot1;
+
 
  // two separate pid controllers via the wpilib way not actually configuring it 
 
     public Jointmodule(String name, int motorID) {
         this.name = name + ": ";
         motor = new SparkMax(3 , MotorType.kBrushless);
-        
-
-        pidDowntoUp.enableContinuousInput(0, twoPi);
-        pidUptoDown.enableContinuousInput(0, twoPi);
-
         SparkMaxConfig motorConfig = new SparkMaxConfig();
+
         motorConfig
             .inverted(true)
             .idleMode(IdleMode.kBrake)
             .closedLoop
+                //Slot 0 information, Up to Down PID controller
+                //Slot 1 information, Down to Up PID controller
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                //.pid(armP, armI, armD)
+                .pid(UDarmP, UDarmI, UDarmD, slot0)
+                .pid(DUarmP, DUarmI, DUarmD, slot1)
                 .positionWrappingEnabled(true)
                 .positionWrappingMinInput(0)
                 .positionWrappingMaxInput(2 * Math.PI)
                 .outputRange(-1, 1);
+
+                //Slot 1 information, Down to Up PID Controller
         motorConfig.encoder.positionConversionFactor(2 * Math.PI);
-        
         // Apply the initial configuration
         motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -123,20 +132,23 @@ public class Jointmodule {
      */
     public void setPosition(double position) {
             this.targetPosition = position;
-        
+            ClosedLoopSlot currentSlot = null;
             //  Last year's code only set the target position, without FF here
-
+            
             if (position == PositionCommand.Position.INTAKE_L1.getEncoderPosition()) { //If the target position is the lower position then it calls pidUptoDown
-                motor.set(-pidDowntoUp.calculate(motor.getAbsoluteEncoder().getPosition(), targetPosition));
-                System.out.println("Down to Up");
+                currentSlot = slot1;
+                //set the target position of the intake from out to upright position
 
             } else if (position == PositionCommand.Position.INTAKE_OUT.getEncoderPosition()) { //If the target position is the upper position then it calls pidDowntoUp
-                motor.set(-pidUptoDown.calculate(motor.getAbsoluteEncoder().getPosition(), targetPosition));
-                System.out.println("Up to Down");
+                currentSlot = slot0;
+                //set the target position of the intake from upright to out position
             }
+            
+            m_goal = new TrapezoidProfile.State(targetPosition, 0); //Set the target position in the motion profile
 
-            // pidController.setReference(targetPosition, SparkBase.ControlType.kPosition);
-
+            commandRan = true;
+            
+            
             // Log reference value for debugging
             SmartDashboard.putNumber(name + " Reference", targetPosition);
         
@@ -231,14 +243,19 @@ public class Jointmodule {
             UDarmP = newUDarmP;
             UDarmI = newUDarmI;
             UDarmD = newUDarmD;
-            pidUptoDown = new PIDController(UDarmP, UDarmI, UDarmD);
         }
 
         if (DUarmP != newDUarmP || DUarmI != newDUarmI || DUarmD != newDUarmD) {
             DUarmP = newDUarmP;
             DUarmI = newDUarmI;
             DUarmD = newDUarmD;
-            pidDowntoUp = new PIDController(DUarmP, DUarmI, DUarmD);
+        }
+
+        if (commandRan == true) {
+            //If we are running a command we activate the constant motion profiling periodic loop to move the intake to whatever position is currently set
+            m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
+            double outputFF = feedforward.calculate(m_setpoint.position, m_setpoint.velocity);
+            pidController.setReference(m_setpoint.position, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0, outputFF);
         }
     }
 }

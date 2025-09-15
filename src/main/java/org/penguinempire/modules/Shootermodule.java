@@ -3,6 +3,7 @@ package org.penguinempire.modules;
 import org.penguinempire.commands.PositionCommand;
 
 import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -15,6 +16,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
@@ -22,23 +24,29 @@ public class Shootermodule {
     private final String name;
     private final SparkMax motor;
     private final SparkClosedLoopController pidController;
-    
+
+    private final TrapezoidProfile m_profile =
+      new TrapezoidProfile(new TrapezoidProfile.Constraints(20, 10));
+    private TrapezoidProfile.State m_goal = new TrapezoidProfile.State();
+    private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
+   
     @SuppressWarnings("unused")
     private ArmFeedforward feedforward;
     
     private double targetPosition;
     
-    private double armP = 0.3;
+    private double armP = 7; //Increase
     private double armI = 0.0;
-    private double armD = 0.0;
-    private double armFF = 0.0;
+    private double armD = 0.0; //Increase after P
+    private double armFF = 0;
+
+    private double kDt = 1;
 
     private double staticGain = 0.0;
     private double gravityGain = 0.0;
     private double velocityGain = 0.0;
 
-    //PIDController pidUptoDown = new PIDController(0.8, 0, 0);
-    //PIDController pidDowntoUp = new PIDController(0.8, 0, 0);
+    private boolean commandRan = false;
    
 
     public Shootermodule(String name, int motorID) {
@@ -54,16 +62,17 @@ public class Shootermodule {
             .idleMode(IdleMode.kBrake)
             .closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                .pid(  0.8, 0.0, 0.0)
+                .pid(armP, armI, armD)
+                .pid(1, 0, 0, ClosedLoopSlot.kSlot1)
                 .positionWrappingEnabled(true)
                 .positionWrappingMinInput(0)
                 .positionWrappingMaxInput(2 * Math.PI)
                 .outputRange(-1, 1);
-       //  motorConfig.encoder.positionConversionFactor(2 * Math.PI); // see if this causes the issue 
+         motorConfig.encoder.positionConversionFactor(2 * Math.PI); // see if this causes the issue 
 
         // Apply the initial configuration
         motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
+        
         pidController = motor.getClosedLoopController();
 
         // Initialize SmartDashboard with PID and FF values
@@ -86,15 +95,15 @@ public class Shootermodule {
      */
     public void setPosition(double position) {
         this.targetPosition = position;
+        if (inCorrectStart(getPosition()) == false) {
+            //pidController.setReference(0.15, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot1); //An experiment for in case the shooter moves backwards 
+        }
 
-        // Send position setpoint to PID controller
-        pidController.setReference(targetPosition, SparkBase.ControlType.kPosition);
+        m_goal = new TrapezoidProfile.State(targetPosition, 0);
 
-        /**if (position == PositionCommand.Position.SHOOTER_l2.getEncoderPosition()) { //If the target position is the lower position then it calls pidUptoDown
-                motor.set(pidDowntoUp.calculate(motor.getAbsoluteEncoder().getPosition(), targetPosition));
-            } else if (position == PositionCommand.Position.SHOOTER_l3.getEncoderPosition()) { //If the target position is the upper position then it calls pidDowntoUp
-                motor.set(pidUptoDown.calculate(motor.getAbsoluteEncoder().getPosition(), targetPosition));
-            }**/
+        commandRan = true;
+
+        //pidController.setReference(targetPosition, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0);
 
         // Log reference value for debugging
         SmartDashboard.putNumber(name + " Reference", targetPosition);
@@ -131,6 +140,10 @@ public class Shootermodule {
      */
     public boolean hasReachedTarget(double tolerance) {
         return Math.abs(targetPosition - getPosition()) <= tolerance;
+    }
+
+    private boolean inCorrectStart(double currentPosition) {
+        return currentPosition > 0.05;
     }
 
     /**
@@ -173,6 +186,12 @@ public class Shootermodule {
             gravityGain = newGravity;
             velocityGain = newVelocity;
             feedforward = new ArmFeedforward(staticGain, gravityGain, velocityGain);
+        }
+        
+        if (commandRan == true) {
+            m_setpoint = m_profile.calculate(kDt, m_setpoint, m_goal);
+            double outputFF = feedforward.calculate(m_setpoint.position, m_setpoint.velocity);
+            pidController.setReference(m_setpoint.position, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0, outputFF);
         }
     }
 }
