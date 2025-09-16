@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import swervelib.SwerveInputStream;
 ;
@@ -93,73 +94,73 @@ public class RobotContainer {
   private void configureBindings() {
         // l2 for intake - Runs while button is held
         
-        // m_driverController.triangle()
-        // .whileTrue(new RunCommand(() -> {
-        //     intakeSubsystem.spinRollers(true);   // Run intake rollers
-        //    shooterSubsystem.spinShooter(true);  // Run shooter motor forward for intake
-        // }, intakeSubsystem, shooterSubsystem))
-        // .onFalse(new InstantCommand(() -> {
-        //     intakeSubsystem.stopAllRollers();  // Stop intake rollers
-        //     shooterSubsystem.stopShooter();    // Stop shooter motor
-        // }, intakeSubsystem, shooterSubsystem));
+         /*m_driverController.triangle()
+         .whileTrue(new RunCommand(() -> {
+             intakeSubsystem.spinRollers(true);   // Run intake rollers
+            shooterSubsystem.spinShooter(true);  // Run shooter motor forward for intake
+         }, intakeSubsystem, shooterSubsystem))
+         .onFalse(new InstantCommand(() -> {
+             intakeSubsystem.stopAllRollers();  // Stop intake rollers
+             shooterSubsystem.stopShooter();    // Stop shooter motor
+         }, intakeSubsystem, shooterSubsystem));
 
-        // m_driverController.L2()
-        // .whileTrue(new RunCommand(() -> {
-        //     intakeSubsystem.spinRollers(true);   // Run intake rollers
-        // }, intakeSubsystem))
-        // .onFalse(new InstantCommand(() -> {
-        //     intakeSubsystem.stopAllRollers();  // Stop intake rollers
-        // }, intakeSubsystem));
+         m_driverController.L2()
+         .whileTrue(new RunCommand(() -> {
+             intakeSubsystem.spinRollers(true);   // Run intake rollers
+         }, intakeSubsystem))
+         .onFalse(new InstantCommand(() -> {
+             intakeSubsystem.stopAllRollers();  // Stop intake rollers
+         }, intakeSubsystem));*/
 
 
-    // m_driverController.L2()
-    // .onTrue(
-    //     new SequentialCommandGroup(
+     /*m_driverController.L2()
+     .onTrue(
+         new SequentialCommandGroup(
     
-    //       // new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem, PositionCommand.Position.ELEVATOR_CRUISING),
-    //         // Step 1: Move the intake down first
+            new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem,shooterSubsystem, PositionCommand.Position.ELEVATOR_CRUISING),
+              //Step 1: Move the intake down first
 
-    //         new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.INTAKE_OUT),
-    //         // Step 2: After intake is down, move the elevator
-    //         new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.ELEVATOR_INTAKEPOS),
-    //         // Step 3: Now that intake & elevator are in position, start intake rollers and shooter rollers
-    //         new RunCommand(() -> {
-    //             intakeSubsystem.spinRollers(true);
-    //             shooterSubsystem.spinShooter(true);
-    //         }, intakeSubsystem, shooterSubsystem)
-    //         .until(() -> shooterSubsystem.getPiece()) // Stop when the limit switch is triggered
-    //     )
+             new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem,shooterSubsystem, PositionCommand.Position.INTAKE_OUT),
+             // Step 2: After intake is down, move the elevator
+             new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem,shooterSubsystem, PositionCommand.Position.ELEVATOR_INTAKEPOS),
+             // Step 3: Now that intake & elevator are in position, start intake rollers and shooter rollers
+             new RunCommand(() -> {
+                 intakeSubsystem.spinRollers(true);
+                 shooterSubsystem.spinShooter(true);
+             }, intakeSubsystem, shooterSubsystem)
+             .until(() -> shooterSubsystem.getPiece()) // Stop when the limit switch is triggered
+         )
         
-    // );
+     );*/
 
     //l1 for outtake - Runs while button is held
-      //  m_driverController.cross()
-      //   .whileTrue(new RunCommand(() -> {
-      //       intakeSubsystem.spinRollers(false);  // Run outtake rollers
-      //        shooterSubsystem.spinShooter(false); // Run shooter motor in reverse for outtake
-      //   }, intakeSubsystem, shooterSubsystem))
-      //   .onFalse(new InstantCommand(() -> {
-      //       intakeSubsystem.stopAllRollers();  // Stop intake rollers
-      //        shooterSubsystem.stopShooter();    // Stop shooter motor
-      //   }, intakeSubsystem, shooterSubsystem));
+        /*m_driverController.cross()
+         .whileTrue(new RunCommand(() -> {
+             intakeSubsystem.spinRollers(false);  // Run outtake rollers
+              shooterSubsystem.spinShooter(false); // Run shooter motor in reverse for outtake
+         }, intakeSubsystem, shooterSubsystem))
+         .onFalse(new InstantCommand(() -> {
+             intakeSubsystem.stopAllRollers();  // Stop intake rollers
+              shooterSubsystem.stopShooter();    // Stop shooter motor
+         }, intakeSubsystem, shooterSubsystem));
 
-      // m_driverController.R1()
-      //   .whileTrue(new RunCommand(() -> {
-      //       intakeSubsystem.spinRollers(false);  // Run outtake rollers
-      //   }, intakeSubsystem))
-      //   .onFalse(new InstantCommand(() -> {
-      //       intakeSubsystem.stopAllRollers();  // Stop intake rollers
-      //   }, intakeSubsystem));
+       m_driverController.R1()
+         .whileTrue(new RunCommand(() -> {
+             intakeSubsystem.spinRollers(false);  // Run outtake rollers
+         }, intakeSubsystem))
+         .onFalse(new InstantCommand(() -> {
+             intakeSubsystem.stopAllRollers();  // Stop intake rollers
+         }, intakeSubsystem));
 
 // // r2 to shoot piece out
-//         m_driverController.R2()
-//         .whileTrue(new RunCommand(() -> {
-//             shooterSubsystem.spinShooter(false); // Run shooter motor in reverse for outtake
-//         },  shooterSubsystem))
-//         .onFalse(new InstantCommand(() -> {
-//        // Stop intake rollers
-//             shooterSubsystem.stopShooter();    // Stop shooter motor
-//         }, shooterSubsystem));
+         m_driverController.R2()
+         .whileTrue(new RunCommand(() -> {
+             shooterSubsystem.spinShooter(false); // Run shooter motor in reverse for outtake
+         },  shooterSubsystem))
+         .onFalse(new InstantCommand(() -> {
+         //Stop intake rollers
+             shooterSubsystem.stopShooter();    // Stop shooter motor
+         }, shooterSubsystem));*/
 
 
 
@@ -175,31 +176,34 @@ public class RobotContainer {
       .onFalse(new InstantCommand(intakeSubsystem::stopManualRotate,intakeSubsystem));
    
 // // // // R2 Button → Move Elevator to LEVEL 2 position
-//   m_driverController.povUp()
-//   .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem,shooterSubsystem,PositionCommand.Position.SHOOTER_TEST));
+   m_driverController.povUp()
+   .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem,shooterSubsystem,PositionCommand.Position.SHOOTER_TEST));
 
-  // m_driverController.circle()
-  //   .onTrue(
-  //       new SequentialCommandGroup(
-  //           new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem, PositionCommand.Position.ELEVATOR_CRUISING), // Step 1: Move Elevator to Cruising Position
-  //           new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.INTAKE_IN) // Step 2: Retract Intake
-  //       )
-  //   );
+   m_driverController.povDown()
+   .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem,shooterSubsystem,PositionCommand.Position.SHOOTER_l2));
+   
+   m_driverController.circle()
+     .onTrue(
+         new SequentialCommandGroup(
+             new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem,shooterSubsystem, PositionCommand.Position.ELEVATOR_CRUISING), // Step 1: Move Elevator to Cruising Position
+             new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem,shooterSubsystem, PositionCommand.Position.INTAKE_L1) // Step 2: Retract Intake
+         )
+     );
 
 // cross Button → Move Elevator to LEVEL 2 position
-//   m_driverController.cross()
-//   .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem, PositionCommand.Position.ELEVATOR_LEVEL_2));
+   m_driverController.cross()
+   .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem,shooterSubsystem, PositionCommand.Position.ELEVATOR_LEVEL_2));
 
-//   m_driverController.circle()
-//   .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem, PositionCommand.Position.ELEVATOR_CRUISING));
-
+   /*m_driverController.circle()
+   .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem,shooterSubsystem, PositionCommand.Position.ELEVATOR_CRUISING));
+*/
 // // R1 Button → Move Elevator to LEVEL 3 position
-//   m_driverController.square()
-//   .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.ELEVATOR_LEVEL_3));
+   m_driverController.square()
+   .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem,shooterSubsystem, PositionCommand.Position.ELEVATOR_LEVEL_3));
 
 // // R1 Button → Move Elevator to LEVEL 4 position
-// m_driverController.triangle()
-// .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem, climberSubsystem, PositionCommand.Position.ELEVATOR_MAX));  
+ m_driverController.triangle()
+ .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem,shooterSubsystem, PositionCommand.Position.ELEVATOR_MAX));  
 
  
 
@@ -251,13 +255,13 @@ m_driverController.options()
       }));
 
  // Square → Manual Control of Shooter Pivot (Hold = Move Up) ( make it false to spin the other way)
-m_driverController.square()
-  .whileTrue(new RunCommand(() -> shooterSubsystem.manualRotateShooter(false), shooterSubsystem))
-  .onFalse(new InstantCommand(shooterSubsystem::stopShooterRotation, shooterSubsystem));
+//m_driverController.square()
+  //.whileTrue(new RunCommand(() -> shooterSubsystem.manualRotateShooter(false), shooterSubsystem))
+  //.onFalse(new InstantCommand(shooterSubsystem::stopShooterRotation, shooterSubsystem));
 
-  m_driverController.circle()
-  .whileTrue(new RunCommand(() -> shooterSubsystem.manualRotateShooter(true), shooterSubsystem))
-  .onFalse(new InstantCommand(shooterSubsystem::stopShooterRotation, shooterSubsystem));
+  //m_driverController.circle()
+  //.whileTrue(new RunCommand(() -> shooterSubsystem.manualRotateShooter(true), shooterSubsystem))
+  //.onFalse(new InstantCommand(shooterSubsystem::stopShooterRotation, shooterSubsystem));
 
 
 //   m_driverController.cross()
@@ -292,10 +296,10 @@ m_driverController.square()
 
   // bind to test l1 position
   m_driverController.R2()
-  .onTrue(new PositionCommand(intakeSubsystem,elevatorSubsystem, shooterSubsystem,PositionCommand.Position.INTAKE_L1));
+  .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem,shooterSubsystem,PositionCommand.Position.INTAKE_L1));
 
   m_driverController.L2()
-  .onTrue(new PositionCommand(intakeSubsystem,elevatorSubsystem,shooterSubsystem, PositionCommand.Position.INTAKE_OUT));
+  .onTrue(new PositionCommand(intakeSubsystem, elevatorSubsystem,climberSubsystem,shooterSubsystem, PositionCommand.Position.INTAKE_OUT));
 
 }
 

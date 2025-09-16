@@ -1,5 +1,6 @@
 package org.penguinempire.commands;
 
+import org.penguinempire.subsystems.ClimberSubsystem;
 import org.penguinempire.subsystems.ElevatorSubsystem;
 import org.penguinempire.subsystems.IntakeSubsystem;
 import org.penguinempire.subsystems.ShooterSubsystem;
@@ -12,8 +13,8 @@ public class PositionCommand extends Command {
     public enum Position {
         // Intake Positions
         INTAKE_IN(0.0),  // Fold intake inside frame
-        INTAKE_L1(0.922), //figure this value out
-        INTAKE_OUT(0.7), // Extend intake out for pickup origionally 0.648
+        INTAKE_L1(0.975), //figure this value out, originally 0.985
+        INTAKE_OUT(0.692), // Extend intake out for pickup origionally 0.648
 
         // Climber Positions
         CLIMBER_LOW(0.0),  // Example low position
@@ -49,18 +50,18 @@ public class PositionCommand extends Command {
 
     private final IntakeSubsystem intakeSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
-    // private final ClimberSubsystem climberSubsystem;
+     private final ClimberSubsystem climberSubsystem;
      private final ShooterSubsystem shooterSubsystem;
          private final Position pos;
      
-         public PositionCommand(IntakeSubsystem intakeSubsystem, ElevatorSubsystem elevatorSubsystem, ShooterSubsystem shooterSubsystem,Position pos) {
+         public PositionCommand(IntakeSubsystem intakeSubsystem, ElevatorSubsystem elevatorSubsystem, ClimberSubsystem climberSubsystem, ShooterSubsystem shooterSubsystem,Position pos) {
          //, ElevatorSubsystem elevatorSubsystem, ClimberSubsystem climberSubsystem, ShooterSubsystem shooterSubsystem,Position pos) {
              this.intakeSubsystem = intakeSubsystem;
               this.elevatorSubsystem = elevatorSubsystem;
-             // this.climberSubsystem = climberSubsystem;
+              this.climberSubsystem = climberSubsystem;
           this.shooterSubsystem = shooterSubsystem;
         this.pos = pos;
-        addRequirements(intakeSubsystem, elevatorSubsystem,shooterSubsystem);
+        addRequirements(intakeSubsystem, elevatorSubsystem,shooterSubsystem, elevatorSubsystem, climberSubsystem);
         // , elevatorSubsystem, climberSubsystem);
     }
 

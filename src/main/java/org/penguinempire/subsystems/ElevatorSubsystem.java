@@ -59,7 +59,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                 .pid(0.8, 0.0, 0.00)
                 .positionWrappingEnabled(false)
-                .outputRange(-1, 1);
+                .outputRange(-0.1, 0.1);
 
         rightElevatorMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
