@@ -23,6 +23,8 @@ public final class Main {
    */
   public static void main(String... args) {
     LogManager.info("Starting Robot Program");
+    String shortCommit = BuildInfo.GIT_COMMIT.substring(0, 6);
+    LogManager.info("Robot code %s built at %s", shortCommit, BuildInfo.BUILD_TIME);
     // -- Note --
     // Rampage (dev.alphagame.rampage) is a library that provides a memory monitor and other utilities.
     Rampage.startMemoryMonitor(0.8);
