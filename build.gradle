@@ -74,10 +74,72 @@ public final class BuildInfo {
     }
 }
 
+task downloadLimelight {
+    def limelightJavaURL = "https://github.com/LimelightVision/limelightlib-wpijava/releases/download/v1.11/LimelightHelpers.java"
+    def outputDir = file("$buildDir/generated/sources/limelight")
+    def packageName = 'org.limelightvision' // Limelight's package
+    inputs.property 'limelightUrl', limelightJavaURL
+    outputs.dir outputDir
+
+    doLast {
+
+        def pkgDir = new File(outputDir, packageName.replace('.', '/'))
+        pkgDir.mkdirs()
+
+        def destFile = new File(pkgDir, 'LimelightHelpers.java')
+        // Does the file already exist? If so, skip download.
+        if (destFile.exists()) {
+            logger.lifecycle("LimelightHelpers.java already exists, skipping download.")
+            return
+        }
+        logger.lifecycle("Downloading LimelightHelpers.java -> ${destFile.absolutePath}")
+
+        new URL(limelightJavaURL).withInputStream { inStream ->
+            destFile.withOutputStream { outStream ->
+                outStream << inStream
+            }
+        }
+
+        logger.lifecycle("Downloaded LimelightHelpers.java")
+        // find the package line and replace it if needed
+        def fileText = destFile.text
+
+        def modifiedText = fileText.replaceFirst(
+            /package\s+[^;]+;/,
+            "package ${packageName};"
+        )
+
+
+        // After this, we need to change any occurrences of "frc.robot" to the new package
+        modifiedText = modifiedText.replaceAll(
+            /frc\.robot/,
+            packageName
+        )
+
+        // before the line where it says 'public class LimelightHelpers {', add @SuppressWarnings("all")
+        // We DO NOT want to edit this file in any capacity so we don't know any warnings.
+        modifiedText = modifiedText.replaceFirst(
+            /public\s+class\s+LimelightHelpers\s*\{/,
+            "@SuppressWarnings(\"all\")\npublic class LimelightHelpers {"
+        )
+        // write back the modified text
+        destFile.text = """// WARNING!
+// --> THIS IS AN AUTOMATICALLY GENERATED FILE.
+// --> ANY CHANGES MADE TO THIS FILE WILL BE OVERWRITTEN, AND WILL NOT BE PRESERVED.
+
+// AGAIN, DO. NOT. EDIT. THIS. FILE.
+// downloaded-from: ${limelightJavaURL}
+// downloaded-at: ${new Date().format("yyyy-MM-dd 'at' hh:mm:ss a")}
+
+$modifiedText"""
+    }
+}
+
 // --- Hook into the Java build process ---
 compileJava.dependsOn generateBuildInfo
+compileJava.dependsOn downloadLimelight
+sourceSets.main.java.srcDir "$buildDir/generated/sources/limelight"
 sourceSets.main.java.srcDir "$buildDir/generated/sources/buildInfo"
-
 
 def deployArtifact = deploy.targets.roborio.artifacts.frcJava
 
