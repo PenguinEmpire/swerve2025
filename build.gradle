@@ -66,6 +66,7 @@ package ${packageName};
   * Auto-generated at build time. DO NOT EDIT. 
   * Generated at ${buildTime}
   */
+@SuppressWarnings("all")
 public final class BuildInfo {
     public static final String GIT_COMMIT = "${gitCommit}";
     public static final String BUILD_TIME = "${buildTime}";
@@ -120,7 +121,7 @@ task downloadLimelight {
         // We DO NOT want to edit this file in any capacity so we don't know any warnings.
         modifiedText = modifiedText.replaceFirst(
             /public\s+class\s+LimelightHelpers\s*\{/,
-            "@SuppressWarnings(\"all\")\npublic class LimelightHelpers {"
+            "@SuppressWarnings(\"all\") // @generated - Ignore all warnings because this is a generated file.\npublic class LimelightHelpers {"
         )
         // write back the modified text
         destFile.text = """// WARNING!
@@ -138,8 +139,9 @@ $modifiedText"""
 // --- Hook into the Java build process ---
 compileJava.dependsOn generateBuildInfo
 compileJava.dependsOn downloadLimelight
-sourceSets.main.java.srcDir "$buildDir/generated/sources/limelight"
-sourceSets.main.java.srcDir "$buildDir/generated/sources/buildInfo"
+
+sourceSets.main.java.srcDir "$buildDir/generated/sources/limelight" // org.limelightvision.LimelightHelpers
+sourceSets.main.java.srcDir "$buildDir/generated/sources/buildInfo" // org.penguinempire.BuildInfo
 
 def deployArtifact = deploy.targets.roborio.artifacts.frcJava
 
