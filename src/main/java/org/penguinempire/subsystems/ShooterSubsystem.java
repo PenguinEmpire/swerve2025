@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+@SuppressWarnings("unused")
 public class ShooterSubsystem extends SubsystemBase {
     private final SparkMax shooterMotor;
      private final SparkMax algaeTopMotor;

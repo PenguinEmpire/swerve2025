@@ -53,6 +53,7 @@ public class SwerveDriveCommand extends Command {
             boolean hasTarget = LimelightHelpers.getTV("limelight");
 
             if (hasTarget) {
+                @SuppressWarnings("unused")
                 double offset = SmartDashboard.getNumber("Offset", 0);
                 double[] positions = LimelightHelpers.getCameraPose_TargetSpace("limelight");
                 System.out.println(SmartDashboard.getBoolean("LOffset", false));
@@ -75,7 +76,6 @@ public class SwerveDriveCommand extends Command {
 
                 // if the targets exist and the distance is accurate but the robot still goes
                 // away from the target, invert this.
-                boolean pidInvert = false;
                 boolean strafeInvert = true;
                 //double rotation = (pidInvert ? -1 : 1) * rotPIDVal;
                 double strafe = (strafeInvert ? -1 : 1) * StrafePIDVal;

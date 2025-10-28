@@ -45,7 +45,6 @@ public class Jointmodule {
     private final String name;
     private final SparkMax motor;
     private final SparkClosedLoopController pidController;
-    @SuppressWarnings("unused")
     private ArmFeedforward feedforward;
 
     private final TrapezoidProfile m_profile =
@@ -137,6 +136,7 @@ public class Jointmodule {
      */
     public void setPosition(double position) {
             this.targetPosition = position;
+            @SuppressWarnings("unused")
             ClosedLoopSlot currentSlot = null;
             //  Last year's code only set the target position, without FF here
             
@@ -227,7 +227,6 @@ public class Jointmodule {
         double newStatic = SmartDashboard.getNumber(name + " Static Gain", staticGain);
         double newGravity = SmartDashboard.getNumber(name + " Gravity Gain", gravityGain);
         double newVelocity = SmartDashboard.getNumber(name + " Velocity Gain", velocityGain);
-        double newarmFF;
 
         double newUDarmP = SmartDashboard.getNumber(name + " Up -> Down P", UDarmP);
         double newUDarmI = SmartDashboard.getNumber(name + " Up -> Down I", UDarmI);

@@ -1,7 +1,5 @@
 package org.penguinempire.modules;
 
-import org.penguinempire.commands.PositionCommand;
-
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase;
@@ -15,7 +13,6 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -30,7 +27,6 @@ public class Shootermodule {
     private TrapezoidProfile.State m_goal = new TrapezoidProfile.State();
     private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
    
-    @SuppressWarnings("unused")
     private ArmFeedforward feedforward;
     
     private double targetPosition;

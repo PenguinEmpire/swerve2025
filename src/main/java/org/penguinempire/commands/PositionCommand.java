@@ -50,19 +50,18 @@ public class PositionCommand extends Command {
 
     private final IntakeSubsystem intakeSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
-     private final ClimberSubsystem climberSubsystem;
-     private final ShooterSubsystem shooterSubsystem;
-         private final Position pos;
-     
-         public PositionCommand(IntakeSubsystem intakeSubsystem, ElevatorSubsystem elevatorSubsystem, ClimberSubsystem climberSubsystem, ShooterSubsystem shooterSubsystem,Position pos) {
-         //, ElevatorSubsystem elevatorSubsystem, ClimberSubsystem climberSubsystem, ShooterSubsystem shooterSubsystem,Position pos) {
-             this.intakeSubsystem = intakeSubsystem;
-              this.elevatorSubsystem = elevatorSubsystem;
-              this.climberSubsystem = climberSubsystem;
-          this.shooterSubsystem = shooterSubsystem;
+    @SuppressWarnings("unused")
+    private final ClimberSubsystem climberSubsystem;
+    private final ShooterSubsystem shooterSubsystem;
+    private final Position pos;
+
+    public PositionCommand(IntakeSubsystem intakeSubsystem, ElevatorSubsystem elevatorSubsystem, ClimberSubsystem climberSubsystem, ShooterSubsystem shooterSubsystem, Position pos) {
+        this.intakeSubsystem = intakeSubsystem;
+        this.elevatorSubsystem = elevatorSubsystem;
+        this.climberSubsystem = climberSubsystem;
+        this.shooterSubsystem = shooterSubsystem;
         this.pos = pos;
-        addRequirements(intakeSubsystem, elevatorSubsystem,shooterSubsystem, elevatorSubsystem, climberSubsystem);
-        // , elevatorSubsystem, climberSubsystem);
+        addRequirements(intakeSubsystem, elevatorSubsystem, shooterSubsystem, climberSubsystem);
     }
 
     @Override

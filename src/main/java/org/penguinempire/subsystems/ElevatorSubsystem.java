@@ -16,7 +16,6 @@ import dev.alphagame.trailblazer.LogManager;
 
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -28,13 +27,12 @@ public class ElevatorSubsystem extends SubsystemBase {
     // Built-in primary (relative) encoder from the Spark Max
     private final RelativeEncoder primaryEncoder;
     private final SparkClosedLoopController pidController;
-    private final ArmFeedforward feedforward;
 
     // PID gains
-    private double P = 0.3;
-    private double I = 0.0;
-    private double D = 0.0;
-    private double FF = 0.0;
+    // private double P = 0.3;
+    // private double I = 0.0;
+    // private double D = 0.0;
+    // private double FF = 0.0;
  
     private double targetPosition = 0.0; // Desired setpoint in raw motor revolutions
 
@@ -72,7 +70,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         pidController = rightElevatorMotor.getClosedLoopController();
 
         // If you need feedforward, set your constants in the ArmFeedforward constructor
-        feedforward = new ArmFeedforward(0.0, 0.0, 0.0);
+        // ArmFeedforward feedforward = new ArmFeedforward(0.0, 0.0, 0.0);
 
         // Publish default elevator speeds on the SmartDashboard
         SmartDashboard.putNumber("Elevator Speed", Elevator.DEFAULT_ELEVATOR_SPEED);
